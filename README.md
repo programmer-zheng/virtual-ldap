@@ -4,6 +4,19 @@
 
 <img src="screenshots/workflow.png" alt="workflow"  />
 
+## 钉钉中应用效果
+
+### 修改个人密码
+
+![](screenshots/dingding_domainaccount1.png)
+![](screenshots/dingding_domainaccount2.png)
+### 员工账号管理
+**注意：管理员仅可查看所在部门下属员工**
+![](screenshots/dingding_domainaccount3.png)
+![](screenshots/dingding_domainaccount4.png)
+
+
+
 ## 同步策略
 
 - Web服务端
