@@ -1,0 +1,49 @@
+version: '3'
+services:
+  web:
+    container_name: ldap_backend
+    restart: always
+    build:
+      context: ../DingdingSync
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - ./configs/appsettings.json:/app/appsettings.json
+    depends_on:
+      - database
+    links:
+      - "database"
+  ldap:
+    container_name: ldap_server
+    restart: always
+    build:
+      context: ../ldap-server
+      dockerfile: Dockerfile
+    ports:
+      - 389:389
+    environment:
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - ./configs/config.js:/app/config.js
+    depends_on:
+      - web
+    links:
+      - "web"
+  database:
+    image: mysql
+    container_name: ldap_database
+    restart: always
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+    ports:
+      - 3308:3307
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_TCP_PORT: 3307
+      MYSQL_ROOT_HOST: '%'
+      TZ: 'Asia/Shanghai'
+    command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1

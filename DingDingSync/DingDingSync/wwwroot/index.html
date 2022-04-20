@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>域账号管理</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" />
+</head>
+<body>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="py-3 text-center">
+                <h3>域账号管理</h3>
+                <!--<div id="msg" class="form-group pt-3 text-danger">请先修改密码</div>-->
+            </div>
+
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">域账号需知</h4>
+                <hr />
+                <p>1、LDAP服务每隔一分钟同步一次域账号信息，域账号开通后，请等待一分钟！</p>
+                <p>2、域账号开通后，请先修改初始密码，以启用账号！</p>
+                <p>3、VPN账号启用后即时生效，VPN的账号密码与域账号一致！</p>
+            </div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#personnel">个人账号管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#deptusers">员工账号管理</a>
+                </li>
+            </ul>
+
+            <!-- 选项卡对应内容 -->
+            <div class="tab-content">
+                <div class="tab-pane  container" id="personnel">
+                    <form id="resetPasswordForm" action="/index">
+                        <div class="row pt-3">
+                            <div class="col-md-8 mb-2 offset-md-2">
+                                <div class="row">
+                                    <input type="hidden" id="UserId" name="UserId" value="@(Model.User.UserId)" />
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>姓名：</label>郑伟
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>用户名：</label>zhengwei
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-2 offset-md-2">
+                                <div class="form-group">
+                                    <label>当前密码</label><span class="field-validation-valid" data-valmsg-for="OldPassword" data-valmsg-replace="true"></span>
+                                    <input class="form-control" data-val="true" data-val-maxlength="OldPassword&#x957F;&#x5EA6;&#x8D85;&#x8FC7;&#x9650;&#x5236;" data-val-maxlength-max="16" data-val-required="&#x5F53;&#x524D;&#x5BC6;&#x7801;&#x4E0D;&#x80FD;&#x4E3A;&#x7A7A;" id="OldPassword" maxlength="16" name="OldPassword" placeholder="&#x8BF7;&#x8F93;&#x5165;&#x5F53;&#x524D;&#x5BC6;&#x7801;" type="password" />
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-2 offset-md-2">
+                                <div class="form-group">
+                                    <label>新密码</label>
+                                    <input class="form-control" id="NewPassword" name="NewPassword" type="password" placeholder="请输入新密码" maxlength="16" />
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-2 offset-md-2">
+                                <div class="form-group">
+                                    <label>确认密码</label>
+                                    <input class="form-control" id="ConfirmPassword" name="ConfirmPassword" type="password" placeholder="请输入确认密码" maxlength="16" />
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-2 offset-md-2">
+                                <div class="form-group">
+                                    <button id="btnSubmit" type="button" class="btn btn-block btn-primary">修 改</button>
+                                </div>
+
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-block btn-success">启 用 VPN 账 号</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane active container" id="deptusers">
+                    <div class="row pt-3 text-center">
+                        <table class="table table-bordered ">
+                            <thead>
+                                <tr>
+                                    <td>姓名</td>
+                                    <td>操作</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img class="avatar" src="https://static-legacy.dingtalk.com/media/lADPD3zUOay_H3bNAWrNAtU_725_362.jpg" alt="" />
+                                        王力成
+                                    </td>
+                                    <td><button class="btn btn-block btn-dark detail">详情</button></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img class="avatar" src="/img/default-avatar.png" alt="" />
+                                        朱鹏程
+                                    </td>
+                                    <td><button class="btn btn-block btn-dark detail">详情</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="detailModalLabel">账号管理</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row pt-3">
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <label>姓名：</label><label id="lblName"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <label>职位：</label><label id="lblPosition"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <label>手机号：</label><label id="lblMobile"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <label>工号：</label><label id="lblJobNumber"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <label>入职日期：</label><label id="lblHireDate"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group form-inline">
+                                <label>账号：</label>
+                                <input class="form-control" id="tboUserName" name="username" type="text" placeholder="账号" maxlength="50" />
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <button id="btnSubmit" type="button" class="btn btn-block btn-primary">开 通 域 账 号</button>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <a href="#" class="btn btn-block btn-success">启 用 VPN 账 号</a>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <div class="form-group">
+                                <a href="#" class="btn btn-block btn-danger">重 置 密 码</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-block btn-light" data-dismiss="modal">关 闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModallabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="resultModallabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="/js/site.js" asp-append-version="true"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $("#btnSubmit").click(function (e) {
+                e.preventDefault();
+                $("form").get(0).reset();
+                //$.validator.unobtrusive.parse("form");
+            });
+
+            $(".detail").click(function () {
+                $("#detailModal").modal('show');
+            });
+
+        });
+    </script>
+</body>
+</html>

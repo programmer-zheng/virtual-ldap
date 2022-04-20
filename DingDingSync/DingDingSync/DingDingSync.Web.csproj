@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<UserSecretsId>dee6fb3d-8b28-446f-976c-1d7504110639</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<AssemblyName>DingDingSync.Web</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Abp.AspNetCore" Version="7.1.0" />
+		<PackageReference Include="Abp.Castle.Log4Net" Version="7.1.0" />
+		<PackageReference Include="Abp.Quartz" Version="7.1.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DingDingSync.Application\DingDingSync.Application.csproj" />
+		<ProjectReference Include="..\DingDingSync.EntityFrameworkCore\DingDingSync.EntityFrameworkCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="topsdk-net-core">
+			<HintPath>..\topsdk-net-core.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties appsettings_1development_1json__JsonSchema="https://json.schemastore.org/appsettings.json" />
+		</VisualStudio>
+	</ProjectExtensions>
+
+</Project>

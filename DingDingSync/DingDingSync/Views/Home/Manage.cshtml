@@ -1,0 +1,276 @@
+﻿
+@model DingDingSync.Application.AppService.Dtos.UserSimpleDto
+<div class="py-3 text-center">
+    <h3>域账号管理</h3>
+    <!--<div id="msg" class="form-group pt-3 text-danger">请先修改密码</div>-->
+</div>
+
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">域账号需知</h4>
+    <hr />
+    <p>1、LDAP服务每隔一分钟同步一次域账号信息，域账号开通后，请等待一分钟！</p>
+    <p>2、域账号开通后，请先修改初始密码，以启用账号！</p>
+    <p>3、VPN账号启用后即时生效，VPN的账号密码与域账号一致！</p>
+</div>
+@if (Model == null || !Model.EnableAccount)
+{
+
+    <div class="alert alert-danger" role="alert">
+        <p>您的账号尚未开通，请联系管理员开通！</p>
+    </div>
+}
+else
+{
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#personnel">个人账号管理</a>
+        </li>
+        @if (Model.IsAdmin)
+        {
+            <li class="nav-item">
+                <a class="nav-link" id="btnDeptUsers" data-toggle="tab" href="#deptusers">员工账号管理</a>
+            </li>
+        }
+    </ul>
+
+    <!-- 选项卡对应内容 -->
+    <div class="tab-content">
+        <div class="tab-pane  active container" id="personnel">
+            <form id="formChangePassword">
+                <div class="row pt-3">
+                    <div class="col-md-8 mb-2 offset-md-2">
+                        <div class="row">
+                            @Html.HiddenFor(t => t.UserId)
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>姓名：</label>@Model.Name
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>用户名：</label>@Model.UserName
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-2 offset-md-2">
+                        <div class="form-group">
+                            <label>当前密码</label> @Html.ValidationMessageFor(t => t.OldPassword)
+                            @Html.PasswordFor(t => t.OldPassword, new { @class = "form-control", placeholder = "请输入当前密码" })
+                            @*<input class="form-control" id="OldPassword" name="OldPassword" type="password" placeholder="请输入当前密码" maxlength="16" />*@
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-2 offset-md-2">
+                        <div class="form-group">
+                            <label>新密码</label> @Html.ValidationMessageFor(t => t.NewPassword)
+                            @Html.PasswordFor(t => t.NewPassword, new { @class = "form-control", placeholder = "请输入新密码" })
+                            @*<input class="form-control" id="NewPassword" name="NewPassword" type="password" placeholder="请输入新密码" maxlength="16" />*@
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-2 offset-md-2">
+                        <div class="form-group">
+                            <label>确认密码</label> @Html.ValidationMessageFor(t => t.ConfirmPassword)
+                            @Html.PasswordFor(t => t.ConfirmPassword, new { @class = "form-control", placeholder = "请输入确认密码" })
+                            @*<input class="form-control" id="ConfirmPassword" name="ConfirmPassword" type="password" placeholder="请输入确认密码" maxlength="16" />*@
+                        </div>
+                    </div>
+                    <div class="col-md-8 mb-2 offset-md-2">
+                        <div class="form-group">
+                            <button id="btnChangePassword" type="button" class="btn btn-block btn-primary">修 改</button>
+                        </div>
+                        @if (Model.IsAdmin)
+                        {
+                            <div class="form-group">
+                                <button id="btnEnableVpnAccount" type="button" class="btn btn-block btn-success">启 用 VPN 账 号</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        @if (Model.IsAdmin)
+        {
+            <div class="tab-pane  container" id="deptusers">
+                <div class="row pt-3 text-center">
+                    <table id="tabDeptUsers" class="table table-bordered ">
+                        <thead>
+                            <tr>
+                                <td>姓名</td>
+                                <td>操作</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="detailModalLabel">账号管理</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row pt-3">
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>姓名：</label><label id="lblName"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>职位：</label><label id="lblPosition"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>手机号：</label><label id="lblMobile"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>工号：</label><label id="lblJobNumber"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>入职日期：</label><label id="lblHireDate"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <div class="form-inline">
+                            <label>用户名：</label>
+                            <input type="hidden" id="tboDeptUserId" />
+                            <input class="form-control" id="tboUserName" name="username" type="text" placeholder="账号" maxlength="50" />
+                        </div>
+                    </div>
+                    <div class="col-md-10 mt-2 mb-2 offset-md-1">
+                        <button id="btnDeptEnableAccount" data-url="/EnableAccount" type="button" class="btn btn-block btn-primary modalBtn">开 通 域 账 号</button>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <a href="#" id="btnDeptEnableVPNAccount" data-url="/EnableVpnAccount" class="btn btn-block btn-success modalBtn">启 用 VPN 账 号</a>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <a href="#" id="btnDeptResetPassword" data-url="/ResetAccountPassword" class="btn btn-block btn-danger modalBtn">重 置 密 码</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-block btn-light" data-dismiss="modal">关 闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModallabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="resultModallabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+            $("#btnChangePassword").click(function (e) {
+                e.preventDefault();
+                if ($("#formChangePassword").valid()) {
+                    var _data = {
+                        UserId: $("#UserId").val(),
+                        OldPassword: $("#OldPassword").val(),
+                        NewPassword: $("#NewPassword").val(),
+                        ConfirmPassword: $("#ConfirmPassword").val()
+                    };
+                    $.ajax({
+                        type: 'POST',
+                        url: '/ChangePassword',
+                        contentType: 'application/json; charset=UTF-8',
+                        data: JSON.stringify(_data),
+                        success: function (data) {
+                            $("#resultModal .modal-body").html(data.msg);
+                            $("#resultModal").modal("show");
+                            $("#formChangePassword").get(0).reset();
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            $("#resultModal .modal-body").html("密码修改失败");
+                            $("#resultModal").modal("show");
+                        }
+                    });
+                }
+            });
+
+            $("#btnDeptUsers").on("click", function () {
+                var _userid = $("#UserId").val();
+                $.get("/ManageUsers", { "userid": _userid }, function (data) {
+                    $("#tabDeptUsers>tbody").empty().append(data);
+                }, "html")
+            });
+
+            $("#btnEnableVpnAccount").click(function () {
+                var _userid = $("#UserId").val();
+                $.get("/EnableVpnAccount", { "userid": _userid }, function (data) {
+                    $("#resultModal .modal-body").html(data.msg);
+                    $("#resultModal").modal("show");
+                });
+
+            });
+            $("body").on("click", ".detail", function () {
+                var $this = $(this);
+                var _userid = $this.data("userid");
+                $.get("/UserDetail", { "userid": _userid }, function (data) {
+                    $("#lblName").html(data.name)
+                    $("#lblPosition").html(data.position)
+                    $("#lblMobile").html(data.mobile)
+                    $("#lblJobNumber").html(data.jobNumber)
+                    $("#lblHireDate").html(data.hireDateStr)
+                    $("#tboDeptUserId").val(data.userid);
+                    $("#tboUserName").val(data.userName);
+
+                    if (data.accountEnabled) {
+                        $("#tboUserName").attr("readonly", "readonly");
+                    }
+
+                    $(".modalBtn").data("userid", data.userid);
+                    $("#detailModal").modal("show");
+                });
+
+            });
+
+            $("#btnDeptEnableAccount").click(function () {
+                var $this = $(this);
+                var _username = $("#tboUserName").val();
+
+                if (/^[a-zA-Z]\w+$/ig.test(_username)) {
+                    $.get($this.data("url"), { "userid": $this.data("userid"), "username": _username }, function (data) {
+
+                        $("#detailModal").modal("hide");
+                        $("#resultModal .modal-body").html(data.msg);
+                        $("#resultModal").modal("show");
+                    });
+                } else {
+                    $("#resultModal .modal-body").html("用户名格式不正确，请输入正确的用户名");
+                    $("#resultModal").modal("show");
+                }
+            })
+
+            $("#btnDeptEnableVPNAccount,#btnDeptResetPassword").click(function () {
+                var $this = $(this);
+                $.get($this.data("url"), { "userid": $this.data("userid") }, function (data) {
+                    $("#detailModal").modal("hide");
+
+                    $("#resultModal .modal-body").html(data.msg);
+                    $("#resultModal").modal("show");
+                });
+            });
+
+
+        });
+    </script>
+
+}

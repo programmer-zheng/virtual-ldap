@@ -1,0 +1,351 @@
+﻿using Abp.Application.Services;
+using Abp.Domain.Repositories;
+using Abp.EntityFrameworkCore.Repositories;
+using Abp.Extensions;
+using Abp.ObjectMapping;
+using Abp.UI;
+using DingDingSync.Application;
+using DingDingSync.Application.AppService.Dtos;
+using DingDingSync.Application.DingDingUtils;
+using DingDingSync.Core.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Castle.Core.Logging;
+using TinyPinyin;
+
+namespace DingDingSync.Application.AppService
+{
+    public class UserAppService : IUserAppService
+    {
+        public IRepository<UserEntity, string> _userRepository { get; set; }
+
+        public IRepository<DepartmentEntity, long> _deptRepository { get; set; }
+
+        public IRepository<UserDepartmentsRelationEntity, string> _userDeptRelaRepository { get; set; }
+
+        public IDingdingAppService _dingdingAppService { get; set; }
+
+        public ILogger _logger { get; set; }
+
+        public IConfiguration _configuration { get; set; }
+        public IObjectMapper _objectMapper { get; set; }
+
+        public async Task<List<DeptUserDto>> DeptUsers(long deptId)
+        {
+            var users = await (from user in _userRepository.GetAll()
+                join rela in _userDeptRelaRepository.GetAll() on user.Id equals rela.UserId
+                where rela.DeptId == deptId && user.AccountEnabled == true
+                select new DeptUserDto
+                {
+                    Userid = user.Id,
+                    Name = user.Name,
+                    UserName = user.UserName,
+                    Mobile = user.Mobile,
+                    UnionId = user.UnionId,
+                    Password = user.Password,
+                    Email = user.Email,
+                    Avatar = user.Avatar,
+                    WorkPlace = user.WorkPlace,
+                    Active = user.Active,
+                    Position = user.Position,
+                    JobNumber = user.JobNumber,
+                    Department = new List<long> {rela.DeptId}
+                }).ToListAsync();
+            return users;
+        }
+
+        /// <summary>
+        /// 获取当前部门的子部门ID（包含二级、三级等）
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="depts"></param>
+        /// <returns></returns>
+        private List<long> GetDeptIds(List<long> ids, List<DepartmentEntity> depts)
+        {
+            var result = new List<long>();
+            var children = depts.Where(t => ids.Contains(t.ParentId)).Select(t => t.Id).ToList();
+            result.AddRange(ids);
+            if (children.Count > 0)
+            {
+                result.AddRange(GetDeptIds(children, depts));
+            }
+
+            return result;
+        }
+
+        public async Task<List<DeptUserDto>> GetAdminDeptUsers(string adminUserId)
+        {
+            var depts = await _deptRepository.GetAll().ToListAsync();
+
+            var adminDepts = await _userDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
+                .Select(t => t.DeptId).ToListAsync();
+            var deptIds = GetDeptIds(adminDepts, depts);
+            var users = await (from user in _userRepository.GetAll()
+                join rela in _userDeptRelaRepository.GetAll() on user.Id equals rela.UserId
+                where deptIds.Contains(rela.DeptId) && user.Id != adminUserId
+                orderby rela.DeptId, user.UserName
+                select new DeptUserDto
+                {
+                    Userid = user.Id,
+                    Name = user.Name,
+                    UserName = user.UserName,
+                    Mobile = user.Mobile,
+                    UnionId = user.UnionId,
+                    Email = user.Email,
+                    Avatar = user.Avatar,
+                    WorkPlace = user.WorkPlace,
+                    Active = user.Active,
+                    Position = user.Position,
+                    JobNumber = user.JobNumber,
+                    HiredDate = user.HiredDate,
+                    AccountEnabled = user.AccountEnabled,
+                    VpnAccountEnabled = user.VpnAccountEnabled,
+                }).ToListAsync();
+            return users;
+        }
+
+        public async Task<UserEntity> GetByIdAsync(string userId)
+        {
+            return await _userRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
+        }
+
+        public async Task<UserEntity> GetByUserNameAsync(string username)
+        {
+            return await _userRepository.GetAll().FirstOrDefaultAsync(t => t.UserName == username);
+        }
+
+        public async Task SyncDepartmentAndUser()
+        {
+            var defaultPassword = _configuration.GetValue<string>("DefaultPassword");
+            defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
+            //获取钉钉所有部门
+            var depts = _dingdingAppService.GetDepartmentList();
+            _logger.Debug($"钉钉返回部门信息：{JsonConvert.SerializeObject(depts)}");
+
+            //获取当前数据库中的部门
+            var deptList = _deptRepository.GetAllList();
+            //获取当前数据库中的人员信息
+            var userList = _userRepository.GetAllList();
+            var relaList = _userDeptRelaRepository.GetAllList();
+
+            var newUserList = new List<UserEntity>();
+            var newDeptList = new List<DepartmentEntity>();
+            var newRelaList = new List<UserDepartmentsRelationEntity>();
+            foreach (var item in depts)
+            {
+                if (!deptList.Any(t => t.Id == item.Id))
+                {
+                    var deptEntity = _objectMapper.Map<DepartmentEntity>(item);
+                    newDeptList.Add(deptEntity);
+                }
+
+                //获取部门详情
+                var deptDetail = _dingdingAppService.GetDepartmentDetail(item.Id);
+                //当前部门管理人员列表
+                var managerId = deptDetail.DeptManagerUseridList;
+                //当前部门人员列表
+                var users = _dingdingAppService.GetUserList(item.Id);
+                _logger.Debug($"钉钉返回部门【{item.Name}】中的人员信息：{string.Join("、", users.Select(t => t.Name).ToList())}");
+                foreach (var user in users)
+                {
+                    if (!userList.Any(t => t.Id == user.Userid) && !newUserList.Any(t => t.Id == user.Userid))
+                    {
+                        var isAdmin = user.Admin || managerId != null && managerId.Contains(user.Userid);
+
+                        var userEntity = _objectMapper.Map<UserEntity>(user);
+                        userEntity.IsAdmin = isAdmin;
+                        userEntity.AccountEnabled = isAdmin;
+                        userEntity.Password = defaultPassword.DesEncrypt();
+
+                        newUserList.Add(userEntity);
+                    }
+
+                    //部门人员关系数据
+                    if (!relaList.Any(t => t.UserId == user.Userid && t.DeptId == item.Id))
+                    {
+                        newRelaList.Add(new UserDepartmentsRelationEntity
+                            {Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = item.Id});
+                    }
+                }
+            }
+
+            var regex = new Regex(@"^[\u4e00-\u9fa5]+", RegexOptions.IgnoreCase);
+            foreach (var item in newUserList.OrderBy(t => t.HiredDate))
+            {
+                var username = await GetUserName(item.Name, newUserList);
+
+                item.UserName = username.ToString().ToLower();
+            }
+
+
+            try
+            {
+                foreach (var item in newDeptList)
+                {
+                    _deptRepository.Insert(item);
+                }
+
+                foreach (var item in newUserList)
+                {
+                    _userRepository.Insert(item);
+                }
+
+                foreach (var item in newRelaList)
+                {
+                    _userDeptRelaRepository.Insert(item);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException("同步数据发生异常", e);
+            }
+            ////批量插入部门数据
+            //await _deptRepository.GetDbContext().BulkInsertAsync(newDeptList);
+            ////批量插入用户数据
+            //await _userRepository.GetDbContext().BulkInsertAsync(newUserList);
+            ////批量插入部门人员关系数据
+            //await _userDeptRelaRepository.GetDbContext().BulkInsertAsync(newRelaList);
+        }
+
+        public async Task<bool> ResetPassword(ResetPasswordViewModel model)
+        {
+            try
+            {
+                var pwd = model.NewPassword.DesEncrypt();
+                _userRepository.Update(model.UserId, t =>
+                {
+                    t.PasswordInited = true;
+                    t.Password = pwd;
+                });
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{model.UserId} 修改密码发生错误", e);
+                throw new UserFriendlyException("修改密码发生未知错误");
+            }
+        }
+
+        public async Task<bool> EnableAccount(string userId, string username)
+        {
+            try
+            {
+                _userRepository.Update(userId, t =>
+                {
+                    t.AccountEnabled = true;
+                    t.UserName = username;
+                });
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"为{userId}启用账号发生异常", e);
+                throw new UserFriendlyException($"为{userId}启用账号发生异常", e);
+            }
+        }
+
+        public async Task<bool> EnableVpnAccount(string userId)
+        {
+            try
+            {
+                _userRepository.Update(userId, t => t.VpnAccountEnabled = true);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"为{userId}启用VPN账号发生异常", e);
+                throw new UserFriendlyException($"为{userId}启用VPN账号发生异常", e);
+            }
+        }
+
+        public async Task<bool> ResetAccountPassword(string userId)
+        {
+            var defaultPassword = _configuration.GetValue<string>("DefaultPassword");
+            defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
+            var user = await _userRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
+            if (user == null)
+            {
+                throw new UserFriendlyException("用户不存在");
+            }
+
+            try
+            {
+                user.PasswordInited = false;
+                user.Password = defaultPassword.DesEncrypt();
+                _userRepository.Update(user);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"为{user.Name}重置密码发生异常", e);
+                throw new UserFriendlyException($"为{user.Name}重置密码发生异常", e);
+            }
+        }
+
+        public async Task<DeptUserDto> GetDeptUserDetail(string userid)
+        {
+            var userdto = await (from user in _userRepository.GetAll()
+                where user.Id == userid
+                select new DeptUserDto
+                {
+                    AccountEnabled = user.AccountEnabled,
+                    VpnAccountEnabled = user.VpnAccountEnabled,
+                    HiredDate = user.HiredDate,
+                    Userid = user.Id,
+                    Name = user.Name,
+                    UserName = user.UserName,
+                    Mobile = user.Mobile,
+                    UnionId = user.UnionId,
+                    Email = user.Email,
+                    Avatar = user.Avatar,
+                    WorkPlace = user.WorkPlace,
+                    Active = user.Active,
+                    Position = user.Position,
+                    JobNumber = user.JobNumber,
+                }).FirstOrDefaultAsync();
+            return userdto;
+        }
+
+        public async Task<string> GetUserName(string name, List<UserEntity>? newUserList = null)
+        {
+            var username = new StringBuilder();
+
+            var regex = new Regex(@"^[\u4e00-\u9fa5]+", RegexOptions.IgnoreCase);
+
+            if (regex.IsMatch(name))
+            {
+                //对重名人员，去掉人名以外字符
+                var match = regex.Match(name);
+                var pinyin = PinyinHelper.GetPinyin(match.Groups[0].Value, "").ToLower();
+                username.Append(pinyin);
+
+                var sameCount = _userRepository.Count(t => t.UserName.Contains(username.ToString()));
+                var newUserSameNameCount = 0;
+                if (newUserList != null)
+                {
+                    newUserSameNameCount = newUserList.Count(t => !string.IsNullOrWhiteSpace(t.UserName)
+                                                                  && t.UserName.StartsWith(username.ToString(),
+                                                                      StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (sameCount > 0 || newUserSameNameCount > 0)
+                {
+                    username.Append(sameCount + newUserSameNameCount + 1);
+                }
+            }
+            else
+            {
+                username.Append(name);
+            }
+
+            return username.ToString().ToLower();
+        }
+    }
+}

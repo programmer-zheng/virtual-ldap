@@ -1,0 +1,14 @@
+﻿@model List<DingDingSync.Application.AppService.Dtos.DeptUserDto>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            <img class="avatar" src="@(string.IsNullOrWhiteSpace(item.Avatar) ? "/img/default-avatar.png" : item.Avatar)" alt=""/>
+            @item.Name
+        </td>
+        <td>
+            <button data-userid="@item.Userid" class="btn btn-block btn-dark detail">详 情</button>
+        </td>
+    </tr>
+}
