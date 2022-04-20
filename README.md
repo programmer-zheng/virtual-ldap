@@ -94,7 +94,7 @@ more /var/jenkins_home/secrets/initialAdminPassword
 
 ### Jenkins设置LDAP
 
-- Server : localhost:389
+- Server : IP:389
 - root DN : dc=example,dc=com
 - Group search base : ou=Staff, ou=Groups, o=demo
 - Manager DN : cn=jenkins, dc=example, dc=com
