@@ -1,4 +1,4 @@
-# update by programmer.zheng
+# 基于钉钉通讯录搭建LDAP服务
 
 ## 流程
 
