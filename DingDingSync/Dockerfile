@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore RunGo.DingDingSync.sln
+RUN dotnet restore VirtualLdap.DingDingSync.sln
 
 FROM build AS publish
 RUN dotnet publish "DingDingSync/DingDingSync.Web.csproj" -c Release -o /app/publish
