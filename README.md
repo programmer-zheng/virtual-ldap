@@ -42,11 +42,23 @@
 
 ## 源码运行
 
+### 应用创建
+
+<img src="screenshots/dingding_create_app.png" alt="dingding_create_app"  />
+
+### 修改配置
+
+<img src="screenshots/dingding_config1.png" alt="dingding_config1"  />
+
+<img src="screenshots/dingding_config2.png" alt="dingding_config2"  />
+<img src="screenshots/dingding_config3.png" alt="dingding_config3"  />
+
+
 ``` bash
 # 1、进入相关目录
 cd docker-compose
 
-# 2、修改configs目录下appsettings.json中钉钉相关配置
+# 2、修改configs目录下appsettings.json中钉钉相关配置（如上图）
 
 # 3、使用docker compose运行
 docker compose up -d
