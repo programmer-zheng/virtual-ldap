@@ -3,6 +3,7 @@ using System;
 using DingDingSync.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DingDingSync.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(DingDingSyncDbContext))]
-    partial class DingDingSyncDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220801114522_addUserDeletionTimeField")]
+    partial class addUserDeletionTimeField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

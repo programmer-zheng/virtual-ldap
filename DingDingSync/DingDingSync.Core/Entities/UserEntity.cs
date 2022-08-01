@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Abp.Domain.Entities.Auditing;
 
 namespace DingDingSync.Core.Entities
 {
-    public class UserEntity : Entity<string>, ISoftDelete
+    public class UserEntity : Entity<string>, ISoftDelete, IHasDeletionTime
     {
-
         /// <summary>
         /// 钉钉平台 UserId 员工的userId。
         /// </summary>
@@ -115,5 +115,7 @@ namespace DingDingSync.Core.Entities
         /// 是否启用VPN账号
         /// </summary>
         public bool VpnAccountEnabled { get; set; }
+
+        public DateTime? DeletionTime { get; set; }
     }
 }
