@@ -10,13 +10,11 @@ namespace DingDingSync.Application.Jobs
 {
     public class DingDingSyncBackgroundWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
     {
-        public ILogger _logger { get; set; }
+        public ILogger Logger { get; set; }
 
-        public IUserAppService _userAppService { get; set; }
+        public IUserAppService UserAppService { get; set; }
 
-
-        public DingDingSyncBackgroundWorker(AbpTimer timer
-        ) : base(timer)
+        public DingDingSyncBackgroundWorker(AbpTimer timer) : base(timer)
         {
             timer.Period = 1000 * 30;
         }
@@ -25,18 +23,17 @@ namespace DingDingSync.Application.Jobs
         protected override void DoWork()
         {
             Timer.Stop();
-            _logger.Debug("同步工作开始……");
+            Logger.Debug("同步工作开始……");
             try
             {
-                _userAppService.SyncDepartmentAndUser();
+                UserAppService.SyncDepartmentAndUser();
             }
             catch (Exception e)
             {
-                _logger.Error("同步发生异常……", e);
-                _logger.Error("同步发生异常", e);
+                Logger.Error("同步发生异常", e);
             }
 
-            _logger.Debug("同步工作结束……");
+            Logger.Debug("同步工作结束……");
         }
     }
 }
