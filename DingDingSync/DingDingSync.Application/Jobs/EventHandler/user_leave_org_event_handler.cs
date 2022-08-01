@@ -18,19 +18,17 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class user_leave_org_event_handler : DingdingBaseEventHandler
     {
-        public user_leave_org_event_handler(IRepository<DepartmentEntity, long> departmentRepository,
-            IRepository<UserEntity, string> userRepository,
+        protected readonly IRepository<UserEntity, string> _userRepository;
+        protected readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
+        protected readonly IIkuaiAppService _iKuaiAppService;
+
+        public user_leave_org_event_handler(IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService,
-            IDepartmentAppService departmentAppService,
-            IDingdingAppService dingdingAppService,
-            IObjectMapper objectMapper,
-            IConfiguration configuration,
-            IIkuaiAppService iKuaiAppService,
-            ILogger logger) : base(departmentRepository, userRepository,
-            deptUserRelaRepository, userAppService, departmentAppService, dingdingAppService, objectMapper,
-            configuration, iKuaiAppService, logger)
+            IIkuaiAppService iKuaiAppService)
         {
+            _userRepository = userRepository;
+            _deptUserRelaRepository = deptUserRelaRepository;
+            _iKuaiAppService = iKuaiAppService;
         }
 
         public override void Do(string msg)

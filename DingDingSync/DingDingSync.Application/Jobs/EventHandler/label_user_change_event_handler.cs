@@ -19,19 +19,15 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class label_user_change_event_handler : DingdingBaseEventHandler
     {
-        public label_user_change_event_handler(IRepository<DepartmentEntity, long> departmentRepository,
-            IRepository<UserEntity, string> userRepository,
-            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService,
-            IDepartmentAppService departmentAppService,
-            IDingdingAppService dingdingAppService,
-            IObjectMapper objectMapper,
-            IConfiguration configuration,
-            IIkuaiAppService iKuaiAppService,
-            ILogger logger) : base(departmentRepository, userRepository,
-            deptUserRelaRepository, userAppService, departmentAppService, dingdingAppService, objectMapper,
-            configuration, iKuaiAppService, logger)
+        protected readonly IRepository<UserEntity, string> _userRepository;
+        protected readonly IDingdingAppService _dingdingAppService;
+
+
+        public label_user_change_event_handler(IRepository<UserEntity, string> userRepository, 
+            IDingdingAppService dingdingAppService)
         {
+            _userRepository = userRepository;
+            _dingdingAppService = dingdingAppService;
         }
 
         public override void Do(string msg)
@@ -60,4 +56,5 @@ namespace DingDingSync.Application.Jobs.EventHandler
             }
         }
     }
+
 }

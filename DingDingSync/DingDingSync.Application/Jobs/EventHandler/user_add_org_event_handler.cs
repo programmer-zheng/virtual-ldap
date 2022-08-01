@@ -22,19 +22,31 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class user_add_org_event_handler : DingdingBaseEventHandler
     {
-        public user_add_org_event_handler(IRepository<DepartmentEntity, long> departmentRepository,
-            IRepository<UserEntity, string> userRepository,
-            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService,
-            IDepartmentAppService departmentAppService,
-            IDingdingAppService dingdingAppService,
+        protected readonly IDingdingAppService _dingdingAppService;
+        protected readonly IObjectMapper _objectMapper;
+        protected readonly IConfiguration _configuration;
+        protected readonly IIkuaiAppService _iKuaiAppService;
+        protected readonly IRepository<UserEntity, string> _userRepository;
+        protected readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
+        protected readonly IUserAppService _userAppService;
+        protected readonly ILogger _logger;
+
+        public user_add_org_event_handler(IDingdingAppService dingdingAppService,
             IObjectMapper objectMapper,
             IConfiguration configuration,
             IIkuaiAppService iKuaiAppService,
-            ILogger logger) : base(departmentRepository, userRepository,
-            deptUserRelaRepository, userAppService, departmentAppService, dingdingAppService, objectMapper,
-            configuration, iKuaiAppService, logger)
+            IRepository<UserEntity, string> userRepository,
+            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
+            IUserAppService userAppService, ILogger logger)
         {
+            _dingdingAppService = dingdingAppService;
+            _objectMapper = objectMapper;
+            _configuration = configuration;
+            _iKuaiAppService = iKuaiAppService;
+            _userRepository = userRepository;
+            _deptUserRelaRepository = deptUserRelaRepository;
+            _userAppService = userAppService;
+            _logger = logger;
         }
 
         public override void Do(string msg)
@@ -62,6 +74,10 @@ namespace DingDingSync.Application.Jobs.EventHandler
                         var username = _userAppService.GetUserName(userEntity.Name).Result;
 
                         userEntity.UserName = username;
+                        if (!userEntity.HiredDate.HasValue)
+                        {
+                            userEntity.HiredDate = DateTime.Today;
+                        }
 
                         //插入人员数据
                         _userRepository.Insert(userEntity);

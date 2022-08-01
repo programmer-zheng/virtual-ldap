@@ -21,19 +21,19 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class user_modify_org_event_handler : DingdingBaseEventHandler
     {
-        public user_modify_org_event_handler(IRepository<DepartmentEntity, long> departmentRepository,
-            IRepository<UserEntity, string> userRepository,
+        protected readonly IRepository<UserEntity, string> _userRepository;
+        protected readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
+        protected readonly IDingdingAppService _dingdingAppService;
+        protected readonly IObjectMapper _objectMapper;
+
+        public user_modify_org_event_handler(IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService,
-            IDepartmentAppService departmentAppService,
-            IDingdingAppService dingdingAppService,
-            IObjectMapper objectMapper,
-            IConfiguration configuration,
-            IIkuaiAppService iKuaiAppService,
-            ILogger logger) : base(departmentRepository, userRepository,
-            deptUserRelaRepository, userAppService, departmentAppService, dingdingAppService, objectMapper,
-            configuration, iKuaiAppService, logger)
+            IDingdingAppService dingdingAppService, IObjectMapper objectMapper)
         {
+            _userRepository = userRepository;
+            _deptUserRelaRepository = deptUserRelaRepository;
+            _dingdingAppService = dingdingAppService;
+            _objectMapper = objectMapper;
         }
 
         public override void Do(string msg)
@@ -62,11 +62,12 @@ namespace DingDingSync.Application.Jobs.EventHandler
                         dbUserEntity.IsAdmin = IsAdmin(dingdingUser);
                         dbUserEntity.Avatar = userEntity.Avatar;
                         dbUserEntity.Position = userEntity.Position;
-                        
+
                         if (!dbUserEntity.AccountEnabled && dbUserEntity.IsAdmin)
                         {
                             dbUserEntity.AccountEnabled = true;
                         }
+
                         _userRepository.Update(dbUserEntity);
 
                         //删除原部门关联信息，重新插入

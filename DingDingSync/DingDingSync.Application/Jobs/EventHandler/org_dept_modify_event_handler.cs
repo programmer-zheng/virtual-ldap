@@ -19,19 +19,15 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class org_dept_modify_event_handler : DingdingBaseEventHandler
     {
-        public org_dept_modify_event_handler(IRepository<DepartmentEntity, long> departmentRepository,
-            IRepository<UserEntity, string> userRepository,
-            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService,
-            IDepartmentAppService departmentAppService,
-            IDingdingAppService dingdingAppService,
-            IObjectMapper objectMapper,
-            IConfiguration configuration,
-            IIkuaiAppService iKuaiAppService,
-            ILogger logger) : base(departmentRepository, userRepository,
-            deptUserRelaRepository, userAppService, departmentAppService, dingdingAppService, objectMapper,
-            configuration, iKuaiAppService, logger)
+        
+        protected readonly IRepository<DepartmentEntity, long> _departmentRepository;
+        protected readonly IDingdingAppService _dingdingAppService;
+
+        public org_dept_modify_event_handler(IRepository<DepartmentEntity, long> departmentRepository, 
+            IDingdingAppService dingdingAppService)
         {
+            _departmentRepository = departmentRepository;
+            _dingdingAppService = dingdingAppService;
         }
 
         public override void Do(string msg)

@@ -19,56 +19,23 @@ namespace DingDingSync.Application.Jobs
 {
     public class DingDingCallbackBackgroundJob : BackgroundJob<DingDingCallbackBackgroundJobArgs>, ITransientDependency
     {
-        private readonly List<string> _listenEvent;
+        private readonly ILogger _logger;
 
-        public ILogger _logger { get; set; }
-        public IIocManager _iocManager { get; set; }
+        private readonly Func<string, DingdingBaseEventHandler> _eventHandlerFactory;
 
-        public DingDingCallbackBackgroundJob()
+        public DingDingCallbackBackgroundJob(Func<string, DingdingBaseEventHandler> eventHandlerFactory, ILogger logger)
         {
-            _listenEvent = new List<string>();
-            _listenEvent.Add("user_add_org"); //通讯录用户增加
-            _listenEvent.Add("user_modify_org"); //通讯录用户更改
-            _listenEvent.Add("user_leave_org"); //通讯录用户离职
-            _listenEvent.Add("user_active_org"); //加入企业后用户激活
-            _listenEvent.Add("org_admin_add"); //通讯录用户被设为管理员
-            _listenEvent.Add("org_admin_remove"); //通讯录用户被取消设置管理员
-            _listenEvent.Add("org_dept_create"); //通讯录企业部门创建
-            _listenEvent.Add("org_dept_modify"); //通讯录企业部门修改
-            _listenEvent.Add("org_dept_remove"); //通讯录企业部门删除
-            _listenEvent.Add("org_remove"); //企业被解散
-            _listenEvent.Add("label_user_change"); //员工角色信息发生变更
+            _eventHandlerFactory = eventHandlerFactory;
+            _logger = logger;
         }
-
-        // [UnitOfWork]
-        // public override void Execute(DingDingCallbackBackgroundJobArgs args)
-        // {
-        //
-        //
-        // }
 
         [UnitOfWork]
         public override void Execute(DingDingCallbackBackgroundJobArgs args)
         {
-            var className = $"DingDingSync.Application.Jobs.EventHandler.{args.EventType}_event_handler";
-            Type classType = Type.GetType(className);
-            if (classType != null)
+            var handler = _eventHandlerFactory(args.EventType);
+            if (handler != null)
             {
-                //从容器中获取依赖项
-                var x1 = _iocManager.Resolve<IRepository<DepartmentEntity, long>>();
-                var x2 = _iocManager.Resolve<IRepository<UserEntity, string>>();
-                var x3 = _iocManager.Resolve<IRepository<UserDepartmentsRelationEntity, string>>();
-                var x4 = _iocManager.Resolve<IUserAppService>();
-                var x5 = _iocManager.Resolve<IDepartmentAppService>();
-                var x6 = _iocManager.Resolve<IDingdingAppService>();
-                var x7 = _iocManager.Resolve<IObjectMapper>();
-                var x8 = _iocManager.Resolve<IConfiguration>();
-                var x9 = _iocManager.Resolve<IIkuaiAppService>();
-                var x10 = _iocManager.Resolve<ILogger>();
-
-                var handler = Activator.CreateInstance(classType, x1, x2, x3, x4, x5, x6, x7,x8,x9,x10);
-                var method = classType.GetMethod("Do", new Type[] {typeof(string)});
-                method.Invoke(handler, new object[] {args.Msg});
+                handler.Do(args.Msg);
             }
             else
             {

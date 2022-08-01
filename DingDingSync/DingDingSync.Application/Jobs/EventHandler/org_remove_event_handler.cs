@@ -19,27 +19,20 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class org_remove_event_handler : DingdingBaseEventHandler
     {
-        public org_remove_event_handler(IRepository<DepartmentEntity, long> departmentRepository,
-            IRepository<UserEntity, string> userRepository,
-            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService,
-            IDepartmentAppService departmentAppService,
-            IDingdingAppService dingdingAppService,
-            IObjectMapper objectMapper,
-            IConfiguration configuration,
-            IIkuaiAppService iKuaiAppService,
-            ILogger logger) : base(departmentRepository, userRepository,
-            deptUserRelaRepository, userAppService, departmentAppService, dingdingAppService, objectMapper,
-            configuration, iKuaiAppService, logger)
+
+        protected readonly ILogger _logger;
+
+        public org_remove_event_handler(ILogger logger)
         {
+            _logger = logger;
         }
 
         public override void Do(string msg)
         {
             var classname = GetType().Name;
             var eventinfo = JsonConvert.DeserializeObject<org_remove_event>(msg);
-            Console.WriteLine("企业解散...");
-            Console.WriteLine($"{classname}:{string.Join(",", eventinfo.ID)}");
+            _logger.Info("企业解散...");
+            _logger.Info($"{classname}:{string.Join(",", eventinfo.ID)}");
         }
     }
 }
