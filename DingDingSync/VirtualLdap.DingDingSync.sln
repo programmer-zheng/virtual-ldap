@@ -7,9 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DingDingSync.Web", "DingDin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DingDingSync.EntityFrameworkCore", "DingDingSync.EntityFrameworkCore\DingDingSync.EntityFrameworkCore.csproj", "{FDEDD4E8-AE1D-47CD-8C1A-1FD5D66E7643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DingDingSync.Core", "DingDingSync.Core\DingDingSync.Core.csproj", "{403B32BE-3C70-44D5-8306-E4618498D40A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DingDingSync.Core", "DingDingSync.Core\DingDingSync.Core.csproj", "{403B32BE-3C70-44D5-8306-E4618498D40A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DingDingSync.Application", "DingDingSync.Application\DingDingSync.Application.csproj", "{20A3E397-2A2D-4683-B92E-7CDC0621C511}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DingDingSync.Application", "DingDingSync.Application\DingDingSync.Application.csproj", "{20A3E397-2A2D-4683-B92E-7CDC0621C511}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{9EF9E072-3EA7-4C12-9064-6A02963539E2}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
