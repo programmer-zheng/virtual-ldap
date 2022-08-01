@@ -15,27 +15,28 @@ namespace DingDingSync.Web.Controllers
 {
     public class DingDingController : AbpController
     {
-        public ILogger logger { get; set; }
+        
+        private readonly DingDingConfigOptions _dingDingConfigOptions;
+        
+        public ILogger Logger { get; set; }
+        
+        public IDingdingAppService DingdingAppService { get; set; }
 
-        public DingDingConfigOptions dingDingConfigOptions { get; set; }
+        public IBackgroundJobManager BackgroundJobManager { get; set; }
 
-        public IBackgroundJobManager backgroundJobManager { get; set; }
-
-        public IUserAppService userAppService { get; set; }
-
-        public IDingdingAppService dingdingAppService { get; set; }
+        public IUserAppService UserAppService { get; set; }
 
 
         public DingDingController(IOptions<DingDingConfigOptions> options)
         {
-            dingDingConfigOptions = options.Value;
+            _dingDingConfigOptions = options.Value;
         }
 
 
         [Route("/dingdingsync")]
         public async Task<IActionResult> Sync()
         {
-            await userAppService.SyncDepartmentAndUser();
+            await UserAppService.SyncDepartmentAndUser();
             return Content("同步完成");
         }
 
@@ -48,12 +49,11 @@ namespace DingDingSync.Web.Controllers
                       "\"DeptId\":[621798889]," +
                       "\"TimeStamp\":\"1648014773789\"}";
             var messageObj = JObject.Parse(msg);
-            var xxx = messageObj.ToString();
-            logger.Info(xxx);
-            await backgroundJobManager.EnqueueAsync<DingDingCallbackBackgroundJob, DingDingCallbackBackgroundJobArgs>(
+            await BackgroundJobManager.EnqueueAsync<DingDingCallbackBackgroundJob, DingDingCallbackBackgroundJobArgs>(
                 new DingDingCallbackBackgroundJobArgs
                 {
-                    Msg = msg
+                    Msg = msg,
+                    EventType = messageObj.Value<string>("EventType"),
                 });
             return Content("发送请求成功");
         }
@@ -70,9 +70,9 @@ namespace DingDingSync.Web.Controllers
         public async Task<dynamic> Callback(string signature, string timestamp, string nonce,
             [FromBody] DingMessage dingMessage)
         {
-            var aes_key = dingDingConfigOptions.Aes_Key;
-            var token = dingDingConfigOptions.Token;
-            var corpId = dingDingConfigOptions.AppKey;
+            var aes_key = _dingDingConfigOptions.Aes_Key;
+            var token = _dingDingConfigOptions.Token;
+            var corpId = _dingDingConfigOptions.AppKey;
 
             var dingTalkEncryptor = new DingTalkEncryptor(token, aes_key, corpId);
             var message = dingTalkEncryptor.getDecryptMsg(signature, timestamp, nonce, dingMessage.Encrypt);
@@ -81,14 +81,14 @@ namespace DingDingSync.Web.Controllers
             var _corpid = messageObj.Value<string>("CorpId");
 
 
-            logger.Warn($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}事件类型：{eventType}");
+            Logger.Warn($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}事件类型：{eventType}");
             if (!string.IsNullOrWhiteSpace(_corpid) && !_corpid.Equals(corpId, StringComparison.OrdinalIgnoreCase) &&
                 !eventType.Equals("check_url", StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine();
-                logger.Warn(messageObj.ToString());
+                Logger.Warn(messageObj.ToString());
                 Console.WriteLine();
-                await backgroundJobManager
+                await BackgroundJobManager
                     .EnqueueAsync<DingDingCallbackBackgroundJob, DingDingCallbackBackgroundJobArgs>(
                         new DingDingCallbackBackgroundJobArgs
                         {
@@ -154,7 +154,7 @@ namespace DingDingSync.Web.Controllers
         [Route("/dingdinggetfailevents")]
         public async Task<IActionResult> GetFailEvents()
         {
-            var result = dingdingAppService.GetCallbackFailEvents();
+            var result = DingdingAppService.GetCallbackFailEvents();
             return Json(result);
         }
     }

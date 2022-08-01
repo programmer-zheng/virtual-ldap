@@ -16,9 +16,9 @@ namespace DingDingSync.Application.DingDingUtils
     {
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 
-        public ILogger _logger { get; set; }
+        public ILogger Logger { get; set; }
 
-        public ICacheManager _cacheManager { get; set; }
+        public ICacheManager CacheManager { get; set; }
 
         public DingDingAppService(IOptions<DingDingConfigOptions> options
         )
@@ -37,7 +37,7 @@ namespace DingDingSync.Application.DingDingUtils
 
         public string GetAccessToken()
         {
-            var cache = _cacheManager.GetCache("DingDing").AsTyped<string, string>();
+            var cache = CacheManager.GetCache("DingDing").AsTyped<string, string>();
             var result = cache.Get("AccessToken", () =>
             {
                 AlibabaCloud.SDK.Dingtalkoauth2_1_0.Client client = CreateClient();

@@ -17,15 +17,14 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录企业部门创建
     /// </summary>
-    public class org_dept_create_event_handler : DingdingBaseEventHandler
+    public class OrgDeptCreateEventHandler : DingdingBaseEventHandler
     {
-        
-        protected readonly IDingdingAppService _dingdingAppService;
-        protected readonly IObjectMapper _objectMapper;
-        protected readonly IRepository<DepartmentEntity, long> _departmentRepository;
+        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IObjectMapper _objectMapper;
+        private readonly IRepository<DepartmentEntity, long> _departmentRepository;
 
-        public org_dept_create_event_handler(IDingdingAppService dingdingAppService, 
-            IObjectMapper objectMapper, 
+        public OrgDeptCreateEventHandler(IDingdingAppService dingdingAppService,
+            IObjectMapper objectMapper,
             IRepository<DepartmentEntity, long> departmentRepository)
         {
             _dingdingAppService = dingdingAppService;

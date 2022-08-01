@@ -18,11 +18,13 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录用户被取消设置管理员
     /// </summary>
-    public class org_admin_remove_event_handler : DingdingBaseEventHandler
+    public class OrgAdminRemoveEventHandler : DingdingBaseEventHandler
     {
-        protected readonly IDingdingAppService _dingdingAppService;
-        protected readonly IRepository<UserEntity, string> _userRepository;
-        public org_admin_remove_event_handler(IDingdingAppService dingdingAppService, IRepository<UserEntity, string> userRepository)
+        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IRepository<UserEntity, string> _userRepository;
+
+        public OrgAdminRemoveEventHandler(IDingdingAppService dingdingAppService,
+            IRepository<UserEntity, string> userRepository)
         {
             _dingdingAppService = dingdingAppService;
             _userRepository = userRepository;

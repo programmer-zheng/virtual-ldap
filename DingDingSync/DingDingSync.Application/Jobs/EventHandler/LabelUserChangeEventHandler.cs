@@ -17,13 +17,13 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 员工角色信息发生变更
     /// </summary>
-    public class label_user_change_event_handler : DingdingBaseEventHandler
+    public class LabelUserChangeEventHandler : DingdingBaseEventHandler
     {
-        protected readonly IRepository<UserEntity, string> _userRepository;
-        protected readonly IDingdingAppService _dingdingAppService;
+        private readonly IRepository<UserEntity, string> _userRepository;
+        private readonly IDingdingAppService _dingdingAppService;
 
 
-        public label_user_change_event_handler(IRepository<UserEntity, string> userRepository, 
+        public LabelUserChangeEventHandler(IRepository<UserEntity, string> userRepository,
             IDingdingAppService dingdingAppService)
         {
             _userRepository = userRepository;
@@ -56,5 +56,4 @@ namespace DingDingSync.Application.Jobs.EventHandler
             }
         }
     }
-
 }

@@ -17,11 +17,11 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录用户被设为管理员
     /// </summary>
-    public class org_admin_add_event_handler : DingdingBaseEventHandler
+    public class OrgAdminAddEventHandler : DingdingBaseEventHandler
     {
-        
-        protected readonly IRepository<UserEntity, string> _userRepository;
-        public org_admin_add_event_handler(IRepository<UserEntity, string> userRepository)
+        private readonly IRepository<UserEntity, string> _userRepository;
+
+        public OrgAdminAddEventHandler(IRepository<UserEntity, string> userRepository)
         {
             _userRepository = userRepository;
         }

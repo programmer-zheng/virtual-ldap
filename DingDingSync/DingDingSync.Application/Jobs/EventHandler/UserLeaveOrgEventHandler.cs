@@ -16,13 +16,13 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录用户离职
     /// </summary>
-    public class user_leave_org_event_handler : DingdingBaseEventHandler
+    public class UserLeaveOrgEventHandler : DingdingBaseEventHandler
     {
-        protected readonly IRepository<UserEntity, string> _userRepository;
-        protected readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
-        protected readonly IIkuaiAppService _iKuaiAppService;
+        private readonly IRepository<UserEntity, string> _userRepository;
+        private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
+        private readonly IIkuaiAppService _iKuaiAppService;
 
-        public user_leave_org_event_handler(IRepository<UserEntity, string> userRepository,
+        public UserLeaveOrgEventHandler(IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
             IIkuaiAppService iKuaiAppService)
         {

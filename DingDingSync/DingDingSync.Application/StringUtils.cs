@@ -10,7 +10,7 @@ namespace DingDingSync.Application
         /// <summary>
         /// 预定义的公钥
         /// </summary>
-        public const string pubkey = "SCy9d*9@";
+        private const string Pubkey = "SCy9d*9@";
 
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace DingDingSync.Application
         /// <returns>加密后的字符串</returns>
         public static string DesEncrypt(this string strText)
         {
-            return strText.DesEncrypt(pubkey);
+            return strText.DesEncrypt(Pubkey);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace DingDingSync.Application
         /// <returns>解密后的字符串</returns>
         public static string DesDecrypt(this string strText)
         {
-            return strText.DesDecrypt(pubkey);
+            return strText.DesDecrypt(Pubkey);
         }
 
         /// <summary>

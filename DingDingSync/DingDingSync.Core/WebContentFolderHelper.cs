@@ -22,8 +22,9 @@ namespace DingDingSync.Core
             }
 
             var directoryInfo = new DirectoryInfo(coreAssemblyDirectoryPath);
-            while (!DirectoryContains(directoryInfo.FullName, "RunGo.DingDingSync.sln"))
+            while (!DirectoryContains(directoryInfo.FullName, "VirtualLdap.DingDingSync.sln"))
             {
+
                 if (directoryInfo.Parent == null)
                 {
                     throw new Exception("Could not find content root folder!");

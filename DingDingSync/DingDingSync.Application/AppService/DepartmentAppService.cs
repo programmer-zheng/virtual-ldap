@@ -10,18 +10,12 @@ namespace DingDingSync.Application.AppService
 {
     public class DepartmentAppService : IDepartmentAppService
     {
-        private readonly IRepository<DepartmentEntity, long> _deptRepository;
+        public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
 
-        public DepartmentAppService(
-            IRepository<DepartmentEntity, long> deptRepository
-        )
-        {
-            _deptRepository = deptRepository;
-        }
 
         public async Task<List<DepartmentDto>> GetAllDepartments()
         {
-            var list = await _deptRepository.GetAll()
+            var list = await DeptRepository.GetAll()
                 .Select(t => new DepartmentDto
                 {
                     Id = t.Id,

@@ -17,13 +17,12 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录企业部门修改
     /// </summary>
-    public class org_dept_modify_event_handler : DingdingBaseEventHandler
+    public class OrgDeptModifyEventHandler : DingdingBaseEventHandler
     {
-        
-        protected readonly IRepository<DepartmentEntity, long> _departmentRepository;
-        protected readonly IDingdingAppService _dingdingAppService;
+        private readonly IRepository<DepartmentEntity, long> _departmentRepository;
+        private readonly IDingdingAppService _dingdingAppService;
 
-        public org_dept_modify_event_handler(IRepository<DepartmentEntity, long> departmentRepository, 
+        public OrgDeptModifyEventHandler(IRepository<DepartmentEntity, long> departmentRepository,
             IDingdingAppService dingdingAppService)
         {
             _departmentRepository = departmentRepository;

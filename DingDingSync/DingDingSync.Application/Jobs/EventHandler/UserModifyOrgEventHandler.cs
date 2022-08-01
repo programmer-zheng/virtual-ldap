@@ -19,14 +19,14 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录用户更改
     /// </summary>
-    public class user_modify_org_event_handler : DingdingBaseEventHandler
+    public class UserModifyOrgEventHandler : DingdingBaseEventHandler
     {
-        protected readonly IRepository<UserEntity, string> _userRepository;
-        protected readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
-        protected readonly IDingdingAppService _dingdingAppService;
-        protected readonly IObjectMapper _objectMapper;
+        private readonly IRepository<UserEntity, string> _userRepository;
+        private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
+        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IObjectMapper _objectMapper;
 
-        public user_modify_org_event_handler(IRepository<UserEntity, string> userRepository,
+        public UserModifyOrgEventHandler(IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
             IDingdingAppService dingdingAppService, IObjectMapper objectMapper)
         {

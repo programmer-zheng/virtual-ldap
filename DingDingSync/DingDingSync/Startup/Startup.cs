@@ -31,7 +31,6 @@ namespace DingDingSync.Web.Startup
         {
             services.AddAbpDbContext<DingDingSyncDbContext>(options =>
             {
-                Console.WriteLine($"database connection string: {options.ConnectionString}");
                 DingDingSyncDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
             });
 
@@ -40,57 +39,66 @@ namespace DingDingSync.Web.Startup
 
             services.AddScoped<IDingdingAppService, DingDingAppService>();
             
-            services.AddTransient<user_add_org_event_handler>(); //通讯录用户增加
-            services.AddTransient<user_modify_org_event_handler>(); //通讯录用户更改
-            services.AddTransient<user_leave_org_event_handler>(); //通讯录用户离职
-            services.AddTransient<user_active_org_event_handler>(); //加入企业后用户激活
-            services.AddTransient<org_admin_add_event_handler>(); //通讯录用户被设为管理员
-            services.AddTransient<org_admin_remove_event_handler>(); //通讯录用户被取消设置管理员
-            services.AddTransient<org_dept_create_event_handler>(); //通讯录企业部门创建
-            services.AddTransient<org_dept_modify_event_handler>(); //通讯录企业部门修改
-            services.AddTransient<org_dept_remove_event_handler>(); //通讯录企业部门删除
-            services.AddTransient<org_remove_event_handler>(); //企业被解散
-            services.AddTransient<label_user_change_event_handler>(); //员工角色信息发生变更
+            RegisterDingDingEventHandler(services);
+
+            services.AddControllersWithViews(); //.AddRazorRuntimeCompilation();
+            return services.AddAbp<WebModule>(options =>
+            {
+                options.IocManager.IocContainer.AddFacility<LoggingFacility>(facility =>
+                    facility.UseAbpLog4Net().WithConfig("log4net.config"));
+            });
+        }
+
+        /// <summary>
+        /// 注册钉钉事件处理程序
+        /// </summary>
+        /// <param name="services"></param>
+        private static void RegisterDingDingEventHandler(IServiceCollection services)
+        {
+            services.AddTransient<UserAddOrgEventHandler>(); //通讯录用户增加
+            services.AddTransient<UserModifyOrgEventHandler>(); //通讯录用户更改
+            services.AddTransient<UserLeaveOrgEventHandler>(); //通讯录用户离职
+            services.AddTransient<UserActiveOrgEventHandler>(); //加入企业后用户激活
+            services.AddTransient<OrgAdminAddEventHandler>(); //通讯录用户被设为管理员
+            services.AddTransient<OrgAdminRemoveEventHandler>(); //通讯录用户被取消设置管理员
+            services.AddTransient<OrgDeptCreateEventHandler>(); //通讯录企业部门创建
+            services.AddTransient<OrgDeptModifyEventHandler>(); //通讯录企业部门修改
+            services.AddTransient<OrgDeptRemoveEventHandler>(); //通讯录企业部门删除
+            services.AddTransient<OrgRemoveEventHandler>(); //企业被解散
+            services.AddTransient<LabelUserChangeEventHandler>(); //员工角色信息发生变更
             services.AddTransient(serviceProvider =>
             {
                 Func<string, DingdingBaseEventHandler> func = (eventType) =>
                 {
                     switch (eventType)
                     {
-                        case "user_add_org":  //通讯录用户增加
-                            return serviceProvider.GetService<user_add_org_event_handler>();
-                        case "user_modify_org":  //通讯录用户更改
-                            return serviceProvider.GetService<user_modify_org_event_handler>();
-                        case "user_leave_org":  //通讯录用户离职
-                            return serviceProvider.GetService<user_leave_org_event_handler>();
-                        case "user_active_org":  //加入企业后用户激活
-                            return serviceProvider.GetService<user_active_org_event_handler>();
-                        case "org_admin_add":  //通讯录用户被设为管理员
-                            return serviceProvider.GetService<org_admin_add_event_handler>();
-                        case "org_admin_remove":  //通讯录用户被取消设置管理员
-                            return serviceProvider.GetService<org_admin_remove_event_handler>();
-                        case "org_dept_create":  //通讯录企业部门创建
-                            return serviceProvider.GetService<org_dept_create_event_handler>();
-                        case "org_dept_modify":  //通讯录企业部门修改
-                            return serviceProvider.GetService<org_dept_modify_event_handler>();
-                        case "org_dept_remove":  //通讯录企业部门删除
-                            return serviceProvider.GetService<org_dept_remove_event_handler>();
-                        case "org_remove":  //企业被解散
-                            return serviceProvider.GetService<org_remove_event_handler>();
-                        case "label_user_change":  //员工角色信息发生变更
-                            return serviceProvider.GetService<label_user_change_event_handler>();
+                        case "user_add_org": //通讯录用户增加
+                            return serviceProvider.GetService<UserAddOrgEventHandler>();
+                        case "user_modify_org": //通讯录用户更改
+                            return serviceProvider.GetService<UserModifyOrgEventHandler>();
+                        case "user_leave_org": //通讯录用户离职
+                            return serviceProvider.GetService<UserLeaveOrgEventHandler>();
+                        case "user_active_org": //加入企业后用户激活
+                            return serviceProvider.GetService<UserActiveOrgEventHandler>();
+                        case "org_admin_add": //通讯录用户被设为管理员
+                            return serviceProvider.GetService<OrgAdminAddEventHandler>();
+                        case "org_admin_remove": //通讯录用户被取消设置管理员
+                            return serviceProvider.GetService<OrgAdminRemoveEventHandler>();
+                        case "org_dept_create": //通讯录企业部门创建
+                            return serviceProvider.GetService<OrgDeptCreateEventHandler>();
+                        case "org_dept_modify": //通讯录企业部门修改
+                            return serviceProvider.GetService<OrgDeptModifyEventHandler>();
+                        case "org_dept_remove": //通讯录企业部门删除
+                            return serviceProvider.GetService<OrgDeptRemoveEventHandler>();
+                        case "org_remove": //企业被解散
+                            return serviceProvider.GetService<OrgRemoveEventHandler>();
+                        case "label_user_change": //员工角色信息发生变更
+                            return serviceProvider.GetService<LabelUserChangeEventHandler>();
                         default:
                             return null;
                     }
                 };
                 return func;
-            });
-            
-            services.AddControllersWithViews(); //.AddRazorRuntimeCompilation();
-            return services.AddAbp<WebModule>(options =>
-            {
-                options.IocManager.IocContainer.AddFacility<LoggingFacility>(facility =>
-                    facility.UseAbpLog4Net().WithConfig("log4net.config"));
             });
         }
 

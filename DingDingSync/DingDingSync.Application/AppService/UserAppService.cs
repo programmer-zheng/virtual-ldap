@@ -24,23 +24,26 @@ namespace DingDingSync.Application.AppService
 {
     public class UserAppService : IUserAppService
     {
-        public IRepository<UserEntity, string> _userRepository { get; set; }
+        public IDingdingAppService DingdingAppService { get; set; }
 
-        public IRepository<DepartmentEntity, long> _deptRepository { get; set; }
+        public IRepository<UserEntity, string> UserRepository { get; set; }
 
-        public IRepository<UserDepartmentsRelationEntity, string> _userDeptRelaRepository { get; set; }
+        public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
 
-        public IDingdingAppService _dingdingAppService { get; set; }
+        public IRepository<UserDepartmentsRelationEntity, string> UserDeptRelaRepository { get; set; }
 
-        public ILogger _logger { get; set; }
+        public ILogger Logger { get; set; }
 
-        public IConfiguration _configuration { get; set; }
-        public IObjectMapper _objectMapper { get; set; }
+        public IConfiguration Configuration { get; set; }
+        
+        public IObjectMapper ObjectMapper { get; set; }
 
+        
+        
         public async Task<List<DeptUserDto>> DeptUsers(long deptId)
         {
-            var users = await (from user in _userRepository.GetAll()
-                join rela in _userDeptRelaRepository.GetAll() on user.Id equals rela.UserId
+            var users = await (from user in UserRepository.GetAll()
+                join rela in UserDeptRelaRepository.GetAll() on user.Id equals rela.UserId
                 where rela.DeptId == deptId && user.AccountEnabled == true
                 select new DeptUserDto
                 {
@@ -82,13 +85,13 @@ namespace DingDingSync.Application.AppService
 
         public async Task<List<DeptUserDto>> GetAdminDeptUsers(string adminUserId)
         {
-            var depts = await _deptRepository.GetAll().ToListAsync();
+            var depts = await DeptRepository.GetAll().ToListAsync();
 
-            var adminDepts = await _userDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
+            var adminDepts = await UserDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
                 .Select(t => t.DeptId).ToListAsync();
             var deptIds = GetDeptIds(adminDepts, depts);
-            var users = await (from user in _userRepository.GetAll()
-                join rela in _userDeptRelaRepository.GetAll() on user.Id equals rela.UserId
+            var users = await (from user in UserRepository.GetAll()
+                join rela in UserDeptRelaRepository.GetAll() on user.Id equals rela.UserId
                 where deptIds.Contains(rela.DeptId) && user.Id != adminUserId
                 orderby rela.DeptId, user.UserName
                 select new DeptUserDto
@@ -113,27 +116,27 @@ namespace DingDingSync.Application.AppService
 
         public async Task<UserEntity> GetByIdAsync(string userId)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
+            return await UserRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
         }
 
         public async Task<UserEntity> GetByUserNameAsync(string username)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(t => t.UserName == username);
+            return await UserRepository.GetAll().FirstOrDefaultAsync(t => t.UserName == username);
         }
 
         public async Task SyncDepartmentAndUser()
         {
-            var defaultPassword = _configuration.GetValue<string>("DefaultPassword");
+            var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
             defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
             //获取钉钉所有部门
-            var depts = _dingdingAppService.GetDepartmentList();
-            _logger.Debug($"钉钉返回部门信息：{JsonConvert.SerializeObject(depts)}");
+            var depts = DingdingAppService.GetDepartmentList();
+            Logger.Debug($"钉钉返回部门信息：{JsonConvert.SerializeObject(depts)}");
 
             //获取当前数据库中的部门
-            var deptList = _deptRepository.GetAllList();
+            var deptList = DeptRepository.GetAllList();
             //获取当前数据库中的人员信息
-            var userList = _userRepository.GetAllList();
-            var relaList = _userDeptRelaRepository.GetAllList();
+            var userList = UserRepository.GetAllList();
+            var relaList = UserDeptRelaRepository.GetAllList();
 
             var newUserList = new List<UserEntity>();
             var newDeptList = new List<DepartmentEntity>();
@@ -142,24 +145,24 @@ namespace DingDingSync.Application.AppService
             {
                 if (!deptList.Any(t => t.Id == item.Id))
                 {
-                    var deptEntity = _objectMapper.Map<DepartmentEntity>(item);
+                    var deptEntity = ObjectMapper.Map<DepartmentEntity>(item);
                     newDeptList.Add(deptEntity);
                 }
 
                 //获取部门详情
-                var deptDetail = _dingdingAppService.GetDepartmentDetail(item.Id);
+                var deptDetail = DingdingAppService.GetDepartmentDetail(item.Id);
                 //当前部门管理人员列表
                 var managerId = deptDetail.DeptManagerUseridList;
                 //当前部门人员列表
-                var users = _dingdingAppService.GetUserList(item.Id);
-                _logger.Debug($"钉钉返回部门【{item.Name}】中的人员信息：{string.Join("、", users.Select(t => t.Name).ToList())}");
+                var users = DingdingAppService.GetUserList(item.Id);
+                Logger.Debug($"钉钉返回部门【{item.Name}】中的人员信息：{string.Join("、", users.Select(t => t.Name).ToList())}");
                 foreach (var user in users)
                 {
                     if (!userList.Any(t => t.Id == user.Userid) && !newUserList.Any(t => t.Id == user.Userid))
                     {
                         var isAdmin = user.Admin || managerId != null && managerId.Contains(user.Userid);
 
-                        var userEntity = _objectMapper.Map<UserEntity>(user);
+                        var userEntity = ObjectMapper.Map<UserEntity>(user);
                         userEntity.IsAdmin = isAdmin;
                         userEntity.AccountEnabled = isAdmin;
                         userEntity.Password = defaultPassword.DesEncrypt();
@@ -189,17 +192,17 @@ namespace DingDingSync.Application.AppService
             {
                 foreach (var item in newDeptList)
                 {
-                    _deptRepository.Insert(item);
+                    DeptRepository.Insert(item);
                 }
 
                 foreach (var item in newUserList)
                 {
-                    _userRepository.Insert(item);
+                    UserRepository.Insert(item);
                 }
 
                 foreach (var item in newRelaList)
                 {
-                    _userDeptRelaRepository.Insert(item);
+                    UserDeptRelaRepository.Insert(item);
                 }
             }
             catch (Exception e)
@@ -219,7 +222,7 @@ namespace DingDingSync.Application.AppService
             try
             {
                 var pwd = model.NewPassword.DesEncrypt();
-                _userRepository.Update(model.UserId, t =>
+                UserRepository.Update(model.UserId, t =>
                 {
                     t.PasswordInited = true;
                     t.Password = pwd;
@@ -228,7 +231,7 @@ namespace DingDingSync.Application.AppService
             }
             catch (Exception e)
             {
-                _logger.Error($"{model.UserId} 修改密码发生错误", e);
+                Logger.Error($"{model.UserId} 修改密码发生错误", e);
                 throw new UserFriendlyException("修改密码发生未知错误");
             }
         }
@@ -237,7 +240,7 @@ namespace DingDingSync.Application.AppService
         {
             try
             {
-                _userRepository.Update(userId, t =>
+                UserRepository.Update(userId, t =>
                 {
                     t.AccountEnabled = true;
                     t.UserName = username;
@@ -246,7 +249,7 @@ namespace DingDingSync.Application.AppService
             }
             catch (Exception e)
             {
-                _logger.Error($"为{userId}启用账号发生异常", e);
+                Logger.Error($"为{userId}启用账号发生异常", e);
                 throw new UserFriendlyException($"为{userId}启用账号发生异常", e);
             }
         }
@@ -255,21 +258,21 @@ namespace DingDingSync.Application.AppService
         {
             try
             {
-                _userRepository.Update(userId, t => t.VpnAccountEnabled = true);
+                UserRepository.Update(userId, t => t.VpnAccountEnabled = true);
                 return true;
             }
             catch (Exception e)
             {
-                _logger.Error($"为{userId}启用VPN账号发生异常", e);
+                Logger.Error($"为{userId}启用VPN账号发生异常", e);
                 throw new UserFriendlyException($"为{userId}启用VPN账号发生异常", e);
             }
         }
 
         public async Task<bool> ResetAccountPassword(string userId)
         {
-            var defaultPassword = _configuration.GetValue<string>("DefaultPassword");
+            var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
             defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
-            var user = await _userRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
+            var user = await UserRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
             if (user == null)
             {
                 throw new UserFriendlyException("用户不存在");
@@ -279,19 +282,19 @@ namespace DingDingSync.Application.AppService
             {
                 user.PasswordInited = false;
                 user.Password = defaultPassword.DesEncrypt();
-                _userRepository.Update(user);
+                UserRepository.Update(user);
                 return true;
             }
             catch (Exception e)
             {
-                _logger.Error($"为{user.Name}重置密码发生异常", e);
+                Logger.Error($"为{user.Name}重置密码发生异常", e);
                 throw new UserFriendlyException($"为{user.Name}重置密码发生异常", e);
             }
         }
 
         public async Task<DeptUserDto> GetDeptUserDetail(string userid)
         {
-            var userdto = await (from user in _userRepository.GetAll()
+            var userdto = await (from user in UserRepository.GetAll()
                 where user.Id == userid
                 select new DeptUserDto
                 {
@@ -326,7 +329,7 @@ namespace DingDingSync.Application.AppService
                 var pinyin = PinyinHelper.GetPinyin(match.Groups[0].Value, "").ToLower();
                 username.Append(pinyin);
 
-                var sameCount = _userRepository.Count(t => t.UserName.Contains(username.ToString()));
+                var sameCount = UserRepository.Count(t => t.UserName.Contains(username.ToString()));
                 var newUserSameNameCount = 0;
                 if (newUserList != null)
                 {

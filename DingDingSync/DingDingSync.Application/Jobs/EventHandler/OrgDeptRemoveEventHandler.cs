@@ -17,12 +17,12 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录企业部门删除
     /// </summary>
-    public class org_dept_remove_event_handler : DingdingBaseEventHandler
+    public class OrgDeptRemoveEventHandler : DingdingBaseEventHandler
     {
 
-        protected readonly IRepository<DepartmentEntity, long> _departmentRepository;
+        private readonly IRepository<DepartmentEntity, long> _departmentRepository;
 
-        public org_dept_remove_event_handler(IRepository<DepartmentEntity, long> departmentRepository)
+        public OrgDeptRemoveEventHandler(IRepository<DepartmentEntity, long> departmentRepository)
         {
             _departmentRepository = departmentRepository;
         }

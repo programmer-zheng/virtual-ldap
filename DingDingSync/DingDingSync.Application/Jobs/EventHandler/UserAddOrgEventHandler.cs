@@ -20,21 +20,19 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// <summary>
     /// 通讯录用户增加
     /// </summary>
-    public class user_add_org_event_handler : DingdingBaseEventHandler
+    public class UserAddOrgEventHandler : DingdingBaseEventHandler
     {
-        protected readonly IDingdingAppService _dingdingAppService;
-        protected readonly IObjectMapper _objectMapper;
-        protected readonly IConfiguration _configuration;
-        protected readonly IIkuaiAppService _iKuaiAppService;
-        protected readonly IRepository<UserEntity, string> _userRepository;
-        protected readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
-        protected readonly IUserAppService _userAppService;
-        protected readonly ILogger _logger;
+        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IObjectMapper _objectMapper;
+        private readonly IConfiguration _configuration;
+        private readonly IRepository<UserEntity, string> _userRepository;
+        private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
+        private readonly IUserAppService _userAppService;
+        private readonly ILogger _logger;
 
-        public user_add_org_event_handler(IDingdingAppService dingdingAppService,
+        public UserAddOrgEventHandler(IDingdingAppService dingdingAppService,
             IObjectMapper objectMapper,
             IConfiguration configuration,
-            IIkuaiAppService iKuaiAppService,
             IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
             IUserAppService userAppService, ILogger logger)
@@ -42,7 +40,6 @@ namespace DingDingSync.Application.Jobs.EventHandler
             _dingdingAppService = dingdingAppService;
             _objectMapper = objectMapper;
             _configuration = configuration;
-            _iKuaiAppService = iKuaiAppService;
             _userRepository = userRepository;
             _deptUserRelaRepository = deptUserRelaRepository;
             _userAppService = userAppService;
