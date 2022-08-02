@@ -77,6 +77,7 @@ CREATE TABLE `users`  (
   `IsDeleted` tinyint(1) NOT NULL,
   `AccountEnabled` tinyint(1) NOT NULL,
   `VpnAccountEnabled` tinyint(1) NOT NULL DEFAULT 0,
+  `DeletionTime` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`Id`) USING BTREE,
   UNIQUE INDEX `IX_UserName`(`UserName`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
