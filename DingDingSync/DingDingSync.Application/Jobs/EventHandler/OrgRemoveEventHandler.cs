@@ -29,7 +29,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
         public override void Do(string msg)
         {
             var classname = GetType().Name;
-            var eventinfo = JsonConvert.DeserializeObject<org_remove_event>(msg);
+            var eventinfo = JsonConvert.DeserializeObject<OrgRemoveEvent>(msg);
             _logger.Info("企业解散...");
             _logger.Info($"{classname}:{string.Join(",", eventinfo.ID)}");
         }

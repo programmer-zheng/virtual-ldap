@@ -30,7 +30,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
         public override void Do(string msg)
         {
             var classname = GetType().Name;
-            var eventinfo = JsonConvert.DeserializeObject<org_dept_remove_event>(msg);
+            var eventinfo = JsonConvert.DeserializeObject<OrgDeptRemoveEvent>(msg);
             if (eventinfo != null && eventinfo.ID != null && eventinfo.ID.Count > 0)
             {
                 //部门删除时，钉钉会提醒删除部门下的人员，有人员时无法删除部门，这里只需要删除部门表的数据

@@ -50,7 +50,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
         {
             var defaultPassword = _configuration.GetValue<string>("DefaultPassword");
             defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
-            var eventinfo = JsonConvert.DeserializeObject<user_add_org_event>(msg);
+            var eventinfo = JsonConvert.DeserializeObject<UserAddOrgEvent>(msg);
             if (eventinfo != null && eventinfo.ID != null && eventinfo.ID.Count > 0)
             {
                 foreach (var userid in eventinfo.ID)

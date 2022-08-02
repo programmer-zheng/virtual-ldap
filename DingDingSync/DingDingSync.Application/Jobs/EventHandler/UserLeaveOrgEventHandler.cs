@@ -33,7 +33,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<user_leave_org_event>(msg);
+            var eventinfo = JsonConvert.DeserializeObject<UserLeaveOrgEvent>(msg);
             if (eventinfo != null && eventinfo.ID != null)
             {
                 //先查询启用vpn账号的

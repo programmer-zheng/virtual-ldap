@@ -21,7 +21,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<user_active_org_event>(msg);
+            var eventinfo = JsonConvert.DeserializeObject<UserActiveOrgEvent>(msg);
             Console.WriteLine($"用户激活：{string.Join(",", eventinfo.ID)}");
         }
     }

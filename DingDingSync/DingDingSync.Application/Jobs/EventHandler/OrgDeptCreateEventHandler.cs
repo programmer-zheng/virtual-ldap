@@ -35,7 +35,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
         public override void Do(string msg)
         {
             var classname = GetType().Name;
-            var eventinfo = JsonConvert.DeserializeObject<org_dept_create_event>(msg);
+            var eventinfo = JsonConvert.DeserializeObject<OrgDeptCreateEvent>(msg);
             if (eventinfo != null && eventinfo.ID != null && eventinfo.ID.Count > 0)
             {
                 foreach (var deptid in eventinfo.ID)
