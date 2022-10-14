@@ -23,7 +23,7 @@
             name = _name;
 
             enabled = "yes";
-            share = 1;
+            share = 2;
             ppptype = "any";
             bind_ifname = "any";
             bind_vlanid = "0";
