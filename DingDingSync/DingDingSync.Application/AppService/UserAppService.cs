@@ -43,6 +43,7 @@ namespace DingDingSync.Application.AppService
 
         public async Task<List<DeptUserDto>> DeptUsers(long deptId)
         {
+            var emailSuffix = Configuration.GetValue<string>("EmailSuffix");
             var users = await (from user in UserRepository.GetAll()
                 join rela in UserDeptRelaRepository.GetAll() on user.Id equals rela.UserId
                 where rela.DeptId == deptId && user.AccountEnabled == true
@@ -54,7 +55,7 @@ namespace DingDingSync.Application.AppService
                     Mobile = user.Mobile,
                     UnionId = user.UnionId,
                     Password = user.Password,
-                    Email = user.Email,
+                    Email = user.Email == "" || user.Email == null ? $"{user.UserName}@{emailSuffix}" : user.Email,
                     Avatar = user.Avatar,
                     WorkPlace = user.WorkPlace,
                     Active = user.Active,
