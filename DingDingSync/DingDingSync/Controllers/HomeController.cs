@@ -66,41 +66,6 @@ namespace DingDingSync.Web.Controllers
             return PartialView(users);
         }
 
-        [HttpPost]
-        [Route("/validateuser")]
-        public async Task<IActionResult> ValidateUser([FromBody] LdapRequestViewModel input)
-        {
-            var result = new LdapResponseViewModel();
-            var user = await _userAppService.GetByUserNameAsync(input.username);
-            if (user == null)
-            {
-                result.Msg = "用户不存在";
-            }
-            else
-            {
-                if (!user.AccountEnabled)
-                {
-                    result.Msg = "账号未开通，请联系管理员开通";
-                }
-                else if (!user.PasswordInited)
-                {
-                    result.Msg = "初始密码未修改，请修改后再登录";
-                }
-                else if (user.Password.DesDecrypt().ToMd5()
-                         .Equals(input.password.ToMd5(), StringComparison.OrdinalIgnoreCase))
-                {
-                    //nodejs所写的ldap服务中，密码传输使用md5
-                    result.Success = true;
-                    result.Msg = "验证成功";
-                }
-                else
-                {
-                    result.Msg = "密码不正确";
-                }
-            }
-
-            return Json(result);
-        }
 
         [HttpGet]
         [Route("/manage")]
