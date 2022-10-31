@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Abp.Runtime.Caching;
 using Castle.Core.Logging;
 using TinyPinyin;
 
@@ -35,11 +36,11 @@ namespace DingDingSync.Application.AppService
         public ILogger Logger { get; set; }
 
         public IConfiguration Configuration { get; set; }
-        
+
         public IObjectMapper ObjectMapper { get; set; }
 
-        
-        
+        public ICacheManager CacheManager { get; set; }
+
         public async Task<List<DeptUserDto>> DeptUsers(long deptId)
         {
             var users = await (from user in UserRepository.GetAll()
@@ -209,12 +210,6 @@ namespace DingDingSync.Application.AppService
             {
                 throw new UserFriendlyException("同步数据发生异常", e);
             }
-            ////批量插入部门数据
-            //await _deptRepository.GetDbContext().BulkInsertAsync(newDeptList);
-            ////批量插入用户数据
-            //await _userRepository.GetDbContext().BulkInsertAsync(newUserList);
-            ////批量插入部门人员关系数据
-            //await _userDeptRelaRepository.GetDbContext().BulkInsertAsync(newRelaList);
         }
 
         public async Task<bool> ResetPassword(ResetPasswordViewModel model)
@@ -349,6 +344,29 @@ namespace DingDingSync.Application.AppService
             }
 
             return username.ToString().ToLower();
+        }
+
+
+        public async Task SendVerificationCode(string userid)
+        {
+            var random = new Random().Next(100000, 999999);
+            await CacheManager.GetCache("DingDing").AsTyped<string, string>().SetAsync($"ForgotPassword-{userid}", random.ToString());
+            var msgContent = $"您正在进行忘记密码操作，验证码是：{random}。";
+            DingdingAppService.SendTextMessage(userid, msgContent);
+        }
+
+        public async Task<bool> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            var cache = CacheManager.GetCache("DingDing").AsTyped<string, string>();
+            var cachedRandomCode = cache.GetOrDefault($"ForgotPassword-{model.UserId}");
+            if (cachedRandomCode != model.VerificationCode)
+            {
+                throw new UserFriendlyException("验证码不正确，请重新输入");
+            }
+
+            await UserRepository.UpdateAsync(model.UserId, async t => t.Password = model.NewPassword);
+
+            return true;
         }
     }
 }

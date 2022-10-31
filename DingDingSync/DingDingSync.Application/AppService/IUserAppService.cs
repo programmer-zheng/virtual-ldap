@@ -27,7 +27,16 @@ namespace DingDingSync.Application.AppService
         Task<bool> ResetAccountPassword(string userId);
 
         Task<DeptUserDto> GetDeptUserDetail(string userid);
-        
+
         Task<string> GetUserName(string name, List<UserEntity>? newUserList = null);
+
+        /// <summary>
+        /// 发送验证码
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        Task SendVerificationCode(string userid);
+
+        Task<bool> ForgotPassword(ForgotPasswordViewModel model);
     }
 }

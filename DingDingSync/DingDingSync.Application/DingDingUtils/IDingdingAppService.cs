@@ -30,5 +30,13 @@ namespace DingDingSync.Application.DingDingUtils
         /// <param name="token"></param>
         /// <returns></returns>
         List<OapiCallBackGetCallBackFailedResultResponse.FailedDomain> GetCallbackFailEvents();
+
+        /// <summary>
+        /// 发送文本消息
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="msgContent"></param>
+        /// <returns></returns>
+        OapiMessageCorpconversationAsyncsendV2Response SendTextMessage(string userid, string msgContent);
     }
 }

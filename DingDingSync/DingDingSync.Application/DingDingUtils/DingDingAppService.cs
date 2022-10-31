@@ -275,5 +275,35 @@ namespace DingDingSync.Application.DingDingUtils
                 throw new UserFriendlyException(e.Message);
             }
         }
+
+        public OapiMessageCorpconversationAsyncsendV2Response SendTextMessage(string userid, string msgContent)
+        {
+            try
+            {
+                var token = GetAccessToken();
+                IDingTalkClient client =
+                    new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2");
+                var req = new OapiMessageCorpconversationAsyncsendV2Request();
+                req.AgentId = _dingDingConfigOptions.AgentId;
+                req.UseridList = userid;
+                req.ToAllUser = false;
+
+                OapiMessageCorpconversationAsyncsendV2Request.MsgDomain msg = new OapiMessageCorpconversationAsyncsendV2Request.MsgDomain();
+                msg.Msgtype = "text";
+                msg.Text = new OapiMessageCorpconversationAsyncsendV2Request.TextDomain() {Content = msgContent};
+                req.Msg_ = msg;
+                var rsp = client.Execute(req, token);
+                if (rsp.Errcode != 0)
+                {
+                    throw new UserFriendlyException(rsp.Errmsg);
+                }
+
+                return rsp;
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException(e.Message);
+            }
+        }
     }
 }
