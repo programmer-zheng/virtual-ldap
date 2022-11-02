@@ -63,7 +63,7 @@ public class StaffController : AbpController
                     throw new UserFriendlyException("用户不存在");
                 }
 
-                if (userinfo.Password.DesDecrypt() != input.OldPassword)
+                if (userinfo.Password != input.OldPassword.DesEncrypt())
                 {
                     throw new UserFriendlyException("当前密码不正确，无法修改密码！");
                 }

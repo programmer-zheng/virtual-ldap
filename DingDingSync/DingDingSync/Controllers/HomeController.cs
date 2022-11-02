@@ -114,64 +114,6 @@ namespace DingDingSync.Web.Controllers
             return View(user);
         }
 
-        //所有用户修改密码
-        [HttpPost]
-        [Route("/ChangePassword")]
-        [DisableValidation]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel input)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (input.OldPassword.Equals(input.NewPassword))
-                    {
-                        throw new ArgumentException("密码修改失败，新密码不能与旧密码一致!");
-                    }
-
-                    var userinfo = await _userAppService.GetByIdAsync(input.UserId);
-                    if (userinfo == null)
-                    {
-                        throw new UserFriendlyException("用户不存在");
-                    }
-
-                    if (userinfo.Password.DesDecrypt() != input.OldPassword)
-                    {
-                        throw new UserFriendlyException("当前密码不正确，无法修改密码！");
-                    }
-
-                    var flag = await _userAppService.ResetPassword(input);
-                    if (flag && userinfo.VpnAccountEnabled)
-                    {
-                        //若密码修改成功且启用vpn账号，vpn账号的密码同步修改
-                        var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
-                        if (ikuaiAccount == null)
-                        {
-                            //若账号为首次开通后修改初始密码，则新建vpn账号
-                            _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
-                                input.NewPassword, userinfo.Name));
-                        }
-                        else
-                        {
-                            //反之直接修改密码，并启用
-                            ikuaiAccount.enabled = "yes";
-                            ikuaiAccount.passwd = input.NewPassword;
-                            _ikuaiAppService.UpdateAccount(ikuaiAccount);
-                        }
-                    }
-
-                    return Json(new {Success = flag, Msg = $"密码修改{(flag ? "成功" : "失败")}！"});
-                }
-                catch (Exception e)
-                {
-                    return Json(new {Success = false, Msg = e.Message});
-                }
-            }
-
-            var errorReason = ModelState.Values.SelectMany(t => t.Errors).Select(t => t.ErrorMessage).FirstOrDefault();
-            return Json(new {Success = false, Msg = $"密码修改失败,{errorReason}"});
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -215,8 +157,9 @@ namespace DingDingSync.Web.Controllers
                     var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
                     if (ikuaiAccount == null)
                     {
+                        var pwd = userinfo.Password.DesDecrypt();
                         _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
-                            userinfo.Password.DesDecrypt(), userinfo.Name));
+                            pwd, userinfo.Name));
                     }
 
                     result = await _userAppService.EnableVpnAccount(userid);

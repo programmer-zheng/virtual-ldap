@@ -347,7 +347,6 @@ namespace DingDingSync.Application.AppService
             return username.ToString().ToLower();
         }
 
-
         public async Task SendVerificationCode(string userid)
         {
             var random = new Random().Next(100000, 999999);
@@ -365,7 +364,7 @@ namespace DingDingSync.Application.AppService
                 throw new UserFriendlyException("验证码不正确，请重新输入");
             }
 
-            await UserRepository.UpdateAsync(model.UserId, async t => t.Password = model.NewPassword);
+            await UserRepository.UpdateAsync(model.UserId, async t => t.Password = model.NewPassword.DesEncrypt());
 
             return true;
         }
