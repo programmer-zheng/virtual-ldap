@@ -1,5 +1,4 @@
-﻿
-@model DingDingSync.Application.AppService.Dtos.UserSimpleDto
+﻿@model DingDingSync.Application.AppService.Dtos.UserSimpleDto
 <div class="py-3 text-center">
     <h3>域账号管理</h3>
     <!--<div id="msg" class="form-group pt-3 text-danger">请先修改密码</div>-->
@@ -7,21 +6,19 @@
 
 <div class="alert alert-success" role="alert">
     <h4 class="alert-heading">域账号需知</h4>
-    <hr />
+    <hr/>
     <p>1、LDAP服务每隔一分钟同步一次域账号信息，域账号开通后，请等待一分钟！</p>
     <p>2、域账号开通后，请先修改初始密码，以启用账号！</p>
     <p>3、VPN账号启用后即时生效，VPN的账号密码与域账号一致！</p>
 </div>
 @if (Model == null || !Model.EnableAccount)
 {
-
     <div class="alert alert-danger" role="alert">
         <p>您的账号尚未开通，请联系管理员开通！</p>
     </div>
 }
 else
 {
-
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" data-toggle="tab" href="#personnel">个人账号管理</a>
@@ -56,22 +53,24 @@ else
                     </div>
                     <div class="col-md-8 mb-2 offset-md-2">
                         <div class="form-group">
-                            <label>当前密码</label> @Html.ValidationMessageFor(t => t.OldPassword)
-                            @Html.PasswordFor(t => t.OldPassword, new { @class = "form-control", placeholder = "请输入当前密码" })
+                            <label>当前密码</label>
+                            <a href="/ForgotPassword">忘记密码</a>
+                            @Html.ValidationMessageFor(t => t.OldPassword)
+                            @Html.PasswordFor(t => t.OldPassword, new {@class = "form-control", placeholder = "请输入当前密码"})
                             @*<input class="form-control" id="OldPassword" name="OldPassword" type="password" placeholder="请输入当前密码" maxlength="16" />*@
                         </div>
                     </div>
                     <div class="col-md-8 mb-2 offset-md-2">
                         <div class="form-group">
                             <label>新密码</label> @Html.ValidationMessageFor(t => t.NewPassword)
-                            @Html.PasswordFor(t => t.NewPassword, new { @class = "form-control", placeholder = "请输入新密码" })
+                            @Html.PasswordFor(t => t.NewPassword, new {@class = "form-control", placeholder = "请输入新密码"})
                             @*<input class="form-control" id="NewPassword" name="NewPassword" type="password" placeholder="请输入新密码" maxlength="16" />*@
                         </div>
                     </div>
                     <div class="col-md-8 mb-2 offset-md-2">
                         <div class="form-group">
                             <label>确认密码</label> @Html.ValidationMessageFor(t => t.ConfirmPassword)
-                            @Html.PasswordFor(t => t.ConfirmPassword, new { @class = "form-control", placeholder = "请输入确认密码" })
+                            @Html.PasswordFor(t => t.ConfirmPassword, new {@class = "form-control", placeholder = "请输入确认密码"})
                             @*<input class="form-control" id="ConfirmPassword" name="ConfirmPassword" type="password" placeholder="请输入确认密码" maxlength="16" />*@
                         </div>
                     </div>
@@ -96,10 +95,10 @@ else
                 <div class="row pt-3 text-center">
                     <table id="tabDeptUsers" class="table table-bordered ">
                         <thead>
-                            <tr>
-                                <td>姓名</td>
-                                <td>操作</td>
-                            </tr>
+                        <tr>
+                            <td>姓名</td>
+                            <td>操作</td>
+                        </tr>
                         </thead>
                         <tbody>
                         </tbody>
@@ -136,8 +135,8 @@ else
                     <div class="col-md-10 mb-2 offset-md-1">
                         <div class="form-inline">
                             <label>用户名：</label>
-                            <input type="hidden" id="tboDeptUserId" />
-                            <input class="form-control" id="tboUserName" name="username" type="text" placeholder="账号" maxlength="50" />
+                            <input type="hidden" id="tboDeptUserId"/>
+                            <input class="form-control" id="tboUserName" name="username" type="text" placeholder="账号" maxlength="50"/>
                         </div>
                     </div>
                     <div class="col-md-10 mt-2 mb-2 offset-md-1">
@@ -159,21 +158,8 @@ else
     </div>
 </div>
 
-<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModallabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="resultModallabel">提示</h4>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("~/Views/Shared/resultModal.cshtml")
+
 @section Scripts{
     <script>
         $(document).ready(function () {
