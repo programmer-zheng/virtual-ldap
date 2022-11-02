@@ -153,16 +153,18 @@ namespace DingDingSync.Web.Controllers
                         throw new UserFriendlyException($"{userinfo.Name} 的VPN账号已启用，无须重复操作；若无法使用VPN账号，请联系管理员！");
                     }
 
-                    //先去爱快路由器中操作，若操作失败，则不会更新数据库中字段
-                    var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
-                    if (ikuaiAccount == null)
-                    {
-                        var pwd = userinfo.Password.DesDecrypt();
-                        _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
-                            pwd, userinfo.Name));
-                    }
-
                     result = await _userAppService.EnableVpnAccount(userid);
+                    if (result)
+                    {
+                        //先去爱快路由器中操作，若操作失败，则不会更新数据库中字段
+                        var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
+                        if (ikuaiAccount == null)
+                        {
+                            var pwd = userinfo.Password.DesDecrypt();
+                            _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
+                                pwd, userinfo.Name));
+                        }
+                    }
                 }
             }
             catch (IKuaiException e)

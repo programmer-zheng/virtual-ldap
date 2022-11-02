@@ -241,6 +241,9 @@ namespace DingDingSync.Application.AppService
                     t.AccountEnabled = true;
                     t.UserName = username;
                 });
+
+                var msgContent = $"已为您开通域账号，域账号的用户名为：{username}。";
+                DingdingAppService.SendTextMessage(userId, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -255,6 +258,9 @@ namespace DingDingSync.Application.AppService
             try
             {
                 UserRepository.Update(userId, t => t.VpnAccountEnabled = true);
+
+                var msgContent = $"已为您启用VPN账号，VPN的账号、密码与域账号相同。";
+                DingdingAppService.SendTextMessage(userId, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -279,6 +285,8 @@ namespace DingDingSync.Application.AppService
                 user.PasswordInited = false;
                 user.Password = defaultPassword.DesEncrypt();
                 UserRepository.Update(user);
+                var msgContent = $"您的域账号：{user.UserName}，密码已重置，默认密码为：{defaultPassword}。";
+                DingdingAppService.SendTextMessage(user.Id, msgContent);
                 return true;
             }
             catch (Exception e)
