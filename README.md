@@ -4,19 +4,6 @@
 
 <img src="screenshots/workflow.png" alt="workflow"  />
 
-## 钉钉中应用效果
-
-### 修改个人密码
-
-![](screenshots/dingding_domainaccount1.png)
-![](screenshots/dingding_domainaccount2.png)
-### 员工账号管理
-**注意：管理员仅可查看所在部门下属员工**
-![](screenshots/dingding_domainaccount3.png)
-![](screenshots/dingding_domainaccount4.png)
-
-
-
 ## 同步策略
 
 - Web服务端
@@ -40,25 +27,23 @@
 
 <img src="screenshots/dingding_event.png" alt="dingding_callback_event"  />
 
+## 钉钉权限配置
+| 分组       | 权限信息             | 接口                                                         | 权限点code                  |
+| ---------- | -------------------- | ------------------------------------------------------------ | --------------------------- |
+| 个人权限   | 个人手机号信息       | 获取用户个人信息                                             | Contact.User.mobile         |
+| 通讯录管理 | 企业员工手机号信息   | 查询用户详情                                                 | fieldMobile                 |
+| 通讯录管理 | 邮箱等个人信息       | 查询用户详情                                                 | fieldEmail                  |
+| 通讯录管理 | 通讯录部门信息读权限 | 获取部门详情<br/>获取指定用户的所有父部门列表<br />获取部门列表<br />获取指定部门的所有父部门列表<br />获取子部门ID列表<br />获取角色组列表<br />获取角色列表 | qyapi_get_department_list   |
+| 通讯录管理 | 成员信息读权限       | 获取用户高管模式设置<br/>查询用户详情<br/>获取部门用户userid列表<br/>获取管理员列表<br/>获取员工人数<br/>根据unionid查询用户<br/>获取管理员通讯录权限范围<br/> | qyapi_get_member            |
+| 通讯录管理 | 通讯录部门成员读权限 | 获取部门用户详情<br />获取部门用户基础信息<br />获取角色详情<br />获取指定角色的员工列表<br /> | qyapi_get_department_member |
+
 ## 源码运行
-
-### 应用创建
-
-<img src="screenshots/dingding_create_app.png" alt="dingding_create_app"  />
-
-### 修改配置
-
-<img src="screenshots/dingding_config1.png" alt="dingding_config1"  />
-
-<img src="screenshots/dingding_config2.png" alt="dingding_config2"  />
-<img src="screenshots/dingding_config3.png" alt="dingding_config3"  />
-
 
 ``` bash
 # 1、进入相关目录
 cd docker-compose
 
-# 2、修改configs目录下appsettings.json中钉钉相关配置（如上图）
+# 2、修改configs目录下appsettings.json中钉钉相关配置
 
 # 3、使用docker compose运行
 docker compose up -d
@@ -106,7 +91,7 @@ more /var/jenkins_home/secrets/initialAdminPassword
 
 ### Jenkins设置LDAP
 
-- Server : IP:389
+- Server : localhost:389
 - root DN : dc=example,dc=com
 - Group search base : ou=Staff, ou=Groups, o=demo
 - Manager DN : cn=jenkins, dc=example, dc=com
