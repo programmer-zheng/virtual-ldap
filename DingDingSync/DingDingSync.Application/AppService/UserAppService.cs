@@ -1,4 +1,4 @@
-﻿using Abp.Application.Services;
+using Abp.Application.Services;
 using Abp.Domain.Repositories;
 using Abp.EntityFrameworkCore.Repositories;
 using Abp.Extensions;
@@ -75,8 +75,9 @@ namespace DingDingSync.Application.AppService
         private List<long> GetDeptIds(List<long> ids, List<DepartmentEntity> depts)
         {
             var result = new List<long>();
+            var existsDepartments = depts.Where(t => ids.Contains(t.Id)).Select(t => t.Id).ToList();
+            result.AddRange(existsDepartments);
             var children = depts.Where(t => ids.Contains(t.ParentId)).Select(t => t.Id).ToList();
-            result.AddRange(ids);
             if (children.Count > 0)
             {
                 result.AddRange(GetDeptIds(children, depts));
