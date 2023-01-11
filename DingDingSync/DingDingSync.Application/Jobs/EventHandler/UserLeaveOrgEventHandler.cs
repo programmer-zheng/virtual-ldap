@@ -1,14 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
+﻿using Abp.Domain.Repositories;
 using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
-using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace DingDingSync.Application.Jobs.EventHandler
@@ -24,7 +18,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
 
         public UserLeaveOrgEventHandler(IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IIkuaiAppService iKuaiAppService)
+            IIkuaiAppService iKuaiAppService, ILogger logger) : base(logger)
         {
             _userRepository = userRepository;
             _deptUserRelaRepository = deptUserRelaRepository;
@@ -33,24 +27,31 @@ namespace DingDingSync.Application.Jobs.EventHandler
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<UserLeaveOrgEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null)
+            var eventInfo = JsonConvert.DeserializeObject<UserLeaveOrgEvent>(msg);
+            if (eventInfo != null)
             {
-                //先查询启用vpn账号的
-                var users = _userRepository.GetAll().Where(t => eventinfo.ID.Contains(t.Id) && t.VpnAccountEnabled)
-                    .Select(t => t.UserName).ToList();
-
-                //批量删除用户
-                _userRepository.Delete(t => eventinfo.ID.Contains(t.Id));
-
-                //批量删除部门关系
-                _deptUserRelaRepository.Delete(t => eventinfo.ID.Contains(t.UserId));
-
-                foreach (var username in users)
+                try
                 {
-                    //移除爱快vpn账号
-                    var ikuaiAccount = _iKuaiAppService.GetAccountIdByUsername(username);
-                    _iKuaiAppService.RemoveAccount(ikuaiAccount.id);
+                    //先查询启用vpn账号的
+                    var users = _userRepository.GetAll().Where(t => eventInfo.ID.Contains(t.Id) && t.VpnAccountEnabled)
+                        .Select(t => t.UserName).ToList();
+
+                    //批量删除用户
+                    _userRepository.Delete(t => eventInfo.ID.Contains(t.Id));
+
+                    //批量删除部门关系
+                    _deptUserRelaRepository.Delete(t => eventInfo.ID.Contains(t.UserId));
+
+                    foreach (var username in users)
+                    {
+                        //移除爱快vpn账号
+                        var ikuaiAccount = _iKuaiAppService.GetAccountIdByUsername(username);
+                        _iKuaiAppService.RemoveAccount(ikuaiAccount.id);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error("处理用户离职时发生异常", e);
                 }
             }
         }

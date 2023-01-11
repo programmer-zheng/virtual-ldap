@@ -1,16 +1,9 @@
-﻿using System;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
+﻿using Abp.Domain.Repositories;
+using Castle.Core.Logging;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -20,30 +13,36 @@ namespace DingDingSync.Application.Jobs.EventHandler
     public class OrgDeptModifyEventHandler : DingdingBaseEventHandler
     {
         private readonly IRepository<DepartmentEntity, long> _departmentRepository;
-        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IDingdingAppService _dingDingAppService;
 
         public OrgDeptModifyEventHandler(IRepository<DepartmentEntity, long> departmentRepository,
-            IDingdingAppService dingdingAppService)
+            IDingdingAppService dingDingAppService, ILogger logger) : base(logger)
         {
             _departmentRepository = departmentRepository;
-            _dingdingAppService = dingdingAppService;
+            _dingDingAppService = dingDingAppService;
         }
 
         public override void Do(string msg)
         {
-            var classname = GetType().Name;
-            var eventinfo = JsonConvert.DeserializeObject<OrgDeptModifyEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null)
+            var eventInfo = JsonConvert.DeserializeObject<OrgDeptModifyEvent>(msg);
+            if (eventInfo != null)
             {
-                foreach (var deptid in eventinfo.ID)
+                foreach (var deptId in eventInfo.ID)
                 {
-                    var dingdingDept = _dingdingAppService.GetDepartmentDetail(deptid);
-                    var dbDept = _departmentRepository.FirstOrDefault(deptid);
-                    if (dbDept != null)
+                    try
                     {
-                        dbDept.DeptName = dingdingDept.Name;
-                        dbDept.ParentId = dingdingDept.ParentId;
-                        _departmentRepository.Update(dbDept);
+                        var dingDingUser = _dingDingAppService.GetDepartmentDetail(deptId);
+                        var dbDept = _departmentRepository.FirstOrDefault(deptId);
+                        if (dbDept != null)
+                        {
+                            dbDept.DeptName = dingDingUser.Name;
+                            dbDept.ParentId = dingDingUser.ParentId;
+                            _departmentRepository.Update(dbDept);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error("修改部门信息时发生异常", e);
                     }
                 }
             }

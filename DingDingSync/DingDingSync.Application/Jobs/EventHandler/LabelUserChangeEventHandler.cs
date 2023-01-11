@@ -1,15 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
+﻿using Abp.Domain.Repositories;
 using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using JetBrains.Annotations;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace DingDingSync.Application.Jobs.EventHandler
@@ -20,31 +13,31 @@ namespace DingDingSync.Application.Jobs.EventHandler
     public class LabelUserChangeEventHandler : DingdingBaseEventHandler
     {
         private readonly IRepository<UserEntity, string> _userRepository;
-        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IDingdingAppService _dingDingAppService;
 
 
         public LabelUserChangeEventHandler(IRepository<UserEntity, string> userRepository,
-            IDingdingAppService dingdingAppService)
+            IDingdingAppService dingDingAppService, ILogger logger) : base(logger)
         {
             _userRepository = userRepository;
-            _dingdingAppService = dingdingAppService;
+            _dingDingAppService = dingDingAppService;
         }
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<LabelUserChangeEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null)
+            var eventInfo = JsonConvert.DeserializeObject<LabelUserChangeEvent>(msg);
+            if (eventInfo != null)
             {
-                foreach (var userid in eventinfo.ID)
+                foreach (var userid in eventInfo.ID)
                 {
-                    var dingdingUser = _dingdingAppService.GetUserDetail(userid);
-                    Console.WriteLine($"用户信息变更：{eventinfo.Action} ");
-                    Console.WriteLine(JsonConvert.SerializeObject(dingdingUser));
+                    var dingDingUser = _dingDingAppService.GetUserDetail(userid);
+                    Console.WriteLine($"用户信息变更：{eventInfo.Action} ");
+                    Console.WriteLine(JsonConvert.SerializeObject(dingDingUser));
 
                     var dbUser = _userRepository.FirstOrDefault(userid);
                     if (dbUser != null)
                     {
-                        dbUser.IsAdmin = IsAdmin(dingdingUser);
+                        dbUser.IsAdmin = IsAdmin(dingDingUser);
                         if (!dbUser.AccountEnabled && dbUser.IsAdmin)
                         {
                             dbUser.AccountEnabled = true;

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using Abp.Domain.Repositories;
+﻿using Abp.Domain.Repositories;
 using Abp.ObjectMapping;
+using Castle.Core.Logging;
+using DingDingSync.Application.AppService;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
-using TinyPinyin;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -28,14 +21,13 @@ namespace DingDingSync.Application.Jobs.EventHandler
         private readonly IRepository<UserEntity, string> _userRepository;
         private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
         private readonly IUserAppService _userAppService;
-        private readonly ILogger _logger;
 
         public UserAddOrgEventHandler(IDingdingAppService dingdingAppService,
             IObjectMapper objectMapper,
             IConfiguration configuration,
             IRepository<UserEntity, string> userRepository,
             IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IUserAppService userAppService, ILogger logger)
+            IUserAppService userAppService, ILogger logger) : base(logger)
         {
             _dingdingAppService = dingdingAppService;
             _objectMapper = objectMapper;
@@ -43,17 +35,16 @@ namespace DingDingSync.Application.Jobs.EventHandler
             _userRepository = userRepository;
             _deptUserRelaRepository = deptUserRelaRepository;
             _userAppService = userAppService;
-            _logger = logger;
         }
 
         public override void Do(string msg)
         {
             var defaultPassword = _configuration.GetValue<string>("DefaultPassword");
             defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
-            var eventinfo = JsonConvert.DeserializeObject<UserAddOrgEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null && eventinfo.ID.Count > 0)
+            var eventInfo = JsonConvert.DeserializeObject<UserAddOrgEvent>(msg);
+            if (eventInfo != null && eventInfo.ID.Count > 0)
             {
-                foreach (var userid in eventinfo.ID)
+                foreach (var userid in eventInfo.ID)
                 {
                     try
                     {
@@ -92,7 +83,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
                     }
                     catch (Exception e)
                     {
-                        _logger.Error("处理员工入职发生异常", e);
+                        Logger.Error("处理员工入职发生异常", e);
                     }
                 }
             }

@@ -1,15 +1,4 @@
-﻿using System;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
-using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs.EventInfo;
-using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
+﻿using Castle.Core.Logging;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -18,11 +7,13 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class UserActiveOrgEventHandler : DingdingBaseEventHandler
     {
+        public UserActiveOrgEventHandler(ILogger logger) : base(logger)
+        {
+        }
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<UserActiveOrgEvent>(msg);
-            Console.WriteLine($"用户激活：{string.Join(",", eventinfo.ID)}");
+            Logger.Info($"用户激活");
         }
     }
 }

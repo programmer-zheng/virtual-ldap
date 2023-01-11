@@ -1,16 +1,8 @@
-﻿using System;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
-using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
+﻿using Abp.Domain.Repositories;
+using Castle.Core.Logging;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -21,17 +13,17 @@ namespace DingDingSync.Application.Jobs.EventHandler
     {
         private readonly IRepository<UserEntity, string> _userRepository;
 
-        public OrgAdminAddEventHandler(IRepository<UserEntity, string> userRepository)
+        public OrgAdminAddEventHandler(IRepository<UserEntity, string> userRepository, ILogger logger) : base(logger)
         {
             _userRepository = userRepository;
         }
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<OrgAdminAddEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null)
+            var eventInfo = JsonConvert.DeserializeObject<OrgAdminAddEvent>(msg);
+            if (eventInfo != null)
             {
-                foreach (var userid in eventinfo.ID)
+                foreach (var userid in eventInfo.ID)
                 {
                     var dbUser = _userRepository.FirstOrDefault(userid);
                     if (dbUser != null)

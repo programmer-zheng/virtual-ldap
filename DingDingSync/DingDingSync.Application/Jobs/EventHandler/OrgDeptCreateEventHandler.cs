@@ -1,16 +1,10 @@
-﻿using System;
-using Abp.Domain.Repositories;
+﻿using Abp.Domain.Repositories;
 using Abp.ObjectMapping;
+using Castle.Core.Logging;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -25,7 +19,7 @@ namespace DingDingSync.Application.Jobs.EventHandler
 
         public OrgDeptCreateEventHandler(IDingdingAppService dingdingAppService,
             IObjectMapper objectMapper,
-            IRepository<DepartmentEntity, long> departmentRepository)
+            IRepository<DepartmentEntity, long> departmentRepository, ILogger logger) : base(logger)
         {
             _dingdingAppService = dingdingAppService;
             _objectMapper = objectMapper;
@@ -34,17 +28,23 @@ namespace DingDingSync.Application.Jobs.EventHandler
 
         public override void Do(string msg)
         {
-            var classname = GetType().Name;
-            var eventinfo = JsonConvert.DeserializeObject<OrgDeptCreateEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null && eventinfo.ID.Count > 0)
+            var eventInfo = JsonConvert.DeserializeObject<OrgDeptCreateEvent>(msg);
+            if (eventInfo != null && eventInfo.ID.Count > 0)
             {
-                foreach (var deptid in eventinfo.ID)
+                foreach (var deptId in eventInfo.ID)
                 {
-                    var dept = _dingdingAppService.GetDepartmentDetail(deptid);
+                    try
+                    {
+                        var dept = _dingdingAppService.GetDepartmentDetail(deptId);
 
-                    var deptEntity = _objectMapper.Map<DepartmentEntity>(dept);
+                        var deptEntity = _objectMapper.Map<DepartmentEntity>(dept);
 
-                    _departmentRepository.Insert(deptEntity);
+                        _departmentRepository.Insert(deptEntity);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error("新增部门时发生异常", e);
+                    }
                 }
             }
         }

@@ -1,17 +1,9 @@
-﻿using System;
-using System.Linq;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
+﻿using Abp.Domain.Repositories;
+using Castle.Core.Logging;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -20,34 +12,41 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class OrgAdminRemoveEventHandler : DingdingBaseEventHandler
     {
-        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IDingdingAppService _dingDingAppService;
         private readonly IRepository<UserEntity, string> _userRepository;
 
-        public OrgAdminRemoveEventHandler(IDingdingAppService dingdingAppService,
-            IRepository<UserEntity, string> userRepository)
+        public OrgAdminRemoveEventHandler(IDingdingAppService dingDingAppService,
+            IRepository<UserEntity, string> userRepository, ILogger logger) : base(logger)
         {
-            _dingdingAppService = dingdingAppService;
+            _dingDingAppService = dingDingAppService;
             _userRepository = userRepository;
         }
 
         public override void Do(string msg)
         {
-            var eventinfo = JsonConvert.DeserializeObject<OrgAdminRemoveEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null)
+            var eventInfo = JsonConvert.DeserializeObject<OrgAdminRemoveEvent>(msg);
+            if (eventInfo != null)
             {
-                foreach (var userid in eventinfo.ID)
+                foreach (var userid in eventInfo.ID)
                 {
-                    var dingdingUser = _dingdingAppService.GetUserDetail(userid);
-
-                    //被取消设置为管理员，如果是部门领导，仍是管理员身份，可查询下属人员
-                    var isadmin = (dingdingUser.LeaderInDept != null &&
-                                   dingdingUser.LeaderInDept.Count(t => t.Leader) > 0);
-
-                    var dbUser = _userRepository.FirstOrDefault(userid);
-                    if (dbUser != null)
+                    try
                     {
-                        dbUser.IsAdmin = isadmin;
-                        _userRepository.Update(dbUser);
+                        var dingDingUser = _dingDingAppService.GetUserDetail(userid);
+
+                        //被取消设置为管理员，如果是部门领导，仍是管理员身份，可查询下属人员
+                        var isAdmin = (dingDingUser.LeaderInDept != null &&
+                                       dingDingUser.LeaderInDept.Count(t => t.Leader) > 0);
+
+                        var dbUser = _userRepository.FirstOrDefault(userid);
+                        if (dbUser != null)
+                        {
+                            dbUser.IsAdmin = isAdmin;
+                            _userRepository.Update(dbUser);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error("取消设置用户管理员时发生异常", e);
                     }
                 }
             }

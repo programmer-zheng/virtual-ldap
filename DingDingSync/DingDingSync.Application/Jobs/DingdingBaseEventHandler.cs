@@ -17,6 +17,13 @@ namespace DingDingSync.Application.Jobs
 {
     public abstract class DingdingBaseEventHandler
     {
+        protected readonly ILogger Logger;
+
+        public DingdingBaseEventHandler(ILogger logger)
+        {
+            Logger = logger;
+        }
+
         public abstract void Do(string msg);
 
         /// <summary>

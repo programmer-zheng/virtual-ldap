@@ -1,16 +1,8 @@
-﻿using System;
-using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
-using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
+﻿using Abp.Domain.Repositories;
+using Castle.Core.Logging;
 using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs.EventHandler
 {
@@ -19,22 +11,31 @@ namespace DingDingSync.Application.Jobs.EventHandler
     /// </summary>
     public class OrgDeptRemoveEventHandler : DingdingBaseEventHandler
     {
-
         private readonly IRepository<DepartmentEntity, long> _departmentRepository;
+        private readonly IRepository<UserDepartmentsRelationEntity, string> _userDepartmentRelationRepository;
 
-        public OrgDeptRemoveEventHandler(IRepository<DepartmentEntity, long> departmentRepository)
+        public OrgDeptRemoveEventHandler(IRepository<DepartmentEntity, long> departmentRepository, ILogger logger,
+            IRepository<UserDepartmentsRelationEntity, string> userDepartmentRelationRepository) : base(logger)
         {
             _departmentRepository = departmentRepository;
+            _userDepartmentRelationRepository = userDepartmentRelationRepository;
         }
 
         public override void Do(string msg)
         {
-            var classname = GetType().Name;
-            var eventinfo = JsonConvert.DeserializeObject<OrgDeptRemoveEvent>(msg);
-            if (eventinfo != null && eventinfo.ID != null && eventinfo.ID.Count > 0)
+            var eventInfo = JsonConvert.DeserializeObject<OrgDeptRemoveEvent>(msg);
+            if (eventInfo != null && eventInfo.ID.Count > 0)
             {
-                //部门删除时，钉钉会提醒删除部门下的人员，有人员时无法删除部门，这里只需要删除部门表的数据
-                _departmentRepository.Delete(t => eventinfo.ID.Contains(t.Id));
+                try
+                {
+                    //部门删除时，钉钉会提醒删除部门下的人员，有人员时无法删除部门，这里只需要删除部门表的数据及部门人员关系表数据
+                    _departmentRepository.Delete(t => eventInfo.ID.Contains(t.Id));
+                    _userDepartmentRelationRepository.Delete(t => eventInfo.ID.Contains(t.DeptId));
+                }
+                catch (Exception e)
+                {
+                    Logger.Error("删除部门时发生异常", e);
+                }
             }
         }
     }
