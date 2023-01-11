@@ -42,6 +42,7 @@ namespace DingDingSync.Application
             CreateMap<OapiV2UserGetResponse.UserGetResponseDomain, UserEntity>()
                 .ForMember(t => t.HiredDate, opt => opt.MapFrom(d => d.HiredDate))
                 .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Userid))
+                .ForMember(t => t.Tel, opt => opt.MapFrom(d => d.Telephone))
                 .ForMember(t => t.Position, opt => opt.MapFrom(d => d.Title))
                 ;
         }
