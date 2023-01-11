@@ -1,23 +1,13 @@
-﻿using Abp.Extensions;
+﻿using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using Abp.Runtime.Caching;
 using Abp.UI;
+using Castle.Core.Logging;
 using DingDingSync.Application.IKuai.Dtos;
-using DingTalk.Api;
-using DingTalk.Api.Request;
-using DingTalk.Api.Response;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using Castle.Core.Logging;
-using Tea;
 
 namespace DingDingSync.Application.IKuai
 {

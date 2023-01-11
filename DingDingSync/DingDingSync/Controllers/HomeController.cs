@@ -1,7 +1,9 @@
-﻿using Abp.AspNetCore.Mvc.Controllers;
-using Abp.Extensions;
-using Abp.Runtime.Validation;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Abp.AspNetCore.Mvc.Controllers;
 using Abp.UI;
+using Castle.Core.Logging;
 using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
@@ -9,13 +11,9 @@ using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.IKuai.Dtos;
 using DingDingSync.Web.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
 
 namespace DingDingSync.Web.Controllers
 {
@@ -80,7 +78,7 @@ namespace DingDingSync.Web.Controllers
                 }
 
                 Response.Cookies.Append($"{_dingDingConfigOptions.CorpId}_UserId", dingdingUser.Userid,
-                    new Microsoft.AspNetCore.Http.CookieOptions
+                    new CookieOptions
                         {HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7)});
             }
 

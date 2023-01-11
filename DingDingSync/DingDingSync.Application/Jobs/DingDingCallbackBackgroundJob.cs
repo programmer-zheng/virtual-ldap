@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Abp.BackgroundJobs;
+﻿using Abp.BackgroundJobs;
 using Abp.Dependency;
-using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
-using Abp.ObjectMapping;
 using Castle.Core.Logging;
-using DingDingSync.Application.AppService;
-using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Core.Entities;
-using Microsoft.Extensions.Configuration;
-
 
 namespace DingDingSync.Application.Jobs
 {

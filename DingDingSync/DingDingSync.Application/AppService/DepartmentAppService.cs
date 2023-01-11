@@ -2,9 +2,6 @@
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DingDingSync.Application.AppService
 {

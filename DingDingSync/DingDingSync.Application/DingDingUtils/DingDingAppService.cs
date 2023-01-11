@@ -1,13 +1,14 @@
 ﻿using Abp.Runtime.Caching;
 using Abp.UI;
+using AlibabaCloud.OpenApiClient.Models;
+using AlibabaCloud.SDK.Dingtalkoauth2_1_0;
+using AlibabaCloud.SDK.Dingtalkoauth2_1_0.Models;
+using AlibabaCloud.TeaUtil;
+using Castle.Core.Logging;
 using DingTalk.Api;
 using DingTalk.Api.Request;
 using DingTalk.Api.Response;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Castle.Core.Logging;
 using Tea;
 
 namespace DingDingSync.Application.DingDingUtils
@@ -27,12 +28,12 @@ namespace DingDingSync.Application.DingDingUtils
         }
 
 
-        public AlibabaCloud.SDK.Dingtalkoauth2_1_0.Client CreateClient()
+        public Client CreateClient()
         {
-            AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config();
+            Config config = new Config();
             config.Protocol = "https";
             config.RegionId = "central";
-            return new AlibabaCloud.SDK.Dingtalkoauth2_1_0.Client(config);
+            return new Client(config);
         }
 
         public string GetAccessToken()
@@ -40,9 +41,9 @@ namespace DingDingSync.Application.DingDingUtils
             var cache = CacheManager.GetCache("DingDing").AsTyped<string, string>();
             var result = cache.Get("AccessToken", () =>
             {
-                AlibabaCloud.SDK.Dingtalkoauth2_1_0.Client client = CreateClient();
-                AlibabaCloud.SDK.Dingtalkoauth2_1_0.Models.GetAccessTokenRequest getAccessTokenRequest =
-                    new AlibabaCloud.SDK.Dingtalkoauth2_1_0.Models.GetAccessTokenRequest
+                Client client = CreateClient();
+                GetAccessTokenRequest getAccessTokenRequest =
+                    new GetAccessTokenRequest
                     {
                         AppKey = _dingDingConfigOptions.AppKey,
                         AppSecret = _dingDingConfigOptions.AppSecret,
@@ -54,7 +55,7 @@ namespace DingDingSync.Application.DingDingUtils
                 }
                 catch (TeaException err)
                 {
-                    if (!AlibabaCloud.TeaUtil.Common.Empty(err.Code) && !AlibabaCloud.TeaUtil.Common.Empty(err.Message))
+                    if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
                     {
                         // err 中含有 code 和 message 属性，可帮助开发定位问题
                     }
@@ -65,7 +66,7 @@ namespace DingDingSync.Application.DingDingUtils
                     {
                         {"message", _err.Message}
                     });
-                    if (!AlibabaCloud.TeaUtil.Common.Empty(err.Code) && !AlibabaCloud.TeaUtil.Common.Empty(err.Message))
+                    if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
                     {
                         // err 中含有 code 和 message 属性，可帮助开发定位问题
                     }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DingDingSync.Application.AppService.Dtos
+﻿namespace DingDingSync.Application.AppService.Dtos
 {
     public class ManageDto
     {

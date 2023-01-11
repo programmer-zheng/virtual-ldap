@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DingDingSync.Application.Jobs
+﻿namespace DingDingSync.Application.Jobs
 {
     public class DingDingCallbackBackgroundJobArgs
     {

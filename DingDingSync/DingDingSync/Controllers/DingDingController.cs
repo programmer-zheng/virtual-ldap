@@ -1,15 +1,14 @@
-﻿using Abp.AspNetCore.Mvc.Controllers;
+﻿using System;
+using System.Threading.Tasks;
+using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
+using Castle.Core.Logging;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.Jobs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Castle.Core.Logging;
 
 namespace DingDingSync.Web.Controllers
 {

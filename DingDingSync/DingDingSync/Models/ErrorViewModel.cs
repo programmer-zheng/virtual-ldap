@@ -1,5 +1,3 @@
-using System;
-
 namespace DingDingSync.Web.Models
 {
     public class ErrorViewModel

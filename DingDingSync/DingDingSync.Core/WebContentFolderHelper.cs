@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DingDingSync.Core
+﻿namespace DingDingSync.Core
 {
     /// <summary>
     /// This class is used to find root path of the web project in;

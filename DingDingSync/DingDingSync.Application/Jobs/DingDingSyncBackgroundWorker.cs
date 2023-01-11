@@ -2,9 +2,8 @@
 using Abp.Domain.Uow;
 using Abp.Threading.BackgroundWorkers;
 using Abp.Threading.Timers;
-using DingDingSync.Application.AppService;
-using System;
 using Castle.Core.Logging;
+using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs
 {

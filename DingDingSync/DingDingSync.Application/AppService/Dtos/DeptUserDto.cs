@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Abp.Extensions;
+﻿using Abp.Extensions;
 
 namespace DingDingSync.Application.AppService.Dtos
 {
     public class DeptUserDto
     {
-
         public string Userid { get; set; }
 
         public string Name { get; set; }
@@ -21,7 +18,6 @@ namespace DingDingSync.Application.AppService.Dtos
             {
                 try
                 {
-
                     if (!string.IsNullOrWhiteSpace(_password))
                     {
                         return _password.DesDecrypt().ToMd5();
@@ -29,8 +25,8 @@ namespace DingDingSync.Application.AppService.Dtos
                 }
                 catch (Exception)
                 {
-
                 }
+
                 return string.Empty;
             }
             set { _password = value; }
@@ -44,10 +40,7 @@ namespace DingDingSync.Application.AppService.Dtos
 
         public string HireDateStr
         {
-            get
-            {
-                return HiredDate.HasValue ? HiredDate.Value.ToString("yyyy-MM-dd") : "-";
-            }
+            get { return HiredDate.HasValue ? HiredDate.Value.ToString("yyyy-MM-dd") : "-"; }
         }
 
         public string UnionId { get; set; }
@@ -66,5 +59,4 @@ namespace DingDingSync.Application.AppService.Dtos
         public bool AccountEnabled { get; internal set; }
         public bool VpnAccountEnabled { get; internal set; }
     }
-
 }

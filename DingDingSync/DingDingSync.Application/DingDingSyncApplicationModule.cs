@@ -2,7 +2,6 @@
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Threading.BackgroundWorkers;
-using AutoMapper;
 using DingDingSync.Application.Jobs;
 using DingDingSync.Core;
 

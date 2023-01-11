@@ -1,18 +1,18 @@
+using System;
 using Abp.AspNetCore;
+using Abp.Castle.Logging.Log4Net;
 using Abp.EntityFrameworkCore;
+using Castle.Facilities.Logging;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
+using DingDingSync.Application.Jobs;
+using DingDingSync.Application.Jobs.EventHandler;
 using DingDingSync.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using Abp.Castle.Logging.Log4Net;
-using Castle.Facilities.Logging;
-using DingDingSync.Application.Jobs;
-using DingDingSync.Application.Jobs.EventHandler;
 
 namespace DingDingSync.Web.Startup
 {

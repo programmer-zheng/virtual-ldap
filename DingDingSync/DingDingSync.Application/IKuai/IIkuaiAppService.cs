@@ -1,7 +1,5 @@
 ﻿using Abp.Application.Services;
 using DingDingSync.Application.IKuai.Dtos;
-using DingTalk.Api.Response;
-using System.Collections.Generic;
 
 namespace DingDingSync.Application.IKuai
 {
