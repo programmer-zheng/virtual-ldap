@@ -38,24 +38,12 @@ namespace DingDingSync.Application.Jobs.EventHandler
                     try
                     {
                         var dingDingUser = _dingdingAppService.GetUserDetail(userid);
-                        //将钉钉返回的映射到数据实体
-                        var userEntity = _objectMapper.Map<UserEntity>(dingDingUser);
 
                         var dbUserEntity = _userRepository.FirstOrDefault(t => t.Id == userid);
                         if (dbUserEntity != null)
                         {
-                            dbUserEntity.UnionId = userEntity.UnionId;
-                            dbUserEntity.Name = userEntity.Name;
-                            dbUserEntity.JobNumber = userEntity.JobNumber;
-                            dbUserEntity.HiredDate = userEntity.HiredDate;
-                            dbUserEntity.Tel = userEntity.Tel;
-                            dbUserEntity.Mobile = userEntity.Mobile;
-                            dbUserEntity.WorkPlace = userEntity.WorkPlace;
-                            dbUserEntity.Email = userEntity.Email;
-                            dbUserEntity.Active = userEntity.Active;
+                            _objectMapper.Map(dingDingUser, dbUserEntity);
                             dbUserEntity.IsAdmin = IsAdmin(dingDingUser);
-                            dbUserEntity.Avatar = userEntity.Avatar;
-                            dbUserEntity.Position = userEntity.Position;
 
                             if (!dbUserEntity.AccountEnabled && dbUserEntity.IsAdmin)
                             {
