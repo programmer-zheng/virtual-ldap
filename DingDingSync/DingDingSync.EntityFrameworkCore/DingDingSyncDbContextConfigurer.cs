@@ -6,7 +6,7 @@ namespace DingDingSync.EntityFrameworkCore
     {
         public static void Configure(DbContextOptionsBuilder<DingDingSyncDbContext> builder, string connectionString)
         {
-            builder.UseMySql(connectionString, new MySqlServerVersion(new Version(5, 7)));
+            builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     }
 }
