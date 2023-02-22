@@ -1,6 +1,6 @@
 module.exports = {
   ldap: {
-    // every one minute request server api to refresh departments and users
+    // 每分钟请求一次后端接口，以刷新部门及人员信息，可修改cron表达式改为需要的时间
     cronTime: '*/1 * * * *',
     // LDAP serve port, it is a insecure port, please connect with ldap://
     listenPort: 389,
@@ -9,7 +9,7 @@ module.exports = {
     // Users base DN will be ou=People,o=Example,dc=example,dc=com
     rootDN: 'dc=example,dc=com',
     organization: 'Example',
-    // Admins who can search or modify directory
+    // 管理员，用于连接ldap服务
     admins: [
       {
         // Bind DN will be cn=keycloak,dc=example,dc=com
@@ -24,7 +24,7 @@ module.exports = {
       },
     ]
   },
-  // Provider for providen account service
+  // 请修改以下后端地址
   provider: {
     serverHost: 'http://www.ldap.com:7103',
     LdapRequestToken: 'FV*X@2rl&y@k2BQ7',
