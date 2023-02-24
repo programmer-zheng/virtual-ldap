@@ -1,5 +1,25 @@
 # 基于钉钉通讯录搭建LDAP服务
 
+## 运行环境
+
+- 后端 `ASP.NET Core 6 `
+- 前端 `npm 18.12.1`
+
+## 项目结构
+
+```bash
+|-- DingDingSync				后端程序
+|-- docker-compose				docker-compose方式运行依赖项
+    |-- configs 				配置文件目录
+    |   |-- appsettings.json	后端程序配置文件
+    |   |-- config.js			LDAP服务配置文件
+    |-- scripts					MySQL脚本文件，用于初始化数据库表结构
+    |-- docker-compose.yaml		docker-compose启动脚本
+|-- ldap-server					LDAP服务程序
+|-- screenshots					存放markdown引用图片
+|-- .gitignore
+```
+
 ## 流程
 
 <img src="screenshots/workflow.png" alt="workflow"  />
@@ -23,11 +43,22 @@
   - 若服务端无法正常访问，则使用最近一次同步数据
   - 默认只同步开通账号的人员，开通后，若需要在各平台正常使用，需要在钉钉自建H5应用中修改初始密码
 
-## 钉钉回调事件配置
+## 钉钉配置
+
+### 开发管理配置
+
+<img src="screenshots/dingding_develop_config.png" alt="dingding_callback_event"  />
+
+
+
+### 回调事件配置
 
 <img src="screenshots/dingding_event.png" alt="dingding_callback_event"  />
 
-## 钉钉权限配置
+
+
+### 权限配置
+
 | 分组       | 权限信息             | 接口                                                         | 权限点code                  |
 | ---------- | -------------------- | ------------------------------------------------------------ | --------------------------- |
 | 个人权限   | 个人手机号信息       | 获取用户个人信息                                             | Contact.User.mobile         |
@@ -36,6 +67,8 @@
 | 通讯录管理 | 通讯录部门信息读权限 | 获取部门详情<br/>获取指定用户的所有父部门列表<br />获取部门列表<br />获取指定部门的所有父部门列表<br />获取子部门ID列表<br />获取角色组列表<br />获取角色列表 | qyapi_get_department_list   |
 | 通讯录管理 | 成员信息读权限       | 获取用户高管模式设置<br/>查询用户详情<br/>获取部门用户userid列表<br/>获取管理员列表<br/>获取员工人数<br/>根据unionid查询用户<br/>获取管理员通讯录权限范围<br/> | qyapi_get_member            |
 | 通讯录管理 | 通讯录部门成员读权限 | 获取部门用户详情<br />获取部门用户基础信息<br />获取角色详情<br />获取指定角色的员工列表<br /> | qyapi_get_department_member |
+
+
 
 ## 源码运行
 
