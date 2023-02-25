@@ -53,6 +53,12 @@
 
 ### 回调事件配置
 
+#### 订阅管理配置
+
+<img src="screenshots/dingding_event_config.png" alt="dingding_callback_event"  />
+
+#### 事件订阅配置
+
 <img src="screenshots/dingding_event.png" alt="dingding_callback_event"  />
 
 
@@ -94,7 +100,6 @@ docker run -itd  --name jenkins --privileged --restart always --privileged=true 
 -e TZ=Asia/Shanghai \
 -e JENKINS_UC_DOWNLOAD=https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json \
 -p 9999:8080 -p 50000:50000 \
--v /d/ldap-docker-config/jenkins:/var/jenkins_home \
 jenkins/jenkins:lts-jdk11
 
 ```
@@ -124,7 +129,7 @@ more /var/jenkins_home/secrets/initialAdminPassword
 
 ### Jenkins设置LDAP
 
-- Server : localhost:389
+- Server : ldap://localhost:389
 - root DN : dc=example,dc=com
 - Group search base : ou=Staff, ou=Groups, o=demo
 - Manager DN : cn=jenkins, dc=example, dc=com
@@ -132,6 +137,14 @@ more /var/jenkins_home/secrets/initialAdminPassword
 - Email Address LDAP attribute : uid
 
 <img src="screenshots/jenkins-ldap-settings.png" alt="ldap browse"   />
+
+## 问题
+
+#### 配置完成，域账号无法登录
+
+1、若账号所属用户在钉钉组织架构中是部门管理人员，或钉钉平台的管理员/子管理员，则默认账号为启用状态，否则为禁用状态，检查数据库中`users`表的`AccountEnable`字段是否为 `1(true)`
+
+2、管理人员账号虽然默认启用了，但因初始密码为`123456`，为不安全密码，默认密码为未初始化状态，需要修改密码，在钉钉的应用中找到相关应用，修改密码即可，也可以将数据库中`users`表的`PasswordInited`字段修改为`1(true)`，则可以正常登录
 
 ## 参考
 
