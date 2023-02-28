@@ -4,7 +4,7 @@ services:
     container_name: ldap_backend
     restart: always
     build:
-      context: ../DingdingSync
+      context: ../DingDingSync
       dockerfile: Dockerfile
     ports:
       - 80:80
