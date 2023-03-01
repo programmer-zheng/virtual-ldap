@@ -150,3 +150,7 @@ more /var/jenkins_home/secrets/initialAdminPassword
 
 ldap-server源码参考 [xiaoquqi](https://github.com/xiaoquqi)/**[virtual-ldap](https://github.com/xiaoquqi/virtual-ldap)**
 
+## Thanks
+
+[![Rider](screenshots/Rider_icon.svg)](https://www.jetbrains.com/?from=virtual-ldap)
+
