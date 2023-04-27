@@ -5,12 +5,9 @@ using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
 using Abp.UI;
 using Castle.Core.Logging;
-using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.IKuai.Dtos;
 using DingDingSync.Application.Jobs;
 using DingDingSync.Web.Models;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +25,6 @@ namespace DingDingSync.Web.Controllers
 
         public IUserAppService _userAppService { get; set; }
 
-        
         public IBackgroundJobManager BackgroundJobManager { get; set; }
 
         private readonly DingDingConfigOptions _dingDingConfigOptions;
@@ -82,7 +78,7 @@ namespace DingDingSync.Web.Controllers
 
                 Response.Cookies.Append($"{_dingDingConfigOptions.CorpId}_UserId", dingdingUser.Userid,
                     new CookieOptions
-                        {HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7)});
+                        { HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7) });
             }
 
             //todo 从cookie中获取userid，若userid获取不到，跳转至授权页面，获取授权码，根据授权码获取用户id，再跳转回来
@@ -118,7 +114,7 @@ namespace DingDingSync.Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         [Route("/EnableAccount")]
@@ -127,11 +123,11 @@ namespace DingDingSync.Web.Controllers
             var userinfo = await _userAppService.GetByIdAsync(userid);
             if (userinfo != null && userinfo.AccountEnabled)
             {
-                return Json(new {success = false, Msg = $"{userinfo.Name} 账号已启用，无须重复操作！"});
+                return Json(new { success = false, Msg = $"{userinfo.Name} 账号已启用，无须重复操作！" });
             }
 
             var result = await _userAppService.EnableAccount(userid, username);
-            return Json(new {success = result, Msg = result ? "启用账号成功！" : "启用账号失败！"});
+            return Json(new { success = result, Msg = result ? "启用账号成功！" : "启用账号失败！" });
         }
 
 
@@ -149,6 +145,11 @@ namespace DingDingSync.Web.Controllers
                         throw new UserFriendlyException($"启用VPN账号失败，请先为 {userinfo.Name} 开通域账号！");
                     }
 
+                    if (!userinfo.PasswordInited)
+                    {
+                        throw new UserFriendlyException($"{userinfo.Name} 还未修改初始密码，无法启用VPN账号，请先修改默认密码！");
+                    }
+
                     if (userinfo.VpnAccountEnabled)
                     {
                         throw new UserFriendlyException($"{userinfo.Name} 的VPN账号已启用，无须重复操作；若无法使用VPN账号，请联系管理员！");
@@ -164,10 +165,10 @@ namespace DingDingSync.Web.Controllers
             catch (Exception e)
             {
                 _logger.Error($"启用VPN账号{userid}失败，发生异常", e);
-                return Json(new {success = false, Msg = e.Message});
+                return Json(new { success = false, Msg = e.Message });
             }
 
-            return Json(new {success = result, Msg = result ? "启用VPN账号成功" : "启用VPN账号失败"});
+            return Json(new { success = result, Msg = result ? "启用VPN账号成功" : "启用VPN账号失败" });
         }
 
         //管理员为员工重置密码
@@ -177,7 +178,7 @@ namespace DingDingSync.Web.Controllers
             var userinfo = await _userAppService.GetByIdAsync(userid);
             if (userinfo == null)
             {
-                return Json(new {success = false, Msg = "重置密码失败，不存在该员工！"});
+                return Json(new { success = false, Msg = "重置密码失败，不存在该员工！" });
             }
 
             var result = await _userAppService.ResetAccountPassword(userid);
@@ -186,7 +187,7 @@ namespace DingDingSync.Web.Controllers
                 await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
             }
 
-            return Json(new {success = result, Msg = result ? $"为 {userinfo.Name} 重置密码成功！" : "重置密码失败！"});
+            return Json(new { success = result, Msg = result ? $"为 {userinfo.Name} 重置密码成功！" : "重置密码失败！" });
         }
     }
 }
