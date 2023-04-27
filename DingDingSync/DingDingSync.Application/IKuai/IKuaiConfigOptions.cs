@@ -3,6 +3,11 @@
     public class IKuaiConfigOptions
     {
         public const string IKuai = "Ikuai";
+        
+        /// <summary>
+        /// 是否启用爱快VPN功能
+        /// </summary>
+        public bool IsEnabled { get; set; }
 
         /// <summary>
         /// OpenId
@@ -20,6 +25,9 @@
         public string Open_Rsa_Pubkey { get; set; }
 
 
-        public string BasePath { get; set; }
+        /// <summary>
+        /// 爱快开放平台基础路径
+        /// </summary>
+        public string BasePath { get; set; } = "https://open.ikuai8.com/api/v3";
     }
 }
