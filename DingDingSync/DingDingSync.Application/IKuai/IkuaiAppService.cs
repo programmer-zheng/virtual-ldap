@@ -260,7 +260,7 @@ namespace DingDingSync.Application.IKuai
             var result = JsonConvert.DeserializeObject<IKuaiApiResponseList<AccountDto>>(response);
             if (result != null && result.Data != null && result.Data.Count > 0)
             {
-                return result.Data.FirstOrDefault();
+                return result.Data.First();
             }
 
             return null;

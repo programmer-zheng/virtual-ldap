@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Abp.AspNetCore.Mvc.Controllers;
+using Abp.BackgroundJobs;
 using Abp.UI;
 using Castle.Core.Logging;
 using DingDingSync.Application;
@@ -10,6 +11,7 @@ using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.IKuai.Dtos;
+using DingDingSync.Application.Jobs;
 using DingDingSync.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +28,8 @@ namespace DingDingSync.Web.Controllers
 
         public IUserAppService _userAppService { get; set; }
 
-        public IIkuaiAppService _ikuaiAppService { get; set; }
+        
+        public IBackgroundJobManager BackgroundJobManager { get; set; }
 
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 
@@ -154,21 +157,9 @@ namespace DingDingSync.Web.Controllers
                     result = await _userAppService.EnableVpnAccount(userid);
                     if (result)
                     {
-                        //先去爱快路由器中操作，若操作失败，则不会更新数据库中字段
-                        var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
-                        if (ikuaiAccount == null)
-                        {
-                            var pwd = userinfo.Password.DesDecrypt();
-                            _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
-                                pwd, userinfo.Name));
-                        }
+                        await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
                     }
                 }
-            }
-            catch (IKuaiException e)
-            {
-                _logger.Error($"启用VPN账号{userid}时，调用爱快接口发生异常", e);
-                return Json(new {success = false, Msg = e.Message});
             }
             catch (Exception e)
             {
@@ -192,11 +183,7 @@ namespace DingDingSync.Web.Controllers
             var result = await _userAppService.ResetAccountPassword(userid);
             if (result && userinfo.VpnAccountEnabled)
             {
-                var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
-                if (ikuaiAccount != null)
-                {
-                    _ikuaiAppService.RemoveAccount(ikuaiAccount.id);
-                }
+                await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
             }
 
             return Json(new {success = result, Msg = result ? $"为 {userinfo.Name} 重置密码成功！" : "重置密码失败！"});

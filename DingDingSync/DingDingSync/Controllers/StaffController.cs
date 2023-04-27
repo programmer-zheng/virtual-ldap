@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.AspNetCore.Mvc.Controllers;
+using Abp.BackgroundJobs;
 using Abp.Extensions;
 using Abp.Runtime.Validation;
 using Abp.UI;
@@ -10,8 +11,7 @@ using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Application.DingDingUtils;
-using DingDingSync.Application.IKuai;
-using DingDingSync.Application.IKuai.Dtos;
+using DingDingSync.Application.Jobs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -25,7 +25,8 @@ public class StaffController : AbpController
 
     public IUserAppService _userAppService { get; set; }
 
-    public IIkuaiAppService _ikuaiAppService { get; set; }
+
+    public IBackgroundJobManager BackgroundJobManager { get; set; }
 
     private readonly DingDingConfigOptions _dingDingConfigOptions;
 
@@ -57,6 +58,12 @@ public class StaffController : AbpController
                     throw new ArgumentException("密码修改失败，新密码不能与旧密码一致!");
                 }
 
+                string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
+                if (userid != input.UserId)
+                {
+                    throw new UserFriendlyException("不能对他人账号进行忘记密码操作！");
+                }
+
                 var userinfo = await _userAppService.GetByIdAsync(input.UserId);
                 if (userinfo == null)
                 {
@@ -71,38 +78,19 @@ public class StaffController : AbpController
                 var flag = await _userAppService.ResetPassword(input);
                 if (flag && userinfo.VpnAccountEnabled)
                 {
-                    //若密码修改成功且启用vpn账号，vpn账号的密码同步修改
-                    var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
-                    if (ikuaiAccount == null)
-                    {
-                        //若账号为首次开通后修改初始密码，则新建vpn账号
-                        _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
-                            input.NewPassword, userinfo.Name));
-                    }
-                    else
-                    {
-                        if (ikuaiAccount.share <= 1)
-                        {
-                            ikuaiAccount.share = 2;
-                        }
-
-                        //反之直接修改密码，并启用
-                        ikuaiAccount.enabled = "yes";
-                        ikuaiAccount.passwd = input.NewPassword;
-                        _ikuaiAppService.UpdateAccount(ikuaiAccount);
-                    }
+                    await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(input.UserId);
                 }
 
-                return Json(new {Success = flag, Msg = $"密码修改{(flag ? "成功" : "失败")}！"});
+                return Json(new { Success = flag, Msg = $"密码修改{(flag ? "成功" : "失败")}！" });
             }
             catch (Exception e)
             {
-                return Json(new {Success = false, Msg = e.Message});
+                return Json(new { Success = false, Msg = e.Message });
             }
         }
 
         var errorReason = ModelState.Values.SelectMany(t => t.Errors).Select(t => t.ErrorMessage).FirstOrDefault();
-        return Json(new {Success = false, Msg = $"密码修改失败,{errorReason}"});
+        return Json(new { Success = false, Msg = $"密码修改失败,{errorReason}" });
     }
 
     [Route("/ForgotPassword")]
@@ -111,7 +99,7 @@ public class StaffController : AbpController
     {
         string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
 
-        return View(new ForgotPasswordViewModel() {UserId = userid});
+        return View(new ForgotPasswordViewModel() { UserId = userid });
     }
 
     [Route("/ForgotPassword")]
@@ -121,7 +109,7 @@ public class StaffController : AbpController
         if (!ModelState.IsValid)
         {
             var errorReason = ModelState.Values.SelectMany(t => t.Errors).Select(t => t.ErrorMessage).FirstOrDefault();
-            return Json(new {Success = false, Msg = $"密码修改失败,{errorReason}"});
+            return Json(new { Success = false, Msg = $"密码修改失败,{errorReason}" });
         }
 
         string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
@@ -141,33 +129,14 @@ public class StaffController : AbpController
             var flag = await _userAppService.ForgotPassword(model);
             if (flag && userinfo.VpnAccountEnabled)
             {
-                //若密码修改成功且启用vpn账号，vpn账号的密码同步修改
-                var ikuaiAccount = _ikuaiAppService.GetAccountIdByUsername(userinfo.UserName);
-                if (ikuaiAccount == null)
-                {
-                    //若账号为首次开通后修改初始密码，则新建vpn账号
-                    _ikuaiAppService.CreateAccount(new AccountCommon(userinfo.UserName,
-                        model.NewPassword, userinfo.Name));
-                }
-                else
-                {
-                    if (ikuaiAccount.share <= 1)
-                    {
-                        ikuaiAccount.share = 2;
-                    }
-
-                    //反之直接修改密码，并启用
-                    ikuaiAccount.enabled = "yes";
-                    ikuaiAccount.passwd = model.NewPassword;
-                    _ikuaiAppService.UpdateAccount(ikuaiAccount);
-                }
+                await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(model.UserId);
             }
 
-            return Json(new {Success = flag, Msg = $"密码修改{(flag ? "成功" : "失败")}！"});
+            return Json(new { Success = flag, Msg = $"密码修改{(flag ? "成功" : "失败")}！" });
         }
         catch (Exception e)
         {
-            return Json(new {Success = false, Msg = e.Message});
+            return Json(new { Success = false, Msg = e.Message });
         }
     }
 
@@ -188,6 +157,6 @@ public class StaffController : AbpController
         }
 
         await _userAppService.SendVerificationCode(userid);
-        return Json(new {Msg = "验证码已发送至钉钉，请注意查收。"});
+        return Json(new { Msg = "验证码已发送至钉钉，请注意查收。" });
     }
 }
