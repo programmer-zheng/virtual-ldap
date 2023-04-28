@@ -56,21 +56,21 @@ else
                             <label>当前密码</label>
                             <a href="/ForgotPassword">忘记密码</a>
                             @Html.ValidationMessageFor(t => t.OldPassword)
-                            @Html.PasswordFor(t => t.OldPassword, new {@class = "form-control", placeholder = "请输入当前密码"})
+                            @Html.PasswordFor(t => t.OldPassword, new { @class = "form-control", placeholder = "请输入当前密码" })
                             @*<input class="form-control" id="OldPassword" name="OldPassword" type="password" placeholder="请输入当前密码" maxlength="16" />*@
                         </div>
                     </div>
                     <div class="col-md-8 mb-2 offset-md-2">
                         <div class="form-group">
                             <label>新密码</label> @Html.ValidationMessageFor(t => t.NewPassword)
-                            @Html.PasswordFor(t => t.NewPassword, new {@class = "form-control", placeholder = "请输入新密码"})
+                            @Html.PasswordFor(t => t.NewPassword, new { @class = "form-control", placeholder = "请输入新密码" })
                             @*<input class="form-control" id="NewPassword" name="NewPassword" type="password" placeholder="请输入新密码" maxlength="16" />*@
                         </div>
                     </div>
                     <div class="col-md-8 mb-2 offset-md-2">
                         <div class="form-group">
                             <label>确认密码</label> @Html.ValidationMessageFor(t => t.ConfirmPassword)
-                            @Html.PasswordFor(t => t.ConfirmPassword, new {@class = "form-control", placeholder = "请输入确认密码"})
+                            @Html.PasswordFor(t => t.ConfirmPassword, new { @class = "form-control", placeholder = "请输入确认密码" })
                             @*<input class="form-control" id="ConfirmPassword" name="ConfirmPassword" type="password" placeholder="请输入确认密码" maxlength="16" />*@
                         </div>
                     </div>
@@ -78,7 +78,7 @@ else
                         <div class="form-group">
                             <button id="btnChangePassword" type="button" class="btn btn-block btn-primary">修 改</button>
                         </div>
-                        @if (Model.IsAdmin)
+                        @if (Model.IsAdmin && !Model.EnableVpnAccount)
                         {
                             <div class="form-group">
                                 <button id="btnEnableVpnAccount" type="button" class="btn btn-block btn-success">启 用 VPN 账 号</button>
