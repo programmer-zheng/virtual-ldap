@@ -53,7 +53,7 @@ public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDe
                         if (ikuaiAccount != null)
                         {
                             _ikuaiAppService.RemoveAccount(ikuaiAccount.id);
-                            message = "已将你的VPN账号删除，如有疑问，请联系管理员";
+                            message = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}，已将你的VPN账号删除，如有疑问，请联系管理员";
                         }
                     }
                     else
@@ -65,7 +65,7 @@ public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDe
                         {
                             _ikuaiAppService.CreateAccount(new AccountCommon(user.UserName, password, user.Name));
 
-                            message = $"已为您开通VPN，账号密码与域账号相同；账号为：{user.UserName} ，密码为：{password} ，请勿泄露！";
+                            message = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}，已为您开通VPN，账号密码与域账号相同；账号为：{user.UserName} ，密码为：{password} ，请勿泄露！";
                         }
                         else
                         {
@@ -74,7 +74,7 @@ public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDe
                             ikuaiAccount.enabled = "yes";
                             _ikuaiAppService.UpdateAccount(ikuaiAccount);
 
-                            message = $"域账号信息与VPN已同步；账号为：{user.UserName}，密码为：{password} ，请勿泄露！";
+                            message = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}，域账号信息与VPN已同步；账号为：{user.UserName}，密码为：{password} ，请勿泄露！";
                         }
                     }
 
