@@ -14,13 +14,13 @@ namespace DingDingSync.Application.Jobs;
 public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDependency
 {
     private readonly IRepository<UserEntity, string> _userRepository;
-    private readonly IkuaiAppService _ikuaiAppService;
+    private readonly IIkuaiAppService _ikuaiAppService;
     private readonly ILogger _logger;
     private readonly IDingdingAppService _dingdingAppService;
     private readonly IKuaiConfigOptions _ikuaiConfigOptions;
 
     public IKuaiSyncAccountBackgroundJob(IRepository<UserEntity, string> userRepository,
-        IkuaiAppService ikuaiAppService, ILogger logger, IDingdingAppService dingdingAppService,
+        IIkuaiAppService ikuaiAppService, ILogger logger, IDingdingAppService dingdingAppService,
         IOptions<IKuaiConfigOptions> options)
     {
         _userRepository = userRepository;
