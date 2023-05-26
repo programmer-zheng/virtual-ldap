@@ -438,11 +438,10 @@ namespace DingDingSync.Application.DingDingUtils
         public static string getRandomStr(int count)
         {
             string baset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < count; i++)
             {
-                int number = random.Next(baset.Length);
+                int number = Random.Shared.Next(baset.Length);
                 sb.Append(baset[number]);
             }
 
@@ -456,10 +455,10 @@ namespace DingDingSync.Application.DingDingUtils
         public static byte[] int2Bytes(int count)
         {
             byte[] byteArr = new byte[4];
-            byteArr[3] = (byte) (count & 0xFF);
-            byteArr[2] = (byte) (count >> 8 & 0xFF);
-            byteArr[1] = (byte) (count >> 16 & 0xFF);
-            byteArr[0] = (byte) (count >> 24 & 0xFF);
+            byteArr[3] = (byte) (count & 255);
+            byteArr[2] = (byte) (count >> 8 & 255);
+            byteArr[1] = (byte) (count >> 16 & 255);
+            byteArr[0] = (byte) (count >> 24 & 255);
             return byteArr;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Abp.Extensions;
 
 namespace DingDingSync.Application
 {
@@ -29,12 +30,16 @@ namespace DingDingSync.Application
         /// <returns>加密后的字符串</returns>
         public static string DesEncrypt(this string strText, string strEncrKey)
         {
-            byte[] byKey = null;
+            if (strEncrKey.IsNullOrWhiteSpace() || strEncrKey.Length<8)
+            {
+                throw new  ArgumentException($"{nameof(strEncrKey)}不能为空，且长度不能少于8位");
+            }
+            byte[] byKey ;
             byte[] iv = {26, 192, 238, 135, 155, 17, 93, 118};
             try
             {
-                byKey = Encoding.UTF8.GetBytes(strEncrKey.Substring(0, strEncrKey.Length));
-                DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+                byKey = Encoding.UTF8.GetBytes(strEncrKey.Substring(0, 8));
+                var des = DES.Create();
                 byte[] inputByteArray = Encoding.UTF8.GetBytes(strText);
                 MemoryStream ms = new MemoryStream();
                 CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(byKey, iv), CryptoStreamMode.Write);
@@ -66,16 +71,21 @@ namespace DingDingSync.Application
         /// <returns>解密后的字符串</returns>
         public static string DesDecrypt(this string strText, string sDecrKey)
         {
-            byte[] byKey = null;
-            byte[] IV = {0x1A, 0xC0, 0xEE, 0x87, 0x9B, 0x11, 0x5D, 0x76};
-            byte[] inputByteArray = new byte[strText.Length];
+            
+            if (sDecrKey.IsNullOrWhiteSpace() || sDecrKey.Length<8)
+            {
+                throw new  ArgumentException($"{nameof(sDecrKey)}不能为空，且长度不能少于8位");
+            }
+            byte[] byKey ;
+            byte[] iv = {26, 192, 238, 135, 155, 17, 93, 118};
+            byte[] inputByteArray;
             try
             {
                 byKey = Encoding.UTF8.GetBytes(sDecrKey.Substring(0, 8));
-                DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+                var des = DES.Create();
                 inputByteArray = Convert.FromBase64String(strText);
                 MemoryStream ms = new MemoryStream();
-                CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(byKey, IV), CryptoStreamMode.Write);
+                CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(byKey, iv), CryptoStreamMode.Write);
                 cs.Write(inputByteArray, 0, inputByteArray.Length);
                 cs.FlushFinalBlock();
                 Encoding encoding = new UTF8Encoding();

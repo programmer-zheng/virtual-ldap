@@ -350,7 +350,7 @@ namespace DingDingSync.Application.AppService
 
         public async Task SendVerificationCode(string userid)
         {
-            var random = new Random().Next(100000, 999999);
+            var random = Random.Shared.Next(100000, 999999);
             await CacheManager.GetCache("DingDing").AsTyped<string, string>().SetAsync($"ForgotPassword-{userid}", random.ToString());
             var msgContent = $"您正在进行忘记密码操作，验证码是：{random}。";
             DingdingAppService.SendTextMessage(userid, msgContent);
