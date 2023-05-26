@@ -174,7 +174,6 @@ namespace DingDingSync.Application.AppService
                 }
             }
 
-            var regex = new Regex(@"^[\u4e00-\u9fa5]+", RegexOptions.IgnoreCase);
             foreach (var item in newUserList.OrderBy(t => t.HiredDate))
             {
                 var username = await GetUserName(item.Name, newUserList);
