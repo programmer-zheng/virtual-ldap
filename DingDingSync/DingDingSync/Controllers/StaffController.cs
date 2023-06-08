@@ -21,10 +21,7 @@ public class StaffController : AbpController
 {
     #region 构造函数及属性
 
-    public ILogger _logger { get; set; }
-
-    public IUserAppService _userAppService { get; set; }
-
+    public IUserAppService UserAppService { get; set; }
 
     public IBackgroundJobManager BackgroundJobManager { get; set; }
 
@@ -64,7 +61,7 @@ public class StaffController : AbpController
                     throw new UserFriendlyException("不能对他人账号进行忘记密码操作！");
                 }
 
-                var userinfo = await _userAppService.GetByIdAsync(input.UserId);
+                var userinfo = await UserAppService.GetByIdAsync(input.UserId);
                 if (userinfo == null)
                 {
                     throw new UserFriendlyException("用户不存在");
@@ -75,7 +72,7 @@ public class StaffController : AbpController
                     throw new UserFriendlyException("当前密码不正确，无法修改密码！");
                 }
 
-                var flag = await _userAppService.ResetPassword(input);
+                var flag = await UserAppService.ResetPassword(input);
                 if (flag && userinfo.VpnAccountEnabled)
                 {
                     await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(input.UserId);
@@ -120,13 +117,13 @@ public class StaffController : AbpController
 
         try
         {
-            var userinfo = await _userAppService.GetByIdAsync(model.UserId);
+            var userinfo = await UserAppService.GetByIdAsync(model.UserId);
             if (userinfo == null)
             {
                 throw new UserFriendlyException("用户不存在");
             }
 
-            var flag = await _userAppService.ForgotPassword(model);
+            var flag = await UserAppService.ForgotPassword(model);
             if (flag && userinfo.VpnAccountEnabled)
             {
                 await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(model.UserId);
@@ -156,7 +153,7 @@ public class StaffController : AbpController
             throw new UserFriendlyException("请从钉钉中进行操作！");
         }
 
-        await _userAppService.SendVerificationCode(userid);
+        await UserAppService.SendVerificationCode(userid);
         return Json(new { Msg = "验证码已发送至钉钉，请注意查收。" });
     }
 }

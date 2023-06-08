@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DingDingSync.Web.Controllers;
 
+/// <summary>
+/// 为LDAP服务提供相关数据支持
+/// </summary>
 public class LdapController : AbpController
 {
     public IUserAppService _userAppService { get; set; }

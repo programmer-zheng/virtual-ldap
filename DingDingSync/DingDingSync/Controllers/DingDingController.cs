@@ -12,13 +12,15 @@ using Newtonsoft.Json.Linq;
 
 namespace DingDingSync.Web.Controllers
 {
+    /// <summary>
+    /// 处理钉钉回调、手动同步钉钉通讯录
+    /// </summary>
     public class DingDingController : AbpController
     {
-        
         private readonly DingDingConfigOptions _dingDingConfigOptions;
-        
+
         public ILogger Logger { get; set; }
-        
+
         public IDingdingAppService DingdingAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
@@ -63,6 +65,7 @@ namespace DingDingSync.Web.Controllers
         /// <param name="signature">加密签名</param>
         /// <param name="timestamp">时间戳</param>
         /// <param name="nonce">随机数</param>
+        /// <param name="dingMessage">钉钉回调返回消息</param>
         /// <returns></returns>
         [HttpPost]
         [Route("/dingdingcallback")]
