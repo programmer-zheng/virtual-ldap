@@ -53,7 +53,7 @@ namespace DingDingSync.Application.AppService
                     Active = user.Active,
                     Position = user.Position,
                     JobNumber = user.JobNumber,
-                    Department = new List<long> {rela.DeptId}
+                    Department = new List<long> { rela.DeptId }
                 }).ToListAsync();
             return users;
         }
@@ -116,7 +116,8 @@ namespace DingDingSync.Application.AppService
 
         public async Task<UserEntity> GetByUserNameAsync(string username)
         {
-            return await UserRepository.GetAll().FirstOrDefaultAsync(t => t.UserName == username);
+            return await UserRepository.GetAll()
+                .FirstOrDefaultAsync(t => t.UserName == username || t.Mobile == username || t.Email == username);
         }
 
         public async Task SyncDepartmentAndUser()
@@ -169,7 +170,7 @@ namespace DingDingSync.Application.AppService
                     if (!relaList.Any(t => t.UserId == user.Userid && t.DeptId == item.Id))
                     {
                         newRelaList.Add(new UserDepartmentsRelationEntity
-                            {Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = item.Id});
+                            { Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = item.Id });
                     }
                 }
             }
@@ -350,7 +351,8 @@ namespace DingDingSync.Application.AppService
         public async Task SendVerificationCode(string userid)
         {
             var random = Random.Shared.Next(100000, 999999);
-            await CacheManager.GetCache("DingDing").AsTyped<string, string>().SetAsync($"ForgotPassword-{userid}", random.ToString());
+            await CacheManager.GetCache("DingDing").AsTyped<string, string>()
+                .SetAsync($"ForgotPassword-{userid}", random.ToString());
             var msgContent = $"您正在进行忘记密码操作，验证码是：{random}。";
             DingdingAppService.SendTextMessage(userid, msgContent);
         }
