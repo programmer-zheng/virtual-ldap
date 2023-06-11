@@ -7,12 +7,11 @@ using Abp.UI;
 using Castle.Core.Logging;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
-using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.Jobs;
+using DingDingSync.Core;
 using DingDingSync.Web.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace DingDingSync.Web.Controllers
 {
@@ -21,31 +20,28 @@ namespace DingDingSync.Web.Controllers
         public ILogger _logger { get; set; }
 
 
-        public IDingdingAppService _dingdingAppService { get; set; }
+        public IConfiguration Configuration { get; set; }
 
         public IUserAppService _userAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
 
-        private readonly DingDingConfigOptions _dingDingConfigOptions;
-
-        public HomeController(IOptions<DingDingConfigOptions> options)
-        {
-            _dingDingConfigOptions = options.Value;
-        }
-
 
         [HttpGet]
         public IActionResult Index()
         {
-            string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
-            if (!string.IsNullOrWhiteSpace(userid))
+            // 获取配置文件中当前工作环境（钉钉/企业微信）
+            var workEnv = Configuration["WorkEnv"];
+            if (workEnv.Equals("DingDing", StringComparison.OrdinalIgnoreCase))
             {
-                return RedirectToAction("Manage");
+                return RedirectToAction("Index", "DingDing");
+            }
+            else if (workEnv.Equals("WorkWeixin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("Index", "WorkWeixin");
             }
 
-            ViewBag.CorpId = _dingDingConfigOptions.CorpId;
-            return View();
+            return NotFound();
         }
 
 
@@ -68,28 +64,15 @@ namespace DingDingSync.Web.Controllers
         [Route("/manage")]
         public async Task<IActionResult> Manage(string code)
         {
-            if (!string.IsNullOrWhiteSpace(code))
-            {
-                var dingdingUser = _dingdingAppService.GetUserinfoByCode(code);
-                if (dingdingUser == null)
-                {
-                    return Content("获取钉钉人员信息失败，请关闭应用重新打开!");
-                }
-
-                Response.Cookies.Append($"{_dingDingConfigOptions.CorpId}_UserId", dingdingUser.Userid,
-                    new CookieOptions
-                        { HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7) });
-            }
-
-            //todo 从cookie中获取userid，若userid获取不到，跳转至授权页面，获取授权码，根据授权码获取用户id，再跳转回来
-            string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
+            // 从cookie中获取userid，若userid获取不到，跳转至授权页面，获取授权码，根据授权码获取用户id，再跳转回来
+            string userid = Request.Cookies[LdapConsts.CookieName];
             if (string.IsNullOrWhiteSpace(userid))
             {
                 return RedirectToAction("Index");
             }
 
             UserSimpleDto user = null;
-            //根据用户id，查询数据库，获取人员信息，返回ldap用户名、姓名等信息
+            // 根据用户id，查询数据库，获取人员信息，返回ldap用户名、姓名等信息
             var userinfo = await _userAppService.GetByIdAsync(userid);
             if (userinfo == null)
             {

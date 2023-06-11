@@ -6,12 +6,32 @@ namespace DingDingSync.Application.AppService
 {
     public interface IUserAppService : IApplicationService
     {
+        /// <summary>
+        /// 根据主键获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<UserEntity> GetByIdAsync(string userId);
 
+        /// <summary>
+        /// 根据用户名获取用户信息
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         Task<UserEntity> GetByUserNameAsync(string username);
 
+        /// <summary>
+        /// 获取部门下属用户信息
+        /// </summary>
+        /// <param name="deptId"></param>
+        /// <returns></returns>
         Task<List<DeptUserDto>> DeptUsers(long deptId);
 
+        /// <summary>
+        /// 获取管理人员下属用户信息
+        /// </summary>
+        /// <param name="adminUserId"></param>
+        /// <returns></returns>
         Task<List<DeptUserDto>> GetAdminDeptUsers(string adminUserId);
 
         Task SyncDepartmentAndUser();

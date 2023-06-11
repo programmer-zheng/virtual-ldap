@@ -12,6 +12,7 @@ using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.Jobs;
+using DingDingSync.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -55,7 +56,7 @@ public class StaffController : AbpController
                     throw new ArgumentException("密码修改失败，新密码不能与旧密码一致!");
                 }
 
-                string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
+                string userid = Request.Cookies[LdapConsts.CookieName];
                 if (userid != input.UserId)
                 {
                     throw new UserFriendlyException("不能对他人账号进行忘记密码操作！");
@@ -94,7 +95,7 @@ public class StaffController : AbpController
     [HttpGet]
     public async Task<IActionResult> ForgotPassword()
     {
-        string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
+        string userid = Request.Cookies[LdapConsts.CookieName];
 
         return View(new ForgotPasswordViewModel() { UserId = userid });
     }
@@ -109,7 +110,7 @@ public class StaffController : AbpController
             return Json(new { Success = false, Msg = $"密码修改失败,{errorReason}" });
         }
 
-        string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
+        string userid = Request.Cookies[LdapConsts.CookieName];
         if (userid != model.UserId)
         {
             throw new UserFriendlyException("不能对他人账号进行忘记密码操作！");
@@ -146,7 +147,7 @@ public class StaffController : AbpController
     [HttpGet]
     public async Task<IActionResult> SendVerificationCode()
     {
-        string userid = Request.Cookies[$"{_dingDingConfigOptions.CorpId}_UserId"];
+        string userid = Request.Cookies[LdapConsts.CookieName];
 
         if (userid.IsNullOrWhiteSpace())
         {

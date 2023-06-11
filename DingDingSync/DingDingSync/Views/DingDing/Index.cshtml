@@ -14,7 +14,7 @@
                     corpId: "@(ViewBag.CorpId)",
                     onSuccess: function (res) {
                         // 调用成功时回调
-                        location.href = '/manage?code=' + res.code
+                        location.href = '/DingDing_Authorize?code=' + res.code
                     },
                     onFail: function (err) {
                         alert('获取授权失败：' + JSON.stringify(err))

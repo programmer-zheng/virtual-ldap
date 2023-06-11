@@ -7,6 +7,7 @@ using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.Jobs;
 using DingDingSync.Application.Jobs.EventHandler;
+using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,7 @@ namespace DingDingSync.Web.Startup
             });
 
             services.Configure<DingDingConfigOptions>(Configuration.GetSection(DingDingConfigOptions.DingDing));
+            services.Configure<WorkWeixinConfigOptions>(Configuration.GetSection(WorkWeixinConfigOptions.WorkWeixin));
             services.Configure<IKuaiConfigOptions>(Configuration.GetSection(IKuaiConfigOptions.IKuai));
 
             services.AddScoped<IDingdingAppService, DingDingAppService>();

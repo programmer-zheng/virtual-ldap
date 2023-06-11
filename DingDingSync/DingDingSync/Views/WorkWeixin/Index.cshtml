@@ -1,0 +1,39 @@
+<p>
+    企业微信首页
+</p>
+
+<script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+```
+<div class="colorful_tips colorful_tips_tip">
+    <div class="colorful_tips_title"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHJ4PSI4IiBmaWxsPSIjMTU4ODMxIi8+PHBhdGggZD0iTTUgNS44NTkwOUM1IDYuMjczMyA1LjMzNTc5IDYuNjA5MDkgNS43NSA2LjYwOTA5QzYuMTY0MjEgNi42MDkwOSA2LjUgNi4yNzMzIDYuNSA1Ljg1OTA5SDVaTTcuMjUgOS4yNUM3LjI1IDkuNjY0MjEgNy41ODU3OSAxMCA4IDEwQzguNDE0MjEgMTAgOC43NSA5LjY2NDIxIDguNzUgOS4yNUg3LjI1Wk04LjEwMDA2IDcuOTY2MTNMOC4wNjkzMiA3LjIxNjc2TDguMTAwMDYgNy45NjYxM1pNOS41IDUuODU5MDlDOS41IDYuNTQ2MjkgOC45MDkgNy4xODIzMiA4LjA2OTMyIDcuMjE2NzZMOC4xMzA4IDguNzE1NUM5LjY4MzUzIDguNjUxODEgMTEgNy40Mzg2NyAxMSA1Ljg1OTA5SDkuNVpNNi41IDUuODU5MDlDNi41IDUuMTUzNDQgNy4xMjUxNCA0LjUgOCA0LjVWM0M2LjM4OTU4IDMgNSA0LjIzNTExIDUgNS44NTkwOUg2LjVaTTggNC41QzguODc0ODYgNC41IDkuNSA1LjE1MzQ0IDkuNSA1Ljg1OTA5SDExQzExIDQuMjM1MTEgOS42MTA0MiAzIDggM1Y0LjVaTTcuMjUgOC4wNjgxOFY5LjI1SDguNzVWOC4wNjgxOEg3LjI1Wk04LjA2OTMyIDcuMjE2NzZDNy42MzI4MyA3LjIzNDY3IDcuMjUgNy41OTAzOCA3LjI1IDguMDY4MThIOC43NUM4Ljc1IDguNDM1NTMgOC40NTY5MiA4LjcwMjEzIDguMTMwOCA4LjcxNTVMOC4wNjkzMiA3LjIxNjc2WiIgZmlsbD0id2hpdGUiLz48Y2lyY2xlIGN4PSI4IiBjeT0iMTIiIHI9IjEiIGZpbGw9IndoaXRlIi8+PC9zdmc+"/>提示</div>
+    <div class="colorful_tips_cnt">
+        为支持微信插件（原企业号）功能，请引用此文件。原企业微信的js文件在微信插件不生效。
+        jweixin-1.6.0 版本企业微信客户端暂不支持。
+    </div>
+</div>
+
+### 步骤二：通过config接口注入权限验证配置
+<div class="colorful_tips colorful_tips_warning">
+    <div class="colorful_tips_title"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHJ4PSI4IiBmaWxsPSIjQjM2NzFEIi8+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDNDNy40NDc3MiAzIDcgMy40NDc3MiA3IDRWOEM3IDguNTUyMjggNy40NDc3MiA5IDggOUM4LjU1MjI4IDkgOSA4LjU1MjI4IDkgOFY0QzkgMy40NDc3MiA4LjU1MjI4IDMgOCAzWk04IDExQzcuNDQ3NzIgMTEgNyAxMS40NDc3IDcgMTJDNyAxMi41NTIzIDcuNDQ3NzIgMTMgOCAxM0M4LjU1MjI4IDEzIDkgMTIuNTUyMyA5IDEyQzkgMTEuNDQ3NyA4LjU1MjI4IDExIDggMTFaIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg=="/>注意</div>
+    <div class="colorful_tips_cnt">
+        所有需要使用JS-SDK的页面必须先注入配置信息，否则将无法调用（同一个url仅需调用一次，对于变化url的SPA（single-page application）的web app可在每次url变化时进行调用）。
+    </div>
+</div>
+<script >
+wx.config({
+    beta: true,// 必须这么写，否则wx.invoke调用形式的jsapi会有问题
+    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: '@ViewBag.CorpId', // 必填，企业微信的corpID，必须是本企业的corpID，不允许跨企业使用
+    timestamp: '', // 必填，生成签名的时间戳
+    nonceStr: '', // 必填，生成签名的随机串
+    signature: '',// 必填，签名，见 附录-JS-SDK使用权限签名算法
+    jsApiList: [] // 必填，需要使用的JS接口列表，凡是要调用的接口都需要传进来
+});
+
+wx.ready(function(){
+    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+});
+wx.error(function(res){
+    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+});
+</script>

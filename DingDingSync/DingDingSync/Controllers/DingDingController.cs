@@ -6,6 +6,8 @@ using Castle.Core.Logging;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.Jobs;
+using DingDingSync.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -19,6 +21,7 @@ namespace DingDingSync.Web.Controllers
     {
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 
+        public IDingdingAppService _dingdingAppService { get; set; }
         public ILogger Logger { get; set; }
 
         public IDingdingAppService DingdingAppService { get; set; }
@@ -33,6 +36,34 @@ namespace DingDingSync.Web.Controllers
             _dingDingConfigOptions = options.Value;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            string userid = Request.Cookies[LdapConsts.CookieName];
+
+            ViewBag.CorpId = _dingDingConfigOptions.CorpId;
+            return View();
+        }
+
+        [HttpGet]
+        [Route("/DingDing_Authorize")]
+        public async Task<IActionResult> Authorize(string code)
+        {
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                var dingdingUser = _dingdingAppService.GetUserinfoByCode(code);
+                if (dingdingUser == null)
+                {
+                    return Content("获取钉钉人员信息失败，请关闭应用重新打开!");
+                }
+
+                Response.Cookies.Append(LdapConsts.CookieName, dingdingUser.Userid,
+                    new CookieOptions
+                        { HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7) });
+                return RedirectToAction("Manage", "Home");
+            }
+
+            return Content("请从重新进入");
+        }
 
         [Route("/dingdingsync")]
         public async Task<IActionResult> Sync()
@@ -81,7 +112,6 @@ namespace DingDingSync.Web.Controllers
             var messageObj = JObject.Parse(message);
             var eventType = messageObj.Value<string>("EventType");
             var _corpid = messageObj.Value<string>("CorpId");
-
 
             Logger.Warn($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}事件类型：{eventType}");
             if (!string.IsNullOrWhiteSpace(_corpid) && !_corpid.Equals(corpId, StringComparison.OrdinalIgnoreCase) &&
