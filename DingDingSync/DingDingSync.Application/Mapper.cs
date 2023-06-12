@@ -1,15 +1,25 @@
 ﻿using AutoMapper;
+using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core.Entities;
 using DingTalk.Api.Response;
 
 namespace DingDingSync.Application
 {
-
-    public class DingDingMapper : Profile
+    public class WorkWeixinMapper : Profile
     {
-        public DingDingMapper()
+        public WorkWeixinMapper()
         {
+            CreateMap<WorkWeixinDeptUserListDto, UserEntity>()
+                .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Userid))
+                .ForMember(t => t.UserName, opt => opt.MapFrom(d => d.Userid))
+                ;
+        }
+    }
 
+    public class Mapper : Profile
+    {
+        public Mapper()
+        {
             //部门列表
             CreateMap<OapiDepartmentListResponse.DepartmentDomain, DepartmentEntity>()
                 .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Id))
@@ -51,6 +61,7 @@ namespace DingDingSync.Application
             {
                 return TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1)).AddMilliseconds(source);
             }
+
             return null;
         }
     }

@@ -7,25 +7,25 @@ using DingDingSync.Application.AppService;
 
 namespace DingDingSync.Application.Jobs
 {
-    public class DingDingSyncBackgroundWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
+    public class DingDingSyncBackgroundWorker : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
     {
         public ILogger Logger { get; set; }
 
         public IUserAppService UserAppService { get; set; }
 
-        public DingDingSyncBackgroundWorker(AbpTimer timer) : base(timer)
+        public DingDingSyncBackgroundWorker(AbpAsyncTimer timer) : base(timer)
         {
-            timer.Period = 1000 * 30;
+            timer.Period = 1000 * 10;
         }
 
         [UnitOfWork]
-        protected override void DoWork()
+        protected override async Task DoWorkAsync()
         {
             Timer.Stop();
             Logger.Debug("同步工作开始……");
             try
             {
-                UserAppService.SyncDepartmentAndUser();
+                await UserAppService.SyncDepartMentAndUserFromWorkWeixin();
             }
             catch (Exception e)
             {

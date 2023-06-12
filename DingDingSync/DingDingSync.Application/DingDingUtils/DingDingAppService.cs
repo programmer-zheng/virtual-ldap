@@ -13,7 +13,7 @@ using Tea;
 
 namespace DingDingSync.Application.DingDingUtils
 {
-    public class DingDingAppService : IDingdingAppService
+    public class DingDingAppService : IDingdingAppService, ICommonProvider
     {
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 
@@ -134,6 +134,11 @@ namespace DingDingSync.Application.DingDingUtils
             }
         }
 
+        /// <summary>
+        /// 获取部门详情
+        /// </summary>
+        /// <param name="deptId">部门ID</param>
+        /// <returns></returns>
         public OapiV2DepartmentGetResponse.DeptGetResponseDomain GetDepartmentDetail(long deptId)
         {
             try
@@ -157,14 +162,20 @@ namespace DingDingSync.Application.DingDingUtils
             }
         }
 
-        public List<OapiV2UserListResponse.ListUserResponseDomain> GetUserList(long dept_id, long cursor = 0)
+        /// <summary>
+        /// 获取部门人员列表 
+        /// </summary>
+        /// <param name="deptId">部门ID</param>
+        /// <param name="cursor">分页游标，默认为0</param>
+        /// <returns></returns>
+        public List<OapiV2UserListResponse.ListUserResponseDomain> GetUserList(long deptId, long cursor = 0)
         {
             try
             {
                 var token = GetAccessToken();
                 IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/list");
                 OapiV2UserListRequest req = new OapiV2UserListRequest();
-                req.DeptId = dept_id;
+                req.DeptId = deptId;
                 req.Cursor = cursor;
                 req.Size = 100;
                 //req.OrderField = "entry_asc";
@@ -182,7 +193,7 @@ namespace DingDingSync.Application.DingDingUtils
 
                 if (rsp.Result.HasMore)
                 {
-                    list.AddRange(GetUserList(dept_id, rsp.Result.NextCursor));
+                    list.AddRange(GetUserList(deptId, rsp.Result.NextCursor));
                 }
 
                 return list;
@@ -287,7 +298,7 @@ namespace DingDingSync.Application.DingDingUtils
             }
         }
 
-        public OapiMessageCorpconversationAsyncsendV2Response SendTextMessage(string userid, string msgContent)
+        public async Task SendTextMessage(string userid, string msgContent)
         {
             try
             {
@@ -309,8 +320,6 @@ namespace DingDingSync.Application.DingDingUtils
                 {
                     throw new UserFriendlyException(rsp.Errmsg);
                 }
-
-                return rsp;
             }
             catch (Exception e)
             {

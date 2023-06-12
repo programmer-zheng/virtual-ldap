@@ -1,12 +1,14 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.ObjectMapping;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Castle.Core.Logging;
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Application.DingDingUtils;
+using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,9 +21,13 @@ namespace DingDingSync.Application.AppService
     {
         public IDingdingAppService DingdingAppService { get; set; }
 
+        public IWorkWeixinAppService WorkWeixinAppService { get; set; }
+
         public IRepository<UserEntity, string> UserRepository { get; set; }
 
         public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
+
+        public ICommonProvider CommonProvider { get; set; }
 
         public IRepository<UserDepartmentsRelationEntity, string> UserDeptRelaRepository { get; set; }
 
@@ -184,25 +190,94 @@ namespace DingDingSync.Application.AppService
                     item.UserName = username.ToString().ToLower();
                 }
 
-
-                foreach (var item in newDeptList)
-                {
-                    DeptRepository.Insert(item);
-                }
-
-                foreach (var item in newUserList)
-                {
-                    UserRepository.Insert(item);
-                }
-
-                foreach (var item in newRelaList)
-                {
-                    UserDeptRelaRepository.Insert(item);
-                }
+                ProcessNewData(newUserList, newDeptList, newRelaList);
             }
             catch (UserFriendlyException e)
             {
                 Logger.Error("调用钉钉接口同步组织架构时发生异常", e);
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException("同步数据发生未知异常", e);
+            }
+        }
+
+        /// <summary>
+        /// 处理新数据
+        /// </summary>
+        /// <param name="newUserList"></param>
+        /// <param name="newDeptList"></param>
+        /// <param name="newRelaList"></param>
+        private void ProcessNewData(List<UserEntity> newUserList, List<DepartmentEntity> newDeptList,
+            List<UserDepartmentsRelationEntity> newRelaList)
+        {
+            foreach (var item in newDeptList)
+            {
+                DeptRepository.Insert(item);
+            }
+
+            foreach (var item in newUserList)
+            {
+                UserRepository.Insert(item);
+            }
+
+            foreach (var item in newRelaList)
+            {
+                UserDeptRelaRepository.Insert(item);
+            }
+        }
+
+        public async Task SyncDepartMentAndUserFromWorkWeixin()
+        {
+            var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
+            defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
+            try
+            {
+                //获取当前数据库中的部门
+                var deptList = DeptRepository.GetAllList();
+                //获取当前数据库中的人员信息
+                var userList = UserRepository.GetAllList();
+                var relaList = UserDeptRelaRepository.GetAllList();
+
+                var newUserList = new List<UserEntity>();
+                var newDeptList = new List<DepartmentEntity>();
+                var newRelaList = new List<UserDepartmentsRelationEntity>();
+                var departmentList = await WorkWeixinAppService.GetDepartmentList();
+                foreach (var department in departmentList)
+                {
+                    if (!deptList.Any(t => t.Id == department.Id))
+                    {
+                        newDeptList.Add(ObjectMapper.Map<DepartmentEntity>(department));
+                    }
+
+                    var users = await WorkWeixinAppService.GetUserList(department.Id);
+
+                    foreach (var user in users)
+                    {
+                        if (!userList.Any(t => t.Id == user.Userid))
+                        {
+                            var userEntity = ObjectMapper.Map<UserEntity>(user);
+                            var isAdmin = user.Isleader;
+                            userEntity.IsAdmin = isAdmin;
+                            userEntity.AccountEnabled = isAdmin;
+                            userEntity.Password = defaultPassword.DesEncrypt();
+                            newUserList.Add(userEntity);
+                        }
+
+                        //部门人员关系数据
+                        if (!relaList.Any(t => t.UserId == user.Userid && t.DeptId == department.Id))
+                        {
+                            newRelaList.Add(new UserDepartmentsRelationEntity
+                                { Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = department.Id });
+                        }
+                    }
+                }
+
+                ProcessNewData(newUserList, newDeptList, newRelaList);
+            }
+            catch (UserFriendlyException e)
+            {
+                Logger.Error("调用企业微信接口同步组织架构时发生异常", e);
             }
             catch (Exception e)
             {
@@ -240,7 +315,7 @@ namespace DingDingSync.Application.AppService
                 });
 
                 var msgContent = $"已为您开通域账号，域账号的用户名为：{username}。";
-                DingdingAppService.SendTextMessage(userId, msgContent);
+                await CommonProvider.SendTextMessage(userId, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -257,7 +332,7 @@ namespace DingDingSync.Application.AppService
                 UserRepository.Update(userId, t => t.VpnAccountEnabled = true);
 
                 var msgContent = $"已为您启用VPN账号，VPN的账号、密码与域账号相同。";
-                DingdingAppService.SendTextMessage(userId, msgContent);
+                await CommonProvider.SendTextMessage(userId, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -283,7 +358,7 @@ namespace DingDingSync.Application.AppService
                 user.Password = defaultPassword.DesEncrypt();
                 UserRepository.Update(user);
                 var msgContent = $"您的域账号：{user.UserName}，密码已重置，默认密码为：{defaultPassword}。";
-                DingdingAppService.SendTextMessage(user.Id, msgContent);
+                await CommonProvider.SendTextMessage(user.Id, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -317,6 +392,7 @@ namespace DingDingSync.Application.AppService
             return userdto;
         }
 
+        [UnitOfWork]
         public async Task<string> GetUserName(string name, List<UserEntity>? newUserList = null)
         {
             var username = new StringBuilder();
@@ -358,7 +434,7 @@ namespace DingDingSync.Application.AppService
             await CacheManager.GetCache("DingDing").AsTyped<string, string>()
                 .SetAsync($"ForgotPassword-{userid}", random.ToString());
             var msgContent = $"您正在进行忘记密码操作，验证码是：{random}。";
-            DingdingAppService.SendTextMessage(userid, msgContent);
+            await CommonProvider.SendTextMessage(userid, msgContent);
         }
 
         public async Task<bool> ForgotPassword(ForgotPasswordViewModel model)

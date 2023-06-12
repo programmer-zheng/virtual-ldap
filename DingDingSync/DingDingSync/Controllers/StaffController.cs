@@ -151,10 +151,10 @@ public class StaffController : AbpController
 
         if (userid.IsNullOrWhiteSpace())
         {
-            throw new UserFriendlyException("请从钉钉中进行操作！");
+            throw new UserFriendlyException("请从工作台中点击应用操作！");
         }
 
         await UserAppService.SendVerificationCode(userid);
-        return Json(new { Msg = "验证码已发送至钉钉，请注意查收。" });
+        return Json(new { Msg = "验证码已发送，请注意查收。" });
     }
 }

@@ -3,6 +3,7 @@ using Abp.AspNetCore;
 using Abp.Castle.Logging.Log4Net;
 using Abp.EntityFrameworkCore;
 using Castle.Facilities.Logging;
+using DingDingSync.Application;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.Jobs;
@@ -40,11 +41,28 @@ namespace DingDingSync.Web.Startup
 
             services.Configure<DingDingConfigOptions>(Configuration.GetSection(DingDingConfigOptions.DingDing));
             services.Configure<WorkWeixinConfigOptions>(Configuration.GetSection(WorkWeixinConfigOptions.WorkWeixin));
+
             services.Configure<IKuaiConfigOptions>(Configuration.GetSection(IKuaiConfigOptions.IKuai));
 
-            services.AddScoped<IDingdingAppService, DingDingAppService>();
+            // todo 注释掉，观察是否不需要手工注入
+            // services.AddScoped<IDingdingAppService, DingDingAppService>();
+            // services.AddScoped<IWorkWeixinAppService, WorkWeixinAppService>();
 
             RegisterDingDingEventHandler(services);
+
+            var workEnv = Configuration["WorkEnv"];
+            if (workEnv.Equals("DingDing", StringComparison.OrdinalIgnoreCase))
+            {
+                services.AddScoped<ICommonProvider, DingDingAppService>();
+            }
+            else if (workEnv.Equals("WorkWeixin", StringComparison.OrdinalIgnoreCase))
+            {
+                services.AddScoped<ICommonProvider, WorkWeixinAppService>();
+            }
+            else
+            {
+                throw new Exception("目前只支持钉钉(DingDing)、企业微信(WorkWeixin)，请正确填写 WorkEnv");
+            }
 
             services.AddControllersWithViews(); //.AddRazorRuntimeCompilation();
             return services.AddAbp<WebModule>(options =>

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abp.AspNetCore.Mvc.Controllers;
 using Castle.Core.Logging;
+using DingDingSync.Application.AppService;
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core;
 using DingDingSync.Web.Startup;
@@ -21,6 +22,10 @@ public class WorkWeixinController : AbpController
 {
     public ILogger Logger { get; set; }
     public IConfiguration Configuration { get; set; }
+    
+    public IUserAppService UserAppService { get; set; }
+    
+    public IWorkWeixinAppService WorkWeixinAppService { get; set; }
 
     private readonly WorkWeixinConfigOptions _weixinConfigOptions;
 
@@ -133,5 +138,12 @@ public class WorkWeixinController : AbpController
         {
             return Json(new { Msg = $"参数错误，错误代码为：{resultCode}" });
         }
+    }
+    
+    [Route("/WorkWeixin_Sync")]
+    public async Task<IActionResult> Sync()
+    {
+        await UserAppService.SyncDepartMentAndUserFromWorkWeixin();
+        return Content("同步完成");
     }
 }

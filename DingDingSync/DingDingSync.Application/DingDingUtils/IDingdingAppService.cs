@@ -9,6 +9,11 @@ namespace DingDingSync.Application.DingDingUtils
 
         string GetJsapiTicket();
 
+        /// <summary>
+        /// 获取部门详情
+        /// </summary>
+        /// <param name="deptId">部门ID</param>
+        /// <returns></returns>
         OapiV2DepartmentGetResponse.DeptGetResponseDomain GetDepartmentDetail(long deptId);
 
         /// <summary>
@@ -20,7 +25,13 @@ namespace DingDingSync.Application.DingDingUtils
 
         OapiV2UserGetResponse.UserGetResponseDomain GetUserDetail(string userid);
 
-        List<OapiV2UserListResponse.ListUserResponseDomain> GetUserList(long dept_id, long cursor = 0);
+        /// <summary>
+        /// 获取部门人员列表 
+        /// </summary>
+        /// <param name="deptId">部门ID</param>
+        /// <param name="cursor">分页游标，默认为0</param>
+        /// <returns></returns>
+        List<OapiV2UserListResponse.ListUserResponseDomain> GetUserList(long deptId, long cursor = 0);
 
         long SendMessage(long userid, string message);
 
@@ -35,12 +46,5 @@ namespace DingDingSync.Application.DingDingUtils
         /// <returns></returns>
         List<OapiCallBackGetCallBackFailedResultResponse.FailedDomain> GetCallbackFailEvents();
 
-        /// <summary>
-        /// 发送文本消息
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="msgContent"></param>
-        /// <returns></returns>
-        OapiMessageCorpconversationAsyncsendV2Response SendTextMessage(string userid, string msgContent);
     }
 }

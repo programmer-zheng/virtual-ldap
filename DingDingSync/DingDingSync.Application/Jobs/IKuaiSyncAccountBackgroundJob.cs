@@ -16,17 +16,17 @@ public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDe
     private readonly IRepository<UserEntity, string> _userRepository;
     private readonly IIkuaiAppService _ikuaiAppService;
     private readonly ILogger _logger;
-    private readonly IDingdingAppService _dingdingAppService;
+    private readonly ICommonProvider _commonProvider;
     private readonly IKuaiConfigOptions _ikuaiConfigOptions;
 
     public IKuaiSyncAccountBackgroundJob(IRepository<UserEntity, string> userRepository,
-        IIkuaiAppService ikuaiAppService, ILogger logger, IDingdingAppService dingdingAppService,
+        IIkuaiAppService ikuaiAppService, ILogger logger, ICommonProvider commonProvider,
         IOptions<IKuaiConfigOptions> options)
     {
         _userRepository = userRepository;
         _ikuaiAppService = ikuaiAppService;
         _logger = logger;
-        _dingdingAppService = dingdingAppService;
+        _commonProvider = commonProvider;
         _ikuaiConfigOptions = options.Value;
     }
 
@@ -78,7 +78,7 @@ public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDe
                         }
                     }
 
-                    _dingdingAppService.SendTextMessage(userId, message);
+                    _commonProvider.SendTextMessage(userId, message);
                 }
             }
             catch (IKuaiException e)

@@ -36,6 +36,8 @@ namespace DingDingSync.Application.AppService
 
         Task SyncDepartmentAndUser();
 
+        Task SyncDepartMentAndUserFromWorkWeixin();
+
         Task<bool> ResetPassword(ResetPasswordViewModel model);
 
         Task<bool> EnableAccount(string userId, string username);
