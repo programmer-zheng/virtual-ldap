@@ -11,7 +11,12 @@ namespace DingDingSync.Application.DingDingUtils
 
         OapiV2DepartmentGetResponse.DeptGetResponseDomain GetDepartmentDetail(long deptId);
 
-        List<OapiDepartmentListResponse.DepartmentDomain> GetDepartmentList(long dept_id = 1);
+        /// <summary>
+        /// 获取下级部门基础信息
+        /// </summary>
+        /// <param name="parentDeptId">父级部门ID，默认公司层级的ID为1，父级ID为0</param>
+        /// <returns></returns>
+        List<OapiDepartmentListResponse.DepartmentDomain> GetDepartmentList(long parentDeptId = 0);
 
         OapiV2UserGetResponse.UserGetResponseDomain GetUserDetail(string userid);
 

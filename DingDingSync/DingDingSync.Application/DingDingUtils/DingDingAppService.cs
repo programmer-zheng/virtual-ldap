@@ -64,7 +64,7 @@ namespace DingDingSync.Application.DingDingUtils
                 {
                     TeaException err = new TeaException(new Dictionary<string, object>
                     {
-                        {"message", _err.Message}
+                        { "message", _err.Message }
                     });
                     if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
                     {
@@ -100,7 +100,13 @@ namespace DingDingSync.Application.DingDingUtils
             }
         }
 
-        public List<OapiDepartmentListResponse.DepartmentDomain> GetDepartmentList(long dept_id = 1)
+        /// <summary>
+        /// 获取下级部门基础信息
+        /// </summary>
+        /// <param name="parentDeptId">父级部门ID，默认公司层级的ID为1，父级ID为0</param>
+        /// <returns></returns>
+        /// <exception cref="UserFriendlyException">接口调用失败，抛出具体异常信息</exception>
+        public List<OapiDepartmentListResponse.DepartmentDomain> GetDepartmentList(long parentDeptId = 0)
         {
             try
             {
@@ -108,7 +114,11 @@ namespace DingDingSync.Application.DingDingUtils
                 IDingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/list");
                 var req = new OapiDepartmentListRequest();
                 req.FetchChild = true;
-                req.Id = $"{dept_id}";
+                if (parentDeptId > 0)
+                {
+                    req.Id = parentDeptId.ToString();
+                }
+
                 req.SetHttpMethod("GET");
                 var rsp = client.Execute(req, token);
                 if (rsp.Errcode != 0)
@@ -289,9 +299,10 @@ namespace DingDingSync.Application.DingDingUtils
                 req.UseridList = userid;
                 req.ToAllUser = false;
 
-                OapiMessageCorpconversationAsyncsendV2Request.MsgDomain msg = new OapiMessageCorpconversationAsyncsendV2Request.MsgDomain();
+                OapiMessageCorpconversationAsyncsendV2Request.MsgDomain msg =
+                    new OapiMessageCorpconversationAsyncsendV2Request.MsgDomain();
                 msg.Msgtype = "text";
-                msg.Text = new OapiMessageCorpconversationAsyncsendV2Request.TextDomain() {Content = msgContent};
+                msg.Text = new OapiMessageCorpconversationAsyncsendV2Request.TextDomain() { Content = msgContent };
                 req.Msg_ = msg;
                 var rsp = client.Execute(req, token);
                 if (rsp.Errcode != 0)
