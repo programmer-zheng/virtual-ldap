@@ -19,13 +19,16 @@ namespace DingDingSync.Web.Startup
 {
     public class Startup
     {
-        
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+
+        public IHostEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -40,14 +43,15 @@ namespace DingDingSync.Web.Startup
             services.Configure<IKuaiConfigOptions>(Configuration.GetSection(IKuaiConfigOptions.IKuai));
 
             services.AddScoped<IDingdingAppService, DingDingAppService>();
-            
+
             RegisterDingDingEventHandler(services);
 
             services.AddControllersWithViews(); //.AddRazorRuntimeCompilation();
             return services.AddAbp<WebModule>(options =>
             {
                 options.IocManager.IocContainer.AddFacility<LoggingFacility>(facility =>
-                    facility.UseAbpLog4Net().WithConfig("log4net.config"));
+                    facility.UseAbpLog4Net()
+                        .WithConfig(Environment.IsDevelopment() ? "log4net.Development.config" : "log4net.config"));
             });
         }
 
