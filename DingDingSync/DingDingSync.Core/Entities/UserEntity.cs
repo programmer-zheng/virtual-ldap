@@ -61,7 +61,7 @@ namespace DingDingSync.Core.Entities
         public string? Email { get; set; }
 
         /// <summary>
-        /// 钉钉账号是否激活
+        /// 账号是否激活
         /// </summary>
         public bool Active { get; set; }
 

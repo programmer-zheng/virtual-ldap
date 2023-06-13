@@ -14,10 +14,11 @@ namespace DingDingSync.Application
                 .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Id))
                 .ForMember(t => t.ParentId, opt => opt.MapFrom(d => d.Parentid))
                 ;
-            
+
             CreateMap<WorkWeixinDeptUserListDto, UserEntity>()
                 .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Userid))
                 .ForMember(t => t.UserName, opt => opt.MapFrom(d => d.Userid))
+                .ForMember(t => t.Active, opt => opt.MapFrom(d => d.Status == 1))
                 ;
         }
     }
