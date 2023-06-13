@@ -9,6 +9,12 @@ namespace DingDingSync.Application
     {
         public WorkWeixinMapper()
         {
+            CreateMap<WorkWeixinDeptListDto, DepartmentEntity>()
+                .ForMember(t => t.DeptName, opt => opt.MapFrom(d => d.Name))
+                .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Id))
+                .ForMember(t => t.ParentId, opt => opt.MapFrom(d => d.Parentid))
+                ;
+            
             CreateMap<WorkWeixinDeptUserListDto, UserEntity>()
                 .ForMember(t => t.Id, opt => opt.MapFrom(d => d.Userid))
                 .ForMember(t => t.UserName, opt => opt.MapFrom(d => d.Userid))
