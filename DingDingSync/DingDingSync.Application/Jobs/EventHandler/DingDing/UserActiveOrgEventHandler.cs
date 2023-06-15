@@ -1,6 +1,6 @@
 ﻿using Castle.Core.Logging;
 
-namespace DingDingSync.Application.Jobs.EventHandler
+namespace DingDingSync.Application.Jobs.EventHandler.DingDing
 {
     /// <summary>
     /// 加入企业后用户激活

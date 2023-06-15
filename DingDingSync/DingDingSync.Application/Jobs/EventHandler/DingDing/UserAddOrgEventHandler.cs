@@ -8,7 +8,7 @@ using DingDingSync.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace DingDingSync.Application.Jobs.EventHandler
+namespace DingDingSync.Application.Jobs.EventHandler.DingDing
 {
     /// <summary>
     /// 通讯录用户增加

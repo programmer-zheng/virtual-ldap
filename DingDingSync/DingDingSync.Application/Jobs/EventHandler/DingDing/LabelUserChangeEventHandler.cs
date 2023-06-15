@@ -5,7 +5,7 @@ using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
 using Newtonsoft.Json;
 
-namespace DingDingSync.Application.Jobs.EventHandler
+namespace DingDingSync.Application.Jobs.EventHandler.DingDing
 {
     /// <summary>
     /// 员工角色信息发生变更
