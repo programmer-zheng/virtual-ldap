@@ -22,7 +22,6 @@ namespace DingDingSync.Web.Controllers
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 
         public IDingdingAppService _dingdingAppService { get; set; }
-        public ILogger Logger { get; set; }
 
         public IDingdingAppService DingdingAppService { get; set; }
 

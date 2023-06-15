@@ -21,12 +21,9 @@ namespace DingDingSync.Web.Controllers
 {
     public class HomeController : AbpController
     {
-        public ILogger _logger { get; set; }
-
-
         public IConfiguration Configuration { get; set; }
 
-        public IUserAppService _userAppService { get; set; }
+        public IUserAppService UserAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
         
@@ -70,14 +67,14 @@ namespace DingDingSync.Web.Controllers
         [Route("/UserDetail")]
         public async Task<IActionResult> UserDetail(string userid)
         {
-            var user = await _userAppService.GetDeptUserDetail(userid);
+            var user = await UserAppService.GetDeptUserDetail(userid);
             return Json(user);
         }
 
         [Route("/ManageUsers")]
         public async Task<IActionResult> ManageUsers(string userid)
         {
-            var users = await _userAppService.GetAdminDeptUsers(userid);
+            var users = await UserAppService.GetAdminDeptUsers(userid);
             return PartialView(users);
         }
 
@@ -95,7 +92,7 @@ namespace DingDingSync.Web.Controllers
 
             UserSimpleDto user = null;
             // 根据用户id，查询数据库，获取人员信息，返回ldap用户名、姓名等信息
-            var userinfo = await _userAppService.GetByIdAsync(userid);
+            var userinfo = await UserAppService.GetByIdAsync(userid);
             if (userinfo == null)
             {
                 ViewBag.Msg = "域账号未开通，请联系管理员开通！";
@@ -125,13 +122,13 @@ namespace DingDingSync.Web.Controllers
         [Route("/EnableAccount")]
         public async Task<IActionResult> EnableAccount(string userid, string username)
         {
-            var userinfo = await _userAppService.GetByIdAsync(userid);
+            var userinfo = await UserAppService.GetByIdAsync(userid);
             if (userinfo != null && userinfo.AccountEnabled)
             {
                 return Json(new { success = false, Msg = $"{userinfo.Name} 账号已启用，无须重复操作！" });
             }
 
-            var result = await _userAppService.EnableAccount(userid, username);
+            var result = await UserAppService.EnableAccount(userid, username);
             return Json(new { success = result, Msg = result ? "启用账号成功！" : "启用账号失败！" });
         }
 
@@ -142,7 +139,7 @@ namespace DingDingSync.Web.Controllers
             var result = false;
             try
             {
-                var userinfo = await _userAppService.GetByIdAsync(userid);
+                var userinfo = await UserAppService.GetByIdAsync(userid);
                 if (userinfo != null)
                 {
                     if (!userinfo.AccountEnabled)
@@ -160,7 +157,7 @@ namespace DingDingSync.Web.Controllers
                         throw new UserFriendlyException($"{userinfo.Name} 的VPN账号已启用，无须重复操作；若无法使用VPN账号，请联系管理员！");
                     }
 
-                    result = await _userAppService.EnableVpnAccount(userid);
+                    result = await UserAppService.EnableVpnAccount(userid);
                     if (result)
                     {
                         await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
@@ -169,7 +166,7 @@ namespace DingDingSync.Web.Controllers
             }
             catch (Exception e)
             {
-                _logger.Error($"启用VPN账号{userid}失败，发生异常", e);
+                Logger.Error($"启用VPN账号{userid}失败，发生异常", e);
                 return Json(new { success = false, Msg = e.Message });
             }
 
@@ -180,13 +177,13 @@ namespace DingDingSync.Web.Controllers
         [Route("/ResetAccountPassword")]
         public async Task<IActionResult> ResetAccountPassword(string userid)
         {
-            var userinfo = await _userAppService.GetByIdAsync(userid);
+            var userinfo = await UserAppService.GetByIdAsync(userid);
             if (userinfo == null)
             {
                 return Json(new { success = false, Msg = "重置密码失败，不存在该员工！" });
             }
 
-            var result = await _userAppService.ResetAccountPassword(userid);
+            var result = await UserAppService.ResetAccountPassword(userid);
             if (result && userinfo.VpnAccountEnabled)
             {
                 await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);

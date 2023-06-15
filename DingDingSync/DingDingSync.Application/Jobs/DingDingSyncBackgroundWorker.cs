@@ -9,8 +9,6 @@ namespace DingDingSync.Application.Jobs
 {
     public class DingDingSyncBackgroundWorker : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
     {
-        public ILogger Logger { get; set; }
-
         public IUserAppService UserAppService { get; set; }
 
         public DingDingSyncBackgroundWorker(AbpAsyncTimer timer) : base(timer)

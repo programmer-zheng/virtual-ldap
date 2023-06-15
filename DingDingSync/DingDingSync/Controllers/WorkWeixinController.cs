@@ -1,10 +1,8 @@
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Abp.AspNetCore.Mvc.Controllers;
-using Castle.Core.Logging;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core;
@@ -13,14 +11,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DingDingSync.Web.Controllers;
 
 public class WorkWeixinController : AbpController
 {
-    public ILogger Logger { get; set; }
     public IConfiguration Configuration { get; set; }
     
     public IUserAppService UserAppService { get; set; }
@@ -35,7 +31,7 @@ public class WorkWeixinController : AbpController
     }
 
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         var corpId = _weixinConfigOptions.CorpId;
         var host = Request.Host.ToString();
@@ -66,7 +62,6 @@ public class WorkWeixinController : AbpController
         }
          */
 
-
         var jObject = JObject.Parse(result);
         var errorCode = jObject.Value<int>("errcode");
         if (errorCode == 0)
@@ -78,28 +73,11 @@ public class WorkWeixinController : AbpController
                     { HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7) });
             return RedirectToAction("Manage", "Home");
         }
+        else
+        {
+            return Content(jObject.Value<string>("errmsg"));
+        }
 
-        var ticket = jObject.Value<string>("user_ticket");
-        url = $"https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail?access_token={accessToken}";
-        var json = JsonConvert.SerializeObject(new { user_ticket = ticket });
-        var content = new StringContent(json, Encoding.UTF8);
-        response = await client.PostAsync(url, content);
-        result = await response.Content.ReadAsStringAsync();
-        /*
-            {
-              "errcode": 0,
-              "errmsg": "ok",
-              "userid": "ZhengWei",
-              "mobile": "17368463372",
-              "gender": "1",
-              "email": "",
-              "avatar": "https://wx.qlogo.cn/mmhead/UzdMZnQBfw0msjbVww7X0neTbGVJJNoes1ABdXShOb0/0",
-              "qr_code": "https://open.work.weixin.qq.com/wwopen/userQRCode?vcode\u003dvc9d9ab2880b16eeec",
-              "biz_mail": "zhengwei@qwcs97.wecom.work",
-              "address": ""
-            }
-         */
-        return Content(result);
     }
 
     private async Task<string> GetWorkWeixinAccessToken()
@@ -122,14 +100,14 @@ public class WorkWeixinController : AbpController
 
     [HttpGet]
     [Route("/WorkWeixin_Callback")]
-    public async Task<IActionResult> Callback_Get(string msg_signature, string timestamp, string nonce, string echostr)
+    public IActionResult Callback_Get(string msgSignature, string timestamp, string nonce, string echostr)
     {
         var token = Configuration["WorkWeixin:Token"];
-        var encodingAESKey = Configuration["WorkWeixin:EncodingAESKey"];
+        var encodingAesKey = Configuration["WorkWeixin:EncodingAESKey"];
         var corpId = Configuration["WorkWeixin:CorpId"];
-        var wxBizMsgCrypt = new WXBizMsgCrypt(token, encodingAESKey, corpId);
+        var wxBizMsgCrypt = new WXBizMsgCrypt(token, encodingAesKey, corpId);
         var returnStr = string.Empty;
-        var resultCode = wxBizMsgCrypt.VerifyURL(msg_signature, timestamp, nonce, echostr, ref returnStr);
+        var resultCode = wxBizMsgCrypt.VerifyURL(msgSignature, timestamp, nonce, echostr, ref returnStr);
         if (resultCode == 0)
         {
             return Content(returnStr);
