@@ -7,7 +7,7 @@ using DingDingSync.Application;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.Jobs;
-using DingDingSync.Application.Jobs.EventHandler;
+using DingDingSync.Application.Jobs.EventHandler.DingDing;
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
@@ -64,7 +64,7 @@ namespace DingDingSync.Web.Startup
                 throw new Exception("目前只支持钉钉(DingDing)、企业微信(WorkWeixin)，请正确填写 WorkEnv");
             }
 
-            services.AddControllersWithViews(); //.AddRazorRuntimeCompilation();
+            services.AddControllersWithViews().AddXmlSerializerFormatters(); //.AddRazorRuntimeCompilation();
             return services.AddAbp<WebModule>(options =>
             {
                 options.IocManager.IocContainer.AddFacility<LoggingFacility>(facility =>
