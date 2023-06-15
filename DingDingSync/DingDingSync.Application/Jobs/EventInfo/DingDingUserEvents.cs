@@ -2,7 +2,7 @@
 
 namespace DingDingSync.Application.Jobs.EventInfo
 {
-    public class UserEventBase : DingDingEventBaseInfo<string>
+    public class DingDingUserEventBase : DingDingEventBaseInfo<string>
     {
         [JsonProperty(PropertyName = "UserId")]
         public override List<string> ID { get; set; }
@@ -11,35 +11,35 @@ namespace DingDingSync.Application.Jobs.EventInfo
     /// <summary>
     /// 通讯录用户增加
     /// </summary>
-    public class UserAddOrgEvent : UserEventBase
+    public class UserAddOrgEvent : DingDingUserEventBase
     {
     }
 
     /// <summary>
     /// 通讯录用户更改
     /// </summary>
-    public class UserModifyOrgEvent : UserEventBase
+    public class UserModifyOrgEvent : DingDingUserEventBase
     {
     }
 
     /// <summary>
     /// 通讯录用户离职
     /// </summary>
-    public class UserLeaveOrgEvent : UserEventBase
+    public class UserLeaveOrgEvent : DingDingUserEventBase
     {
     }
 
     /// <summary>
     /// 加入企业后用户激活
     /// </summary>
-    public class UserActiveOrgEvent : UserEventBase
+    public class UserActiveOrgEvent : DingDingUserEventBase
     {
     }
 
     /// <summary>
     /// 通讯录用户被设为管理员
     /// </summary>
-    public class OrgAdminAddEvent : UserEventBase
+    public class OrgAdminAddEvent : DingDingUserEventBase
     {
     }
 
@@ -47,7 +47,7 @@ namespace DingDingSync.Application.Jobs.EventInfo
     /// <summary>
     /// 通讯录用户被取消设置管理员
     /// </summary>
-    public class OrgAdminRemoveEvent : UserEventBase
+    public class OrgAdminRemoveEvent : DingDingUserEventBase
     {
     }
 
@@ -55,7 +55,7 @@ namespace DingDingSync.Application.Jobs.EventInfo
     /// <summary>
     /// 员工角色信息发生变更
     /// </summary>
-    public class LabelUserChangeEvent : UserEventBase
+    public class LabelUserChangeEvent : DingDingUserEventBase
     {
         [JsonProperty(PropertyName = "UserIdList")]
         public override List<string> ID { get; set; }
