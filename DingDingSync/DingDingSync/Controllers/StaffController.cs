@@ -6,7 +6,6 @@ using Abp.BackgroundJobs;
 using Abp.Extensions;
 using Abp.Runtime.Validation;
 using Abp.UI;
-using Castle.Core.Logging;
 using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;

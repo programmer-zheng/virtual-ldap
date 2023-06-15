@@ -6,7 +6,6 @@ using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
 using Abp.Domain.Repositories;
 using Abp.UI;
-using Castle.Core.Logging;
 using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
-using Castle.Core.Logging;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.Jobs;

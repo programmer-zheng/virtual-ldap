@@ -193,7 +193,7 @@ public class WXBizMsgCrypt
         return 0;
     }
 
-    public class DictionarySort : System.Collections.IComparer
+    public class DictionarySort : IComparer
     {
         public int Compare(object oLeft, object oRight)
         {

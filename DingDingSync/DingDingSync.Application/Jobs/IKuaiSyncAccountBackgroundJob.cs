@@ -3,7 +3,6 @@ using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Castle.Core.Logging;
-using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
 using DingDingSync.Application.IKuai.Dtos;
 using DingDingSync.Core.Entities;
