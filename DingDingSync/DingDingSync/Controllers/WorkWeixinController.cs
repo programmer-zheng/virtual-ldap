@@ -4,7 +4,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 using Abp.AspNetCore.Mvc.Controllers;
+using Abp.BackgroundJobs;
 using DingDingSync.Application.AppService;
+using DingDingSync.Application.Jobs;
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core;
 using DingDingSync.Web.Startup;
@@ -20,6 +22,7 @@ public class WorkWeixinController : AbpController
 {
     public IConfiguration Configuration { get; set; }
 
+    public IBackgroundJobManager BackgroundJobManager { get; set; }
     public IUserAppService UserAppService { get; set; }
 
     public IWorkWeixinAppService WorkWeixinAppService { get; set; }
@@ -30,7 +33,6 @@ public class WorkWeixinController : AbpController
     {
         _weixinConfigOptions = options.Value;
     }
-
 
     public IActionResult Index()
     {
@@ -48,56 +50,22 @@ public class WorkWeixinController : AbpController
     [Route("/WorkWeixin_Authorize")]
     public async Task<IActionResult> Authorize(string code, string state)
     {
-        var accessToken = await GetWorkWeixinAccessToken();
-        var client = new HttpClient();
-        var url = $"https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo?access_token={accessToken}&code={code}";
-        var response = await client.GetAsync(url);
-        var result = await response.Content.ReadAsStringAsync();
-        /*
-        {
-          "userid": "ZhengWei",
-          "errcode": 0,
-          "errmsg": "ok",
-          "user_ticket": "KNDoS9LEcUDLy_R3_yaZ-CwcEg6-Jtk-bxggzPi9qQQaaYNcdcFARPkkdrA4lVSoIHdjYiNZM_HNRNqDWiKDTvWvK_FUcig4fx7pJCR_FWM",
-          "expires_in": 1800
-        }
-         */
+        var userId = await WorkWeixinAppService.GetUserId(code, state);
 
-        var jObject = JObject.Parse(result);
-        var errorCode = jObject.Value<int>("errcode");
-        if (errorCode == 0)
-        {
-            var userid = jObject.Value<string>("userid");
-
-            Response.Cookies.Append(LdapConsts.CookieName, userid,
-                new CookieOptions
-                    { HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7) });
-            return RedirectToAction("Manage", "Home");
-        }
-        else
-        {
-            return Content(jObject.Value<string>("errmsg"));
-        }
+        Response.Cookies.Append(LdapConsts.CookieName, userId,
+            new CookieOptions
+                { HttpOnly = true, Expires = DateTimeOffset.Now.AddDays(7) });
+        return RedirectToAction("Manage", "Home");
     }
 
-    private async Task<string> GetWorkWeixinAccessToken()
-    {
-        var corpId = _weixinConfigOptions.CorpId;
-        var secret = _weixinConfigOptions.AppSecret;
-        var url = $"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpId}&corpsecret={secret}";
-        var client = new HttpClient();
-        var response = await client.GetAsync(url);
-        var result = await response.Content.ReadAsStringAsync();
-        var jObject = JObject.Parse(result);
-        var errorCode = jObject.Value<int>("errcode");
-        if (errorCode == 0)
-        {
-            return jObject.Value<string>("access_token");
-        }
-
-        return result;
-    }
-
+    /// <summary>
+    /// 企业微信回调验证URL
+    /// </summary>
+    /// <param name="msg_signature"></param>
+    /// <param name="timestamp"></param>
+    /// <param name="nonce"></param>
+    /// <param name="echostr"></param>
+    /// <returns></returns>
     [HttpGet]
     [Route("/WorkWeixin_Callback")]
     public IActionResult Callback_Get(string msg_signature, string timestamp, string nonce, string echostr)
@@ -119,7 +87,7 @@ public class WorkWeixinController : AbpController
     }
 
     /// <summary>
-    /// 
+    /// 处理企业微信回调 
     /// </summary>
     /// <param name="msg_signature">企业微信加密签名，msg_signature结合了企业填写的token、请求中的timestamp、nonce参数、加密的消息体</param>
     /// <param name="timestamp">时间戳。与nonce结合使用，用于防止请求重放攻击。</param>
@@ -128,7 +96,7 @@ public class WorkWeixinController : AbpController
     /// <returns></returns>
     [HttpPost]
     [Route("/WorkWeixin_Callback")]
-    public IActionResult Callback_Post(string msg_signature, string timestamp, string nonce,
+    public async Task<IActionResult> Callback_Post(string msg_signature, string timestamp, string nonce,
         [FromBody] XmlDocument postData)
     {
         var token = Configuration["WorkWeixin:Token"];
@@ -137,12 +105,13 @@ public class WorkWeixinController : AbpController
         var wxBizMsgCrypt = new WXBizMsgCrypt(token, encodingAesKey, corpId);
         var str = string.Empty;
         var code = wxBizMsgCrypt.DecryptMsg(msg_signature, timestamp, nonce, postData.InnerXml, ref str);
-        Logger.Debug($"msg_signature={msg_signature}&timestamp={timestamp}&nonce={nonce}");
-        Logger.Debug($"原始：{postData.InnerXml}");
-        Logger.Debug($"解密：{str}");
-        Logger.Debug($"Code:{code}");
+
         if (code == 0)
         {
+            // 使用后台工人处理相关逻辑           
+            await BackgroundJobManager
+                .EnqueueAsync<WorkWeixinCallbackBackgroundJob, string>(str);
+
             return Content("OK");
         }
         else

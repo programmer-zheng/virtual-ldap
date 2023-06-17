@@ -47,6 +47,34 @@ public class WorkWeixinAppService : IWorkWeixinAppService, ICommonProvider
         return result;
     }
 
+    public async Task<string> GetUserId(string code, string state)
+    {
+        var accessToken = await GetAccessToken();
+        var client = new HttpClient();
+        var url = $"https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo?access_token={accessToken}&code={code}";
+        var response = await client.GetAsync(url);
+        var result = await response.Content.ReadAsStringAsync();
+        /*
+            {
+              "userid": "xxxx",
+              "errcode": 0,
+              "errmsg": "ok",
+              "user_ticket": "KNDoS9LEcUDLy_R3_yaZ-CwcEg6-Jtk-bxggzPi9qQQaaYNcdcFARPkkdrA4lVSoIHdjYiNZM_HNRNqDWiKDTvWvK_FUcig4fx7pJCR_FWM",
+              "expires_in": 1800
+            }
+         */
+        var jObject = JObject.Parse(result);
+        var errorCode = jObject.Value<int>("errcode");
+        if (errorCode == 0)
+        {
+            return jObject.Value<string>("userid");
+        }
+        else
+        {
+            throw new UserFriendlyException(jObject.Value<string>("errmsg"));
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>

@@ -10,6 +10,8 @@ public interface IWorkWeixinAppService: IApplicationService
     /// <returns></returns>
     Task<string> GetAccessToken();
 
+    Task<string> GetUserId(string code, string state);
+
     /// <summary>
     /// 获取企业部门列表（包含子部门）
     /// </summary>
