@@ -1,4 +1,5 @@
 ﻿using Abp.Domain.Repositories;
+using AutoMapper;
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,6 @@ namespace DingDingSync.Application.AppService
     public class DepartmentAppService : IDepartmentAppService
     {
         public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
-
 
         public async Task<List<DepartmentDto>> GetAllDepartments()
         {
@@ -20,6 +20,11 @@ namespace DingDingSync.Application.AppService
                     Parentid = t.ParentId
                 }).ToListAsync();
             return list;
+        }
+
+        public async Task AddDepartment(DepartmentEntity dto)
+        {
+            await DeptRepository.InsertAsync(dto);
         }
     }
 }
