@@ -1,7 +1,7 @@
 ﻿using Castle.Core.Logging;
 using DingTalk.Api.Response;
 
-namespace DingDingSync.Application.Jobs
+namespace DingDingSync.Application.Jobs.EventHandler.DingDing
 {
     public abstract class DingdingBaseEventHandler
     {
