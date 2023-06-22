@@ -1,9 +1,20 @@
 namespace DingDingSync.Application.Jobs.EventHandler.WorkWeixin;
 
-public class CreatePartyEventHandler : IWorkWeixinEventHandler
+public class CreatePartyEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler
 {
+    public string EventType { get; set; } = "create_party";
+
     public Task Handle(string msgContent)
     {
-        throw new NotImplementedException();
+        if (EventType == ChangeType)
+        {
+            Console.WriteLine("CreatePartyEventHandler");
+            
+        }
+        return Task.CompletedTask;
+    }
+
+    public CreatePartyEventHandler(string msgContent) : base(msgContent)
+    {
     }
 }

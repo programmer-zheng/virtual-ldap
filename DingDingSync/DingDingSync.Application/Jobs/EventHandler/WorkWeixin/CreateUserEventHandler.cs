@@ -1,9 +1,16 @@
 namespace DingDingSync.Application.Jobs.EventHandler.WorkWeixin;
 
-public class CreateUserEventHandler : IWorkWeixinEventHandler
+public class CreateUserEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler
 {
+    public string EventType { get; set; } = "create_user";
+
     public Task Handle(string msgContent)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("CreateUserEventHandler");
+        return Task.CompletedTask;;
+    }
+
+    public CreateUserEventHandler(string msgContent) : base(msgContent)
+    {
     }
 }
