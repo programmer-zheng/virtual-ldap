@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{42B3FDFF-C32F-41D7-A6DB-DEDD3126B675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DingDingSync.Test", "DingDingSync.Test\DingDingSync.Test.csproj", "{424D5051-8839-4969-A987-BBE96F894481}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,11 +43,18 @@ Global
 		{20A3E397-2A2D-4683-B92E-7CDC0621C511}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20A3E397-2A2D-4683-B92E-7CDC0621C511}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20A3E397-2A2D-4683-B92E-7CDC0621C511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{424D5051-8839-4969-A987-BBE96F894481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{424D5051-8839-4969-A987-BBE96F894481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{424D5051-8839-4969-A987-BBE96F894481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{424D5051-8839-4969-A987-BBE96F894481}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89BBDEC8-1517-4A77-8B95-1648B0D2021F}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{424D5051-8839-4969-A987-BBE96F894481} = {42B3FDFF-C32F-41D7-A6DB-DEDD3126B675}
 	EndGlobalSection
 EndGlobal
