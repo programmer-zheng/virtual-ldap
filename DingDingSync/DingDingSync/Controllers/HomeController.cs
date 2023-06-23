@@ -25,7 +25,7 @@ namespace DingDingSync.Web.Controllers
         public IUserAppService UserAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
-        
+
         public ICommonProvider CommonProvider { get; set; }
 
         private readonly IRepository<UserEntity, string> _userRepository;
@@ -138,29 +138,10 @@ namespace DingDingSync.Web.Controllers
             var result = false;
             try
             {
-                var userinfo = await UserAppService.GetByIdAsync(userid);
-                if (userinfo != null)
+                result = await UserAppService.EnableVpnAccount(userid);
+                if (result)
                 {
-                    if (!userinfo.AccountEnabled)
-                    {
-                        throw new UserFriendlyException($"启用VPN账号失败，请先为 {userinfo.Name} 开通域账号！");
-                    }
-
-                    if (!userinfo.PasswordInited)
-                    {
-                        throw new UserFriendlyException($"{userinfo.Name} 还未修改初始密码，无法启用VPN账号，请先修改默认密码！");
-                    }
-
-                    if (userinfo.VpnAccountEnabled)
-                    {
-                        throw new UserFriendlyException($"{userinfo.Name} 的VPN账号已启用，无须重复操作；若无法使用VPN账号，请联系管理员！");
-                    }
-
-                    result = await UserAppService.EnableVpnAccount(userid);
-                    if (result)
-                    {
-                        await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
-                    }
+                    await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
                 }
             }
             catch (Exception e)

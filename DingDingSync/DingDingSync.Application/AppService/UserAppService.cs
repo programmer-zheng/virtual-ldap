@@ -117,13 +117,13 @@ namespace DingDingSync.Application.AppService
 
         public async Task<UserEntity> GetByIdAsync(string userId)
         {
-            return await UserRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
+            return await UserRepository.FirstOrDefaultAsync(t => t.Id == userId);
         }
 
         public async Task<UserEntity> GetByUserNameAsync(string username)
         {
-            return await UserRepository.GetAll()
-                .FirstOrDefaultAsync(t => t.UserName == username || t.Mobile == username || t.Email == username);
+            return await UserRepository.FirstOrDefaultAsync(t =>
+                t.UserName == username || t.Mobile == username || t.Email == username);
         }
 
         public async Task SyncDepartmentAndUser()
@@ -329,11 +329,36 @@ namespace DingDingSync.Application.AppService
         {
             try
             {
+                var userinfo = await GetByIdAsync(userId);
+                if (userinfo == null)
+                {
+                    throw new UserFriendlyException("用户不存在");
+                }
+
+                if (!userinfo.AccountEnabled)
+                {
+                    throw new UserFriendlyException($"启用VPN账号失败，请先为 {userinfo.Name} 开通域账号！");
+                }
+
+                if (!userinfo.PasswordInited)
+                {
+                    throw new UserFriendlyException($"{userinfo.Name} 还未修改初始密码，无法启用VPN账号，请先修改默认密码！");
+                }
+
+                if (userinfo.VpnAccountEnabled)
+                {
+                    throw new UserFriendlyException($"{userinfo.Name} 的VPN账号已启用，无须重复操作；若无法使用VPN账号，请联系管理员！");
+                }
+
                 UserRepository.Update(userId, t => t.VpnAccountEnabled = true);
 
                 var msgContent = $"已为您启用VPN账号，VPN的账号、密码与域账号相同。";
                 await CommonProvider.SendTextMessage(userId, msgContent);
                 return true;
+            }
+            catch (UserFriendlyException)
+            {
+                throw;
             }
             catch (Exception e)
             {
