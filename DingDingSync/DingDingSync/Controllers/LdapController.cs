@@ -5,6 +5,7 @@ using Abp.Extensions;
 using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
+using DingDingSync.Web.Startup;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DingDingSync.Web.Controllers;
@@ -23,6 +24,7 @@ public class LdapController : AbpController
     /// </summary>
     /// <returns></returns>
     [Route("/departments")]
+    [ServiceFilter(typeof(CheckTokenFilterAttribute))]
     public async Task<IActionResult> Departments()
     {
         var depts = await _departmentAppService.GetAllDepartments();
@@ -36,6 +38,7 @@ public class LdapController : AbpController
     /// <param name="deptid"></param>
     /// <returns></returns>
     [Route("/deptusers")]
+    [ServiceFilter(typeof(CheckTokenFilterAttribute))]
     public async Task<IActionResult> DeptUsers(long deptid)
     {
         var users = await _userAppService.DeptUsers(deptid);
@@ -49,6 +52,7 @@ public class LdapController : AbpController
     /// <returns></returns>
     [HttpPost]
     [Route("/validateuser")]
+    [ServiceFilter(typeof(CheckTokenFilterAttribute))]
     public async Task<IActionResult> ValidateUser([FromBody] LdapRequestViewModel input)
     {
         var result = new LdapResponseViewModel();

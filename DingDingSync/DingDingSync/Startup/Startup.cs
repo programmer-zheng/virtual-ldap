@@ -39,6 +39,8 @@ namespace DingDingSync.Web.Startup
                 DingDingSyncDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
             });
 
+            services.AddScoped<CheckTokenFilterAttribute>();
+
             services.Configure<DingDingConfigOptions>(Configuration.GetSection(DingDingConfigOptions.DingDing));
             services.Configure<WorkWeixinConfigOptions>(Configuration.GetSection(WorkWeixinConfigOptions.WorkWeixin));
 
