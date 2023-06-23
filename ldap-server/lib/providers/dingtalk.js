@@ -142,7 +142,7 @@ async function fetchAllUsers(departments) {
       }
     }
 
-    console.log('department users load complete,load：'+allUsers.length + ' user data');
+    console.log('department users load complete,load：' + allUsers.length + ' user data');
 
     //saveCacheToFile('dingtalk_users.json', allUsers);
   } else {
@@ -230,7 +230,7 @@ async function reloadFromDingtalkServer() {
       mobileTelephoneNumber: u.mobile,
       uid: py,
       sAMAccountName: py,
-      userPassword:u.password,
+      userPassword: u.password,
       cn: u.name,
       // givenName,
       // sn,

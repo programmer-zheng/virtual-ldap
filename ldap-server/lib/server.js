@@ -146,23 +146,25 @@ server.search(getRootDN(), authorize, (req, res, next) => {
 });
 
 server.modify(getOrganizationBaseDN(), authorize, async (req, res, next) => {
-  
+
   return next(new ldap.InsufficientAccessRightsError());
-  
+
 });
 
 server.bind(getRootDN(), async (req, res, next) => {
   const reqDN = parseDN(req.dn.toString().toLowerCase());
   console.debug('bind req', reqDN.toString())
   let aaa = getRootDN().toLowerCase();
-  console.error('aaaaaa', aaa)
-  console.error('bbbbbb', parseDN(aaa).toString().toLowerCase())
-  console.error('cccccc', reqDN.parent().toString().toLowerCase())
+  console.debug('getRootDN', aaa)
+  console.debug('parseDN', parseDN(aaa).toString().toLowerCase())
+  console.debug('reqDN.parent', reqDN.parent().toString().toLowerCase())
+
   if (parseDN(getRootDN().toLowerCase()).equals(reqDN.parent())) {
     // admins
     const username = reqDN.rdns[0].attrs.cn.value;
+    // 验证绑定的管理员密码
     if (validateAdminPassword(username, req.credentials)) {
-      res.end();      
+      res.end();
       return next();
     } else {
       return next(new ldap.InvalidCredentialsError());
@@ -174,7 +176,7 @@ server.bind(getRootDN(), async (req, res, next) => {
     if (matchedUser) {
       const apiUrl = providerConfig.serverHost + "/validateuser";
       const postData = { username: matchedUser.attributes.uid, password: req.credentials };
-      await axios.post(apiUrl, postData, { headers: { 'Content-Type': 'application/json','token':providerConfig.LdapRequestToken } })
+      await axios.post(apiUrl, postData, { headers: { 'Content-Type': 'application/json', 'token': providerConfig.LdapRequestToken } })
         .then(ret => {
           if (ret.data && ret.data.success === true) {
             res.end();
@@ -187,15 +189,15 @@ server.bind(getRootDN(), async (req, res, next) => {
           console.error("request validate user api to check password error", e);
           //当请求api失败时，使用本地密码进行匹配（本地密码不一定是最新的）
           const pwd = md5(req.credentials).toLowerCase();
-          console.log('nodejs md5:'+pwd)
-          console.log('ldapserver md5:'+matchedUser.attributes.userPassword)
-          if(pwd == matchedUser.attributes.userPassword.toLowerCase()){
+          console.debug('nodejs md5:' + pwd)
+          console.debug('ldapserver md5:' + matchedUser.attributes.userPassword)
+          if (pwd == matchedUser.attributes.userPassword.toLowerCase()) {
             res.end();
             return next();
           }
         });
-        return next(new ldap.InvalidCredentialsError());
-      
+      return next(new ldap.InvalidCredentialsError());
+
     } else {
       console.warn('user is not found:', reqDN);
       return next(new ldap.InvalidCredentialsError());
