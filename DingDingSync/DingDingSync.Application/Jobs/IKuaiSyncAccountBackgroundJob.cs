@@ -7,6 +7,7 @@ using DingDingSync.Application.IKuai;
 using DingDingSync.Application.IKuai.Dtos;
 using DingDingSync.Core.Entities;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace DingDingSync.Application.Jobs;
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 

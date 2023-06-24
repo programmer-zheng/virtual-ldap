@@ -2,8 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,12 +23,6 @@
     <ItemGroup>
       <ProjectReference Include="..\DingDingSync.Application\DingDingSync.Application.csproj" />
       <ProjectReference Include="..\DingDingSync.EntityFrameworkCore\DingDingSync.EntityFrameworkCore.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
 </Project>

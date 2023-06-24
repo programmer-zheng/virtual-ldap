@@ -1,4 +1,6 @@
-﻿namespace DingDingSync.Application.Jobs.EventInfo
+﻿using System.Collections.Generic;
+
+namespace DingDingSync.Application.Jobs.EventInfo
 {
     public class DingDingEventBaseInfo<T>
     {

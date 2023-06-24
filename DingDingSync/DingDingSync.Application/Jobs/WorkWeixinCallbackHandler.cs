@@ -1,4 +1,6 @@
 using DingDingSync.Application.Jobs.EventHandler.WorkWeixin;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DingDingSync.Application.Jobs;
 

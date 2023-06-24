@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services;
 using DingTalk.Api.Response;
+using System.Collections.Generic;
 
 namespace DingDingSync.Application.DingDingUtils
 {

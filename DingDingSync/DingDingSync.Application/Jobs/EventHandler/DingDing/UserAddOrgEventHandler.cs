@@ -7,6 +7,7 @@ using DingDingSync.Application.Jobs.EventInfo;
 using DingDingSync.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System;
 
 namespace DingDingSync.Application.Jobs.EventHandler.DingDing
 {

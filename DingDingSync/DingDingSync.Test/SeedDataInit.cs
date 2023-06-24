@@ -1,5 +1,6 @@
 using DingDingSync.Core.Entities;
 using DingDingSync.EntityFrameworkCore;
+using System.Linq;
 
 namespace DingDingSync.Test;
 
@@ -9,6 +10,7 @@ public class SeedDataInit
     public const string DefaultDepartName = "测试部门";
     public const string DefaultUserId = "8A1FF092EECD4CF68C1508DC353467A9";
     public const long DefaultDeptId = 1L;
+
     private readonly DingDingSyncDbContext _context;
 
     public SeedDataInit(DingDingSyncDbContext context)

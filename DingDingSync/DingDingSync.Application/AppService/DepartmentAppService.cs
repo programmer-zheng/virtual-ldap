@@ -3,12 +3,20 @@ using AutoMapper;
 using DingDingSync.Application.AppService.Dtos;
 using DingDingSync.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DingDingSync.Application.AppService
 {
     public class DepartmentAppService : IDepartmentAppService
     {
-        public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
+        private readonly IRepository<DepartmentEntity, long> DeptRepository;
+
+        public DepartmentAppService(IRepository<DepartmentEntity, long> deptRepository)
+        {
+            DeptRepository = deptRepository;
+        }
 
         public async Task<List<DepartmentDto>> GetAllDepartments()
         {

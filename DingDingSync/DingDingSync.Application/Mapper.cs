@@ -2,6 +2,7 @@
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core.Entities;
 using DingTalk.Api.Response;
+using System;
 
 namespace DingDingSync.Application
 {

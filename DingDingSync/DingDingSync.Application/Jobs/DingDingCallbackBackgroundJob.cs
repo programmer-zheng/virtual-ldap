@@ -3,6 +3,7 @@ using Abp.Dependency;
 using Abp.Domain.Uow;
 using Castle.Core.Logging;
 using DingDingSync.Application.Jobs.EventHandler.DingDing;
+using System;
 
 namespace DingDingSync.Application.Jobs
 {

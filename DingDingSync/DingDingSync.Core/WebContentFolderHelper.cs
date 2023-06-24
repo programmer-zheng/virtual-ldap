@@ -1,4 +1,8 @@
-﻿namespace DingDingSync.Core
+﻿using System;
+using System.IO;
+using System.Linq;
+
+namespace DingDingSync.Core
 {
     /// <summary>
     /// This class is used to find root path of the web project in;

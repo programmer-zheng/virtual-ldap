@@ -1,5 +1,7 @@
 using Abp.TestBase;
 using DingDingSync.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace DingDingSync.Test;
 

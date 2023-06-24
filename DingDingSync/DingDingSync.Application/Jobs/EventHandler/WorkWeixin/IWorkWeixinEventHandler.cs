@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace DingDingSync.Application.Jobs.EventHandler.WorkWeixin;
 
 public interface IWorkWeixinEventHandler

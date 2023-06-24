@@ -1,4 +1,6 @@
-﻿namespace DingDingSync.Application.IKuai.Dtos
+﻿using System.Collections.Generic;
+
+namespace DingDingSync.Application.IKuai.Dtos
 {
     public class DeviceDto
     {

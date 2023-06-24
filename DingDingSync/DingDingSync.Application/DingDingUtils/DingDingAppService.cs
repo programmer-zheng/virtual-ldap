@@ -9,6 +9,9 @@ using DingTalk.Api;
 using DingTalk.Api.Request;
 using DingTalk.Api.Response;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tea;
 
 namespace DingDingSync.Application.DingDingUtils

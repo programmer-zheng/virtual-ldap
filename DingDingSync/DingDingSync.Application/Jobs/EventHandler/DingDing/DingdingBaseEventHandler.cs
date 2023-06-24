@@ -1,5 +1,6 @@
 ﻿using Castle.Core.Logging;
 using DingTalk.Api.Response;
+using System.Linq;
 
 namespace DingDingSync.Application.Jobs.EventHandler.DingDing
 {
