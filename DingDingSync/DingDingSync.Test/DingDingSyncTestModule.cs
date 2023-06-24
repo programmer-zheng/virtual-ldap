@@ -1,27 +1,54 @@
+using System.Reflection;
 using Abp.Modules;
+using Abp.Reflection.Extensions;
 using Abp.TestBase;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor.MsDependencyInjection;
 using DingDingSync.Application;
 using DingDingSync.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DingDingSync.Test;
 
-[DependsOn(typeof(DingDingSyncApplicationModule),
+[DependsOn(
+    typeof(DingDingSyncApplicationModule),
     typeof(DingDingSyncEntityFramworkModule),
     typeof(AbpTestBaseModule))]
 public class DingDingSyncTestModule : AbpModule
 {
+
     public override void PreInitialize()
     {
-        
-        Configuration.UnitOfWork.Timeout = TimeSpan.FromMinutes(30);
-        Configuration.UnitOfWork.IsTransactional = false;
-        base.PreInitialize();
+        Configuration.UnitOfWork.IsTransactional = false; //EF Core InMemory DB does not support transactions.
+        SetupInMemoryDb();
     }
 
     public override void Initialize()
     {
-        //IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
-        ServiceCollectionRegistrar.Register(IocManager);
+        IocManager.RegisterAssemblyByConvention(typeof(DingDingSyncTestModule).GetAssembly());
     }
-    
+
+    private void SetupInMemoryDb()
+    {
+        var services = new ServiceCollection()
+            .AddEntityFrameworkInMemoryDatabase();
+
+        var serviceProvider = WindsorRegistrationHelper.CreateServiceProvider(
+            IocManager.IocContainer,
+            services
+        );
+
+        var builder = new DbContextOptionsBuilder<DingDingSyncDbContext>();
+        builder.UseInMemoryDatabase("Test").UseInternalServiceProvider(serviceProvider);
+
+        IocManager.IocContainer.Register(
+            Component
+                .For<DbContextOptions<DingDingSyncDbContext>>()
+                .Instance(builder.Options)
+                .LifestyleSingleton()
+        );
+    }
+
+
 }

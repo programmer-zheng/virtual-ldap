@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -7,14 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Abp.EntityFrameworkCore" Version="7.4.0" />
       <PackageReference Include="Abp.TestBase" Version="7.4.0" />
       <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="3.4.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.18" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.19" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
       <PackageReference Include="NSubstitute" Version="4.3.0" />
       <PackageReference Include="Shouldly" Version="4.2.1" />
       <PackageReference Include="xunit" Version="2.4.2" />
+      <PackageReference Include="xunit.extensibility.execution" Version="2.4.2" />
       <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
@@ -24,7 +24,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DingDingSync.Application\DingDingSync.Application.csproj" />
-      <ProjectReference Include="..\DingDingSync.Core\DingDingSync.Core.csproj" />
       <ProjectReference Include="..\DingDingSync.EntityFrameworkCore\DingDingSync.EntityFrameworkCore.csproj" />
     </ItemGroup>
 

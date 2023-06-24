@@ -8,14 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Abp.AspNetCore" Version="7.1.0" />
-		<PackageReference Include="Abp.Castle.Log4Net" Version="7.1.0" />
-		<PackageReference Include="Abp.Quartz" Version="7.1.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+		<PackageReference Include="Abp.AspNetCore" Version="7.4.0" />
+		<PackageReference Include="Abp.Castle.Log4Net" Version="7.4.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.19">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
