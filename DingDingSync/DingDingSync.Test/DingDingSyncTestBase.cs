@@ -7,7 +7,7 @@ namespace DingDingSync.Test;
 
 public class DingDingSyncTestBase : AbpIntegratedTestBase<DingDingSyncTestModule>
 {
-    protected DingDingSyncTestBase()
+    public DingDingSyncTestBase()
     {
         UsingDbContext(context =>
         {
