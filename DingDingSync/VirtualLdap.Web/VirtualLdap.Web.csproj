@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<UserSecretsId>dee6fb3d-8b28-446f-976c-1d7504110639</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageId>VirtualLdap.Web</PackageId>
+		<RootNamespace>VirtualLdap.Web</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Abp.AspNetCore" Version="7.4.0" />
+		<PackageReference Include="Abp.Castle.Log4Net" Version="7.4.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.19">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\VirtualLdap.Application\VirtualLdap.Application.csproj" />
+		<ProjectReference Include="..\VirtualLdap.EntityFrameworkCore\VirtualLdap.EntityFrameworkCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="topsdk-net-core">
+			<HintPath>..\topsdk-net-core.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties appsettings_1development_1json__JsonSchema="https://json.schemastore.org/appsettings.json" />
+		</VisualStudio>
+	</ProjectExtensions>
+
+</Project>
