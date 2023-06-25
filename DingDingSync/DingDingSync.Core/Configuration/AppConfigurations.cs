@@ -1,11 +1,6 @@
-﻿using Abp.Extensions;
+﻿using System.Collections.Concurrent;
+using Abp.Extensions;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DingDingSync.Core.Configuration
 {

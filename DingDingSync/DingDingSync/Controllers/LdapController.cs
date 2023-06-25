@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Abp.AspNetCore.Mvc.Controllers;
+﻿using Abp.AspNetCore.Mvc.Controllers;
 using Abp.Extensions;
 using DingDingSync.Application;
 using DingDingSync.Application.AppService;

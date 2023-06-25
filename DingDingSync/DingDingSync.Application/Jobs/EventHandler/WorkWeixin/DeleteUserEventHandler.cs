@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace DingDingSync.Application.Jobs.EventHandler.WorkWeixin;
 
 public class DeleteUserEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler

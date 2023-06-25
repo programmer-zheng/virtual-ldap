@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
-using System.Data.Common;
 
 namespace DingDingSync.EntityFrameworkCore
 {

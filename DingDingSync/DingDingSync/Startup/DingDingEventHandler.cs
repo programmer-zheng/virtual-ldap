@@ -1,7 +1,4 @@
-using System;
-using DingDingSync.Application.Jobs;
 using DingDingSync.Application.Jobs.EventHandler.DingDing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DingDingSync.Web.Startup;
 

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 
 namespace DingDingSync.Web.Startup
 {

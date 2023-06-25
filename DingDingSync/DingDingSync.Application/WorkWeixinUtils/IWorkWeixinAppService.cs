@@ -1,6 +1,4 @@
 using Abp.Application.Services;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DingDingSync.Application.WorkWeixinUtils;
 

@@ -1,7 +1,4 @@
-using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Xml;
 using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
@@ -10,11 +7,8 @@ using DingDingSync.Application.Jobs;
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.Core;
 using DingDingSync.Web.Startup;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
 
 namespace DingDingSync.Web.Controllers;
 

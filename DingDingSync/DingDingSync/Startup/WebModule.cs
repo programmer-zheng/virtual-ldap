@@ -1,12 +1,10 @@
-﻿using System;
-using Abp.AspNetCore;
+﻿using Abp.AspNetCore;
 using Abp.AspNetCore.Configuration;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using DingDingSync.Application;
 using DingDingSync.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.Extensions.Configuration;
 
 namespace DingDingSync.Web.Startup
 {

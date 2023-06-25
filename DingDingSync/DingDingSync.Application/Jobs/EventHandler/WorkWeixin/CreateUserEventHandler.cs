@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace DingDingSync.Application.Jobs.EventHandler.WorkWeixin;
 
 public class CreateUserEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler

@@ -1,9 +1,7 @@
-using System;
 using Abp.Collections.Extensions;
 using Abp.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
 
 namespace DingDingSync.Web.Startup;
 
