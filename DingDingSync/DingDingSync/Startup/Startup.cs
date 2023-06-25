@@ -1,4 +1,3 @@
-using System;
 using Abp.AspNetCore;
 using Abp.Castle.Logging.Log4Net;
 using Abp.EntityFrameworkCore;
@@ -6,15 +5,8 @@ using Castle.Facilities.Logging;
 using DingDingSync.Application;
 using DingDingSync.Application.DingDingUtils;
 using DingDingSync.Application.IKuai;
-using DingDingSync.Application.Jobs;
-using DingDingSync.Application.Jobs.EventHandler.DingDing;
 using DingDingSync.Application.WorkWeixinUtils;
 using DingDingSync.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace DingDingSync.Web.Startup
 {
@@ -51,11 +43,11 @@ namespace DingDingSync.Web.Startup
             var workEnv = Configuration["WorkEnv"];
             if (workEnv.Equals("DingDing", StringComparison.OrdinalIgnoreCase))
             {
-                services.AddScoped<ICommonProvider, DingDingAppService>();
+                services.AddScoped<IMessageProvider, DingDingAppService>();
             }
             else if (workEnv.Equals("WorkWeixin", StringComparison.OrdinalIgnoreCase))
             {
-                services.AddScoped<ICommonProvider, WorkWeixinAppService>();
+                services.AddScoped<IMessageProvider, WorkWeixinAppService>();
             }
             else
             {

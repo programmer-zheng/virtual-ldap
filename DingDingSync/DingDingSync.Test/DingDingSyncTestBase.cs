@@ -1,7 +1,7 @@
-using Abp.TestBase;
-using DingDingSync.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Abp.TestBase;
+using DingDingSync.EntityFrameworkCore;
 
 namespace DingDingSync.Test;
 

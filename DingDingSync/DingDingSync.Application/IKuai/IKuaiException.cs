@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DingDingSync.Application.IKuai
+﻿namespace DingDingSync.Application.IKuai
 {
     public class IKuaiException : Exception
     {

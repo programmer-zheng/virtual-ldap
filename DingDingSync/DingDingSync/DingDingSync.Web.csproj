@@ -5,6 +5,7 @@
 		<UserSecretsId>dee6fb3d-8b28-446f-976c-1d7504110639</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<AssemblyName>DingDingSync.Web</AssemblyName>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>

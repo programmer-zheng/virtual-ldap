@@ -1,6 +1,4 @@
 ﻿using Abp.Extensions;
-using System;
-using System.Collections.Generic;
 
 namespace DingDingSync.Application.AppService.Dtos
 {

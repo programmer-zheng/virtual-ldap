@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.ObjectMapping;
@@ -31,7 +27,7 @@ namespace DingDingSync.Application.AppService
 
         public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
 
-        public ICommonProvider CommonProvider { get; set; }
+        public IMessageProvider MessageProvider { get; set; }
 
         public IRepository<UserDepartmentsRelationEntity, string> UserDeptRelaRepository { get; set; }
 
@@ -319,7 +315,7 @@ namespace DingDingSync.Application.AppService
                 });
 
                 var msgContent = $"已为您开通域账号，域账号的用户名为：{username}。";
-                await CommonProvider.SendTextMessage(userId, msgContent);
+                await MessageProvider.SendTextMessage(userId, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -357,7 +353,7 @@ namespace DingDingSync.Application.AppService
                 UserRepository.Update(userId, t => t.VpnAccountEnabled = true);
 
                 var msgContent = $"已为您启用VPN账号，VPN的账号、密码与域账号相同。";
-                await CommonProvider.SendTextMessage(userId, msgContent);
+                await MessageProvider.SendTextMessage(userId, msgContent);
                 return true;
             }
             catch (UserFriendlyException)
@@ -387,7 +383,7 @@ namespace DingDingSync.Application.AppService
                 user.Password = defaultPassword.DesEncrypt();
                 UserRepository.Update(user);
                 var msgContent = $"您的域账号：{user.UserName}，密码已重置，默认密码为：{defaultPassword}。";
-                await CommonProvider.SendTextMessage(user.Id, msgContent);
+                await MessageProvider.SendTextMessage(user.Id, msgContent);
                 return true;
             }
             catch (Exception e)
@@ -463,7 +459,7 @@ namespace DingDingSync.Application.AppService
             await CacheManager.GetCache("DingDing").AsTyped<string, string>()
                 .SetAsync($"ForgotPassword-{userid}", random.ToString());
             var msgContent = $"您正在进行忘记密码操作，验证码是：{random}。";
-            await CommonProvider.SendTextMessage(userid, msgContent);
+            await MessageProvider.SendTextMessage(userid, msgContent);
         }
 
         public async Task<bool> ForgotPassword(ForgotPasswordViewModel model)

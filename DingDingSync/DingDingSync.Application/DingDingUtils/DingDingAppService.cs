@@ -9,14 +9,11 @@ using DingTalk.Api;
 using DingTalk.Api.Request;
 using DingTalk.Api.Response;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Tea;
 
 namespace DingDingSync.Application.DingDingUtils
 {
-    public class DingDingAppService : IDingdingAppService, ICommonProvider
+    public class DingDingAppService : IDingdingAppService, IMessageProvider
     {
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 

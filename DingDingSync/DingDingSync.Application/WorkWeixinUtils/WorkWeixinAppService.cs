@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Abp.Extensions;
 using Abp.Runtime.Caching;
 using Abp.UI;
@@ -11,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DingDingSync.Application.WorkWeixinUtils;
 
-public class WorkWeixinAppService : IWorkWeixinAppService, ICommonProvider
+public class WorkWeixinAppService : IWorkWeixinAppService, IMessageProvider
 {
     public ICacheManager CacheManager { get; set; }
 

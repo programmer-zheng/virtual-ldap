@@ -1,8 +1,6 @@
-using System.Threading.Tasks;
-
 namespace DingDingSync.Application;
 
-public interface ICommonProvider
+public interface IMessageProvider
 {
     /// <summary>
     /// 发送文本消息

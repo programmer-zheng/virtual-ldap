@@ -1,9 +1,9 @@
+using System.Linq;
+using System.Threading.Tasks;
 using Abp.Json;
 using DingDingSync.Application.AppService;
 using DingDingSync.Core.Entities;
 using Shouldly;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 

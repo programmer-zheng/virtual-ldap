@@ -1,6 +1,6 @@
+using System.Linq;
 using DingDingSync.Core.Entities;
 using DingDingSync.EntityFrameworkCore;
-using System.Linq;
 
 namespace DingDingSync.Test;
 

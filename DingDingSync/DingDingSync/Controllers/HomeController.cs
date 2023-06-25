@@ -1,11 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
 using Abp.Domain.Repositories;
-using Abp.UI;
 using DingDingSync.Application;
 using DingDingSync.Application.AppService;
 using DingDingSync.Application.AppService.Dtos;
@@ -14,7 +10,6 @@ using DingDingSync.Core;
 using DingDingSync.Core.Entities;
 using DingDingSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 
 namespace DingDingSync.Web.Controllers
 {
@@ -26,7 +21,7 @@ namespace DingDingSync.Web.Controllers
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
 
-        public ICommonProvider CommonProvider { get; set; }
+        public IMessageProvider MessageProvider { get; set; }
 
         private readonly IRepository<UserEntity, string> _userRepository;
 
@@ -58,7 +53,7 @@ namespace DingDingSync.Web.Controllers
         public async Task<IActionResult> Test()
         {
             var userid = _userRepository.GetAll().FirstOrDefault().Id;
-            await CommonProvider.SendTextMessage(userid, "测试消息发送~");
+            await MessageProvider.SendTextMessage(userid, "测试消息发送~");
             return Json(null);
         }
 
