@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace VirtualLdap.EntityFrameworkCore.Migrations
 {
-    [DbContext(typeof(DingDingSyncDbContext))]
+    [DbContext(typeof(VirtualLdapDbContext))]
     [Migration("20220317134325_addUserVpnEnableField")]
     partial class addUserVpnEnableField
     {

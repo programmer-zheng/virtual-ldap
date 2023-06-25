@@ -6,14 +6,14 @@ using VirtualLdap.Core;
 namespace VirtualLdap.EntityFrameworkCore
 {
     [DependsOn(
-        typeof(DingDingSyncCoreModule),
+        typeof(VirtualLdapCoreModule),
         typeof(AbpEntityFrameworkCoreModule))]
-    public class DingDingSyncEntityFramworkModule : AbpModule
+    public class VirtualLdapEntityFramworkModule : AbpModule
     {
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(DingDingSyncEntityFramworkModule).GetAssembly());
+            IocManager.RegisterAssemblyByConvention(typeof(VirtualLdapEntityFramworkModule).GetAssembly());
 
         }
     }

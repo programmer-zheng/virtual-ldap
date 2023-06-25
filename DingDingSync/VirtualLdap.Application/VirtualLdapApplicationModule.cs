@@ -8,22 +8,22 @@ using VirtualLdap.Core;
 namespace VirtualLdap.Application
 {
     [DependsOn(
-        typeof(DingDingSyncCoreModule),
+        typeof(VirtualLdapCoreModule),
         typeof(AbpAutoMapperModule))]
-    public class DingDingSyncApplicationModule : AbpModule
+    public class VirtualLdapApplicationModule : AbpModule
     {
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(DingDingSyncApplicationModule).GetAssembly());
+            IocManager.RegisterAssemblyByConvention(typeof(VirtualLdapApplicationModule).GetAssembly());
 
             Configuration.Modules.AbpAutoMapper().Configurators
-                .Add(t => t.AddMaps(typeof(DingDingSyncApplicationModule)));
+                .Add(t => t.AddMaps(typeof(VirtualLdapApplicationModule)));
         }
 
         public override void PostInitialize()
         {
             var workManager = IocManager.Resolve<IBackgroundWorkerManager>();
-            workManager.Add(IocManager.Resolve<DingDingSyncBackgroundWorker>());
+            workManager.Add(IocManager.Resolve<VirtualLdapBackgroundWorker>());
         }
     }
 }

@@ -11,10 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace VirtualLdap.Test;
 
 [DependsOn(
-    typeof(DingDingSyncApplicationModule),
-    typeof(DingDingSyncEntityFramworkModule),
+    typeof(VirtualLdapApplicationModule),
+    typeof(VirtualLdapEntityFramworkModule),
     typeof(AbpTestBaseModule))]
-public class DingDingSyncTestModule : AbpModule
+public class VirtualLdapTestModule : AbpModule
 {
 
     public override void PreInitialize()
@@ -25,7 +25,7 @@ public class DingDingSyncTestModule : AbpModule
 
     public override void Initialize()
     {
-        IocManager.RegisterAssemblyByConvention(typeof(DingDingSyncTestModule).GetAssembly());
+        IocManager.RegisterAssemblyByConvention(typeof(VirtualLdapTestModule).GetAssembly());
     }
 
     private void SetupInMemoryDb()
@@ -38,12 +38,12 @@ public class DingDingSyncTestModule : AbpModule
             services
         );
 
-        var builder = new DbContextOptionsBuilder<DingDingSyncDbContext>();
+        var builder = new DbContextOptionsBuilder<VirtualLdapDbContext>();
         builder.UseInMemoryDatabase("Test").UseInternalServiceProvider(serviceProvider);
 
         IocManager.IocContainer.Register(
             Component
-                .For<DbContextOptions<DingDingSyncDbContext>>()
+                .For<DbContextOptions<VirtualLdapDbContext>>()
                 .Instance(builder.Options)
                 .LifestyleSingleton()
         );

@@ -3,7 +3,7 @@ using Abp.Reflection.Extensions;
 
 namespace VirtualLdap.Core
 {
-    public class DingDingSyncCoreModule : AbpModule
+    public class VirtualLdapCoreModule : AbpModule
     {
         public override void PreInitialize()
         {
@@ -13,7 +13,7 @@ namespace VirtualLdap.Core
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(DingDingSyncCoreModule).GetAssembly());
+            IocManager.RegisterAssemblyByConvention(typeof(VirtualLdapCoreModule).GetAssembly());
         }
     }
 }

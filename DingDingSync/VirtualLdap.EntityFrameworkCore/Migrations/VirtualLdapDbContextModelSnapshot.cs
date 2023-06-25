@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace VirtualLdap.EntityFrameworkCore.Migrations
 {
-    [DbContext(typeof(DingDingSyncDbContext))]
-    partial class DingDingSyncDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(VirtualLdapDbContext))]
+    partial class VirtualLdapDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

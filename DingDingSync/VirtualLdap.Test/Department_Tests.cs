@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace VirtualLdap.Test;
 
-public class Department_Tests : DingDingSyncTestBase
+public class Department_Tests : VirtualLdapTestBase
 {
     private readonly IDepartmentAppService _departmentAppService;
     private readonly ITestOutputHelper _output;

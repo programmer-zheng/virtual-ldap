@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VirtualLdap.EntityFrameworkCore
 {
-    public class DingDingSyncDbContext : AbpDbContext
+    public class VirtualLdapDbContext : AbpDbContext
     {
 
         public DbSet<DepartmentEntity> Departments { get; set; }
@@ -13,7 +13,7 @@ namespace VirtualLdap.EntityFrameworkCore
 
         public DbSet<UserDepartmentsRelationEntity> UserDepartmentsRelations { get; set; }
 
-        public DingDingSyncDbContext(DbContextOptions<DingDingSyncDbContext> options) : base(options)
+        public VirtualLdapDbContext(DbContextOptions<VirtualLdapDbContext> options) : base(options)
         {
 
         }

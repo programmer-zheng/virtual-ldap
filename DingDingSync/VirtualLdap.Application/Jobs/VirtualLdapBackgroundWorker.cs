@@ -6,11 +6,11 @@ using VirtualLdap.Application.AppService;
 
 namespace VirtualLdap.Application.Jobs
 {
-    public class DingDingSyncBackgroundWorker : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
+    public class VirtualLdapBackgroundWorker : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
     {
         public IUserAppService UserAppService { get; set; }
 
-        public DingDingSyncBackgroundWorker(AbpAsyncTimer timer) : base(timer)
+        public VirtualLdapBackgroundWorker(AbpAsyncTimer timer) : base(timer)
         {
             timer.Period = 1000 * 10;
         }

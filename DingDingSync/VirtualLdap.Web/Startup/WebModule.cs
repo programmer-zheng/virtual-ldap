@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 namespace VirtualLdap.Web.Startup
 {
     [DependsOn(
-        typeof(DingDingSyncApplicationModule),
-        typeof(DingDingSyncEntityFramworkModule),
+        typeof(VirtualLdapApplicationModule),
+        typeof(VirtualLdapEntityFramworkModule),
         typeof(AbpAspNetCoreModule))]
     public class WebModule : AbpModule
     {
