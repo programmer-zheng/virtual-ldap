@@ -289,6 +289,17 @@ namespace DingDingSync.Application.AppService
         {
             try
             {
+                var userinfo = await GetByIdAsync(model.UserId);
+                if (userinfo == null)
+                {
+                    throw new UserFriendlyException("用户不存在");
+                }
+
+                if (userinfo.Password != model.OldPassword.DesEncrypt())
+                {
+                    throw new UserFriendlyException("当前密码不正确，无法修改密码！");
+                }
+
                 var pwd = model.NewPassword.DesEncrypt();
                 UserRepository.Update(model.UserId, t =>
                 {
@@ -296,6 +307,10 @@ namespace DingDingSync.Application.AppService
                     t.Password = pwd;
                 });
                 return true;
+            }
+            catch (UserFriendlyException)
+            {
+                throw;
             }
             catch (Exception e)
             {
@@ -315,7 +330,11 @@ namespace DingDingSync.Application.AppService
                 });
 
                 var msgContent = $"已为您开通域账号，域账号的用户名为：{username}。";
-                await MessageProvider.SendTextMessage(userId, msgContent);
+                if (MessageProvider != null)
+                {
+                    await MessageProvider.SendTextMessage(userId, msgContent);
+                }
+
                 return true;
             }
             catch (Exception e)
@@ -369,7 +388,12 @@ namespace DingDingSync.Application.AppService
 
         public async Task<bool> ResetAccountPassword(string userId)
         {
-            var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
+            var defaultPassword = string.Empty;
+            if (Configuration != null)
+            {
+                defaultPassword = Configuration.GetValue<string>("DefaultPassword");
+            }
+
             defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
             var user = await UserRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
             if (user == null)
@@ -383,7 +407,11 @@ namespace DingDingSync.Application.AppService
                 user.Password = defaultPassword.DesEncrypt();
                 UserRepository.Update(user);
                 var msgContent = $"您的域账号：{user.UserName}，密码已重置，默认密码为：{defaultPassword}。";
-                await MessageProvider.SendTextMessage(user.Id, msgContent);
+                if (MessageProvider != null)
+                {
+                    await MessageProvider.SendTextMessage(user.Id, msgContent);
+                }
+
                 return true;
             }
             catch (Exception e)

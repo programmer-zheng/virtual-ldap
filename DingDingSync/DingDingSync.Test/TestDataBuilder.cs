@@ -1,4 +1,5 @@
 using System.Linq;
+using DingDingSync.Application;
 using DingDingSync.Core.Entities;
 using DingDingSync.EntityFrameworkCore;
 
@@ -40,6 +41,7 @@ public class TestDataBuilder
                 Name = DefaultUserName,
                 IsAdmin = true,
                 Active = true,
+                Password = "123456".DesEncrypt()
             };
             _context.Users.Add(defaultUser);
             _context.SaveChanges();
@@ -52,9 +54,19 @@ public class TestDataBuilder
         {
             deptUserRela = new UserDepartmentsRelationEntity()
             {
-                DeptId = DefaultDeptId, UserId = DefaultUserId
+                Id = Guid.NewGuid().ToString("N"), DeptId = DefaultDeptId, UserId = DefaultUserId
             };
             _context.UserDepartmentsRelations.Add(deptUserRela);
+            _context.SaveChanges();
+        }
+
+        var regularUser = _context.Users.FirstOrDefault(t => t.Name == "普通用户");
+        if (regularUser == null)
+        {
+            var userId = Guid.NewGuid().ToString("N");
+            _context.Users.Add(new UserEntity() { Name = "普通用户", Id = userId });
+            _context.UserDepartmentsRelations.Add(new UserDepartmentsRelationEntity()
+                { Id = Guid.NewGuid().ToString("N"), DeptId = DefaultDeptId, UserId = userId });
             _context.SaveChanges();
         }
     }

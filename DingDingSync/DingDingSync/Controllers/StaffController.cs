@@ -58,19 +58,8 @@ public class StaffController : AbpController
                     throw new UserFriendlyException("不能对他人账号进行忘记密码操作！");
                 }
 
-                var userinfo = await UserAppService.GetByIdAsync(input.UserId);
-                if (userinfo == null)
-                {
-                    throw new UserFriendlyException("用户不存在");
-                }
-
-                if (userinfo.Password != input.OldPassword.DesEncrypt())
-                {
-                    throw new UserFriendlyException("当前密码不正确，无法修改密码！");
-                }
-
                 var flag = await UserAppService.ResetPassword(input);
-                if (flag && userinfo.VpnAccountEnabled)
+                if (flag)
                 {
                     await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(input.UserId);
                 }

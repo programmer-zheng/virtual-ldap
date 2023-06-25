@@ -34,21 +34,52 @@ namespace DingDingSync.Application.AppService
         /// <returns></returns>
         Task<List<DeptUserDto>> GetAdminDeptUsers(string adminUserId);
 
+        Task<DeptUserDto> GetDeptUserDetail(string userid);
+
+        /// <summary>
+        /// 获取用户的用户名
+        /// </summary>
+        /// <param name="name">姓名</param>
+        /// <param name="newUserList">同批次新增人员列表</param>
+        /// <returns>用户的用户名</returns>
+        Task<string> GetUserName(string name, List<UserEntity>? newUserList = null);
+
         Task SyncDepartmentAndUser();
 
         Task SyncDepartMentAndUserFromWorkWeixin();
 
-        Task<bool> ResetPassword(ResetPasswordViewModel model);
+        #region 账号启用
 
         Task<bool> EnableAccount(string userId, string username);
 
         Task<bool> EnableVpnAccount(string userId);
 
+        #endregion
+
+        #region 密码相关
+
+        /// <summary>
+        /// 重新修改密码 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> ResetPassword(ResetPasswordViewModel model);
+
+        /// <summary>
+        /// 重置用户账号密码为默认密码
+        /// </summary>
+        /// <param name="userId">用户id</param>
+        /// <returns></returns>
         Task<bool> ResetAccountPassword(string userId);
 
-        Task<DeptUserDto> GetDeptUserDetail(string userid);
+        /// <summary>
+        /// 忘记密码
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> ForgotPassword(ForgotPasswordViewModel model);
 
-        Task<string> GetUserName(string name, List<UserEntity>? newUserList = null);
+        #endregion
 
         /// <summary>
         /// 发送验证码
@@ -56,7 +87,5 @@ namespace DingDingSync.Application.AppService
         /// <param name="userid"></param>
         /// <returns></returns>
         Task SendVerificationCode(string userid);
-
-        Task<bool> ForgotPassword(ForgotPasswordViewModel model);
     }
 }
