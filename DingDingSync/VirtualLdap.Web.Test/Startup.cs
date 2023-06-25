@@ -64,14 +64,14 @@ namespace VirtualLdap.Web.Test;
 
         private void UseInMemoryDb(IServiceProvider serviceProvider)
         {
-            var builder = new DbContextOptionsBuilder<DingDingSyncDbContext>();
+            var builder = new DbContextOptionsBuilder<VirtualLdapDbContext>();
             builder.UseInMemoryDatabase(Guid.NewGuid().ToString()).UseInternalServiceProvider(serviceProvider);
             var options = builder.Options;
 
             var iocManager = serviceProvider.GetRequiredService<IIocManager>();
             iocManager.IocContainer
                 .Register(
-                    Component.For<DbContextOptions<DingDingSyncDbContext>>()
+                    Component.For<DbContextOptions<VirtualLdapDbContext>>()
                         .Instance(options)
                         .LifestyleSingleton()
                 );
