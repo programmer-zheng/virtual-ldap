@@ -9,12 +9,12 @@ using Xunit.Abstractions;
 
 namespace DingDingSync.Test;
 
-public class Ldap_Tests : DingDingSyncTestBase
+public class Department_Tests : DingDingSyncTestBase
 {
     private readonly IDepartmentAppService _departmentAppService;
     private readonly ITestOutputHelper _output;
 
-    public Ldap_Tests(ITestOutputHelper output)
+    public Department_Tests(ITestOutputHelper output)
     {
         _output = output;
         _departmentAppService = Resolve<IDepartmentAppService>();
@@ -24,9 +24,10 @@ public class Ldap_Tests : DingDingSyncTestBase
     public async Task Departments_Test()
     {
         var allDepartments = await _departmentAppService.GetAllDepartments();
-        _output.WriteLine(allDepartments.ToJsonString());
         allDepartments.ShouldNotBeNull();
         allDepartments.ShouldNotBeEmpty();
+        allDepartments.First().Name.ShouldBeEquivalentTo(TestDataBuilder.DefaultDepartName);
+        _output.WriteLine(allDepartments.ToJsonString());
     }
 
     [Fact]
@@ -41,7 +42,7 @@ public class Ldap_Tests : DingDingSyncTestBase
         await _departmentAppService.AddDepartment(entity);
         var allDepartments = await _departmentAppService.GetAllDepartments();
         allDepartments.ShouldNotBeNull();
-        entity.DeptName.ShouldBeEquivalentTo(allDepartments.Last().Name);
+        allDepartments.Count.ShouldBeEquivalentTo(2);
         _output.WriteLine(allDepartments.ToJsonString());
     }
 }

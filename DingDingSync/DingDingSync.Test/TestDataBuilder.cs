@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DingDingSync.Test;
 
-public class SeedDataInit
+public class TestDataBuilder
 {
     public const string DefaultUserName = "测试账号";
     public const string DefaultDepartName = "测试部门";
@@ -13,12 +13,12 @@ public class SeedDataInit
 
     private readonly DingDingSyncDbContext _context;
 
-    public SeedDataInit(DingDingSyncDbContext context)
+    public TestDataBuilder(DingDingSyncDbContext context)
     {
         _context = context;
     }
 
-    public void Init()
+    public void Build()
     {
         var defaultDepart = _context.Departments.FirstOrDefault(t => t.DeptName == DefaultDepartName);
         if (defaultDepart == null)

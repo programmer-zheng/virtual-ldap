@@ -11,7 +11,7 @@ public class DingDingSyncTestBase : AbpIntegratedTestBase<DingDingSyncTestModule
     {
         UsingDbContext(context =>
         {
-            new SeedDataInit(context).Init();
+            new TestDataBuilder(context).Build();
         });
     }
 

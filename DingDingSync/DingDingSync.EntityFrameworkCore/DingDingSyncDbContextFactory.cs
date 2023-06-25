@@ -1,4 +1,5 @@
-﻿using DingDingSync.Core;
+﻿using DingDingSync.Core.Configuration;
+using DingDingSync.Core.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -11,11 +12,7 @@ namespace DingDingSync.EntityFrameworkCore
         {
             var builder = new DbContextOptionsBuilder<DingDingSyncDbContext>();
 
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(WebContentDirectoryFinder.CalculateContentRootFolder())
-                .AddJsonFile("appsettings.json", optional: false);
-
-            var configuration = configurationBuilder.Build();
+            var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
 
             DingDingSyncDbContextConfigurer.Configure(builder, configuration.GetConnectionString("Default"));
 
