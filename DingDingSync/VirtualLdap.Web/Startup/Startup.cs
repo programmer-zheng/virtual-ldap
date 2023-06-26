@@ -3,6 +3,7 @@ using Abp.Castle.Logging.Log4Net;
 using Abp.EntityFrameworkCore;
 using Castle.Facilities.Logging;
 using VirtualLdap.Application;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.IKuai;
 using VirtualLdap.Application.WorkWeixinUtils;
@@ -33,21 +34,23 @@ namespace VirtualLdap.Web.Startup
 
             services.AddSingleton<CheckTokenFilterAttribute>();
 
+            services.Configure<IKuaiConfigOptions>(Configuration.GetSection(IKuaiConfigOptions.IKuai));
             services.Configure<DingDingConfigOptions>(Configuration.GetSection(DingDingConfigOptions.DingDing));
             services.Configure<WorkWeixinConfigOptions>(Configuration.GetSection(WorkWeixinConfigOptions.WorkWeixin));
-
-            services.Configure<IKuaiConfigOptions>(Configuration.GetSection(IKuaiConfigOptions.IKuai));
-
-            services.RegisterDingDingEventHandler();
 
             var workEnv = Configuration["WorkEnv"];
             if (workEnv.Equals("DingDing", StringComparison.OrdinalIgnoreCase))
             {
-                services.AddScoped<IMessageProvider, DingDingAppService>();
+                services.AddScoped<IMessageProvider, DingDingAppService>();            
+                services.AddScoped<ISyncContacts, DingDingSyncContactsService>();
+                services.RegisterDingDingEventHandler();
+
             }
             else if (workEnv.Equals("WorkWeixin", StringComparison.OrdinalIgnoreCase))
             {
                 services.AddScoped<IMessageProvider, WorkWeixinAppService>();
+                services.AddScoped<ISyncContacts, WorkWeixinSyncContactsService>();
+
             }
             else
             {
@@ -75,7 +78,8 @@ namespace VirtualLdap.Web.Startup
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // The default HSTS value is 30 days.
+                // You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
 

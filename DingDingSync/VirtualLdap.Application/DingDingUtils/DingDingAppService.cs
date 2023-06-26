@@ -4,7 +4,6 @@ using AlibabaCloud.OpenApiClient.Models;
 using AlibabaCloud.SDK.Dingtalkoauth2_1_0;
 using AlibabaCloud.SDK.Dingtalkoauth2_1_0.Models;
 using AlibabaCloud.TeaUtil;
-using Castle.Core.Logging;
 using DingTalk.Api;
 using DingTalk.Api.Request;
 using DingTalk.Api.Response;
@@ -15,11 +14,9 @@ namespace VirtualLdap.Application.DingDingUtils
 {
     public class DingDingAppService : IDingdingAppService, IMessageProvider
     {
-        private readonly DingDingConfigOptions _dingDingConfigOptions;
-
-        public ILogger Logger { get; set; }
-
         public ICacheManager CacheManager { get; set; }
+
+        private readonly DingDingConfigOptions _dingDingConfigOptions;
 
         public DingDingAppService(IOptions<DingDingConfigOptions> options
         )
@@ -220,39 +217,6 @@ namespace VirtualLdap.Application.DingDingUtils
                 }
 
                 return rsp.Result;
-            }
-            catch (Exception e)
-            {
-                throw new UserFriendlyException(e.Message);
-            }
-        }
-
-        public long SendMessage(long userid, string message)
-        {
-            try
-            {
-                var token = GetAccessToken();
-                IDingTalkClient client =
-                    new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2");
-                OapiMessageCorpconversationAsyncsendV2Request req = new OapiMessageCorpconversationAsyncsendV2Request();
-                req.AgentId = _dingDingConfigOptions.AgentId;
-                req.UseridList = userid.ToString();
-                req.Msg_ = new OapiMessageCorpconversationAsyncsendV2Request.MsgDomain
-                {
-                    Msgtype = "text",
-                    Text = new OapiMessageCorpconversationAsyncsendV2Request.TextDomain
-                    {
-                        Content = message
-                        //$"您的账号：xxxx，已于{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}开通，默认密码：123456。该账号可用于公司内部SVN、Git、VPN、Jenkins等基础服务登录，请尽快修改密码。"
-                    }
-                };
-                OapiMessageCorpconversationAsyncsendV2Response rsp = client.Execute(req, token);
-                if (rsp.IsError)
-                {
-                    throw new UserFriendlyException(rsp.SubErrMsg);
-                }
-
-                return rsp.TaskId;
             }
             catch (Exception e)
             {

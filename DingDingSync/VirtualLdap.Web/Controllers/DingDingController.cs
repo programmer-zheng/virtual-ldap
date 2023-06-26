@@ -17,13 +17,12 @@ namespace VirtualLdap.Web.Controllers
     {
         private readonly DingDingConfigOptions _dingDingConfigOptions;
 
-        public IDingdingAppService _dingdingAppService { get; set; }
-
         public IDingdingAppService DingdingAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
 
-        public IUserAppService UserAppService { get; set; }
+
+        public ISyncContacts SyncContactsAppService { get; set; }
 
 
         public DingDingController(IOptions<DingDingConfigOptions> options)
@@ -45,7 +44,7 @@ namespace VirtualLdap.Web.Controllers
         {
             if (!string.IsNullOrWhiteSpace(code))
             {
-                var dingdingUser = _dingdingAppService.GetUserinfoByCode(code);
+                var dingdingUser = DingdingAppService.GetUserinfoByCode(code);
                 if (dingdingUser == null)
                 {
                     return Content("获取钉钉人员信息失败，请关闭应用重新打开!");
@@ -63,7 +62,7 @@ namespace VirtualLdap.Web.Controllers
         [Route("/dingdingsync")]
         public async Task<IActionResult> Sync()
         {
-            await UserAppService.SyncDepartmentAndUser();
+            await SyncContactsAppService.Sync();
             return Content("同步完成");
         }
 

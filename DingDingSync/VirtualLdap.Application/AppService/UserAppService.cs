@@ -2,27 +2,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
-using Abp.ObjectMapping;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Castle.Core.Logging;
 using VirtualLdap.Application.AppService.Dtos;
-using VirtualLdap.Application.DingDingUtils;
-using VirtualLdap.Application.WorkWeixinUtils;
 using VirtualLdap.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using TinyPinyin;
 
 namespace VirtualLdap.Application.AppService
 {
     public class UserAppService : IUserAppService
     {
-        public IDingdingAppService DingdingAppService { get; set; }
-
-        public IWorkWeixinAppService WorkWeixinAppService { get; set; }
-
         public IRepository<UserEntity, string> UserRepository { get; set; }
 
         public IRepository<DepartmentEntity, long> DeptRepository { get; set; }
@@ -34,8 +26,6 @@ namespace VirtualLdap.Application.AppService
         public ILogger Logger { get; set; }
 
         public IConfiguration Configuration { get; set; }
-
-        public IObjectMapper ObjectMapper { get; set; }
 
         public ICacheManager CacheManager { get; set; }
 
@@ -124,165 +114,6 @@ namespace VirtualLdap.Application.AppService
         {
             return await UserRepository.FirstOrDefaultAsync(t =>
                 t.UserName == username || t.Mobile == username || t.Email == username);
-        }
-
-        public async Task SyncDepartmentAndUser()
-        {
-            var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
-            defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
-            try
-            {
-                //获取钉钉所有部门
-                var depts = DingdingAppService.GetDepartmentList();
-                Logger.Debug($"钉钉返回部门信息：{JsonConvert.SerializeObject(depts)}");
-
-                //获取当前数据库中的部门
-                var deptList = DeptRepository.GetAllList();
-                //获取当前数据库中的人员信息
-                var userList = UserRepository.GetAllList();
-                var relaList = UserDeptRelaRepository.GetAllList();
-
-                var newUserList = new List<UserEntity>();
-                var newDeptList = new List<DepartmentEntity>();
-                var newRelaList = new List<UserDepartmentsRelationEntity>();
-                foreach (var item in depts)
-                {
-                    if (!deptList.Any(t => t.Id == item.Id))
-                    {
-                        var deptEntity = ObjectMapper.Map<DepartmentEntity>(item);
-                        newDeptList.Add(deptEntity);
-                    }
-
-                    //获取部门详情
-                    var deptDetail = DingdingAppService.GetDepartmentDetail(item.Id);
-                    //当前部门管理人员列表
-                    var managerId = deptDetail.DeptManagerUseridList;
-                    //当前部门人员列表
-                    var users = DingdingAppService.GetUserList(item.Id);
-                    Logger.Debug($"钉钉返回部门【{item.Name}】中的人员信息：{string.Join("、", users.Select(t => t.Name).ToList())}");
-                    foreach (var user in users)
-                    {
-                        if (!userList.Any(t => t.Id == user.Userid) && !newUserList.Any(t => t.Id == user.Userid))
-                        {
-                            var isAdmin = user.Admin || managerId != null && managerId.Contains(user.Userid);
-
-                            var userEntity = ObjectMapper.Map<UserEntity>(user);
-                            userEntity.IsAdmin = isAdmin;
-                            userEntity.AccountEnabled = isAdmin;
-                            userEntity.Password = defaultPassword.DesEncrypt();
-
-                            newUserList.Add(userEntity);
-                        }
-
-                        //部门人员关系数据
-                        if (!relaList.Any(t => t.UserId == user.Userid && t.DeptId == item.Id))
-                        {
-                            newRelaList.Add(new UserDepartmentsRelationEntity
-                                { Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = item.Id });
-                        }
-                    }
-                }
-
-                foreach (var item in newUserList.OrderBy(t => t.HiredDate))
-                {
-                    var username = await GetUserName(item.Name, newUserList);
-
-                    item.UserName = username.ToString().ToLower();
-                }
-
-                ProcessNewData(newUserList, newDeptList, newRelaList);
-            }
-            catch (UserFriendlyException e)
-            {
-                Logger.Error("调用钉钉接口同步组织架构时发生异常", e);
-            }
-            catch (Exception e)
-            {
-                throw new UserFriendlyException("同步数据发生未知异常", e);
-            }
-        }
-
-        /// <summary>
-        /// 处理新数据
-        /// </summary>
-        /// <param name="newUserList"></param>
-        /// <param name="newDeptList"></param>
-        /// <param name="newRelaList"></param>
-        private void ProcessNewData(List<UserEntity> newUserList, List<DepartmentEntity> newDeptList,
-            List<UserDepartmentsRelationEntity> newRelaList)
-        {
-            foreach (var item in newDeptList)
-            {
-                DeptRepository.Insert(item);
-            }
-
-            foreach (var item in newUserList)
-            {
-                UserRepository.Insert(item);
-            }
-
-            foreach (var item in newRelaList)
-            {
-                UserDeptRelaRepository.Insert(item);
-            }
-        }
-
-        public async Task SyncDepartMentAndUserFromWorkWeixin()
-        {
-            var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
-            defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
-            try
-            {
-                //获取当前数据库中的部门
-                var deptList = DeptRepository.GetAllList();
-                //获取当前数据库中的人员信息
-                var userList = UserRepository.GetAllList();
-                var relaList = UserDeptRelaRepository.GetAllList();
-
-                var newUserList = new List<UserEntity>();
-                var newDeptList = new List<DepartmentEntity>();
-                var newRelaList = new List<UserDepartmentsRelationEntity>();
-                var departmentList = await WorkWeixinAppService.GetDepartmentList();
-                foreach (var department in departmentList)
-                {
-                    if (!deptList.Any(t => t.Id == department.Id))
-                    {
-                        newDeptList.Add(ObjectMapper.Map<DepartmentEntity>(department));
-                    }
-
-                    var users = await WorkWeixinAppService.GetUserList(department.Id);
-
-                    foreach (var user in users)
-                    {
-                        if (!userList.Any(t => t.Id == user.Userid))
-                        {
-                            var userEntity = ObjectMapper.Map<UserEntity>(user);
-                            var isAdmin = user.Isleader;
-                            userEntity.IsAdmin = isAdmin;
-                            userEntity.AccountEnabled = isAdmin;
-                            userEntity.Password = defaultPassword.DesEncrypt();
-                            newUserList.Add(userEntity);
-                        }
-
-                        //部门人员关系数据
-                        if (!relaList.Any(t => t.UserId == user.Userid && t.DeptId == department.Id))
-                        {
-                            newRelaList.Add(new UserDepartmentsRelationEntity
-                                { Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = department.Id });
-                        }
-                    }
-                }
-
-                ProcessNewData(newUserList, newDeptList, newRelaList);
-            }
-            catch (UserFriendlyException e)
-            {
-                Logger.Error("调用企业微信接口同步组织架构时发生异常", e);
-            }
-            catch (Exception e)
-            {
-                throw new UserFriendlyException("同步数据发生未知异常", e);
-            }
         }
 
         public async Task<bool> ResetPassword(ResetPasswordViewModel model)

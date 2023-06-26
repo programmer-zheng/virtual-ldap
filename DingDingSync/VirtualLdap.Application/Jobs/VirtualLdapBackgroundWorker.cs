@@ -6,23 +6,26 @@ using VirtualLdap.Application.AppService;
 
 namespace VirtualLdap.Application.Jobs
 {
-    public class VirtualLdapBackgroundWorker : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
+    public class VirtualLdapBackgroundWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
     {
-        public IUserAppService UserAppService { get; set; }
+        private readonly ISyncContacts _syncContactsAppService;
 
-        public VirtualLdapBackgroundWorker(AbpAsyncTimer timer) : base(timer)
+        public VirtualLdapBackgroundWorker(AbpTimer timer
+            , ISyncContacts syncContactsAppService
+        ) : base(timer)
         {
             timer.Period = 1000 * 10;
+            _syncContactsAppService = syncContactsAppService;
         }
 
         [UnitOfWork]
-        protected override async Task DoWorkAsync()
+        protected override void DoWork()
         {
             Timer.Stop();
             Logger.Debug("同步工作开始……");
             try
             {
-                await UserAppService.SyncDepartMentAndUserFromWorkWeixin();
+                // _syncContactsAppService.Sync();
             }
             catch (Exception e)
             {

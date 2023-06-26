@@ -17,7 +17,8 @@ public class WorkWeixinController : AbpController
     public IConfiguration Configuration { get; set; }
 
     public IBackgroundJobManager BackgroundJobManager { get; set; }
-    public IUserAppService UserAppService { get; set; }
+    
+    public ISyncContacts SyncContactsAppService { get; set; }
 
     public IWorkWeixinAppService WorkWeixinAppService { get; set; }
 
@@ -117,7 +118,7 @@ public class WorkWeixinController : AbpController
     [Route("/WorkWeixin_Sync")]
     public async Task<IActionResult> Sync()
     {
-        await UserAppService.SyncDepartMentAndUserFromWorkWeixin();
+        await SyncContactsAppService.Sync();
         return Content("同步完成");
     }
 }

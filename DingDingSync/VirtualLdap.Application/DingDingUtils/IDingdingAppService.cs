@@ -33,8 +33,6 @@ namespace VirtualLdap.Application.DingDingUtils
         /// <returns></returns>
         List<OapiV2UserListResponse.ListUserResponseDomain> GetUserList(long deptId, long cursor = 0);
 
-        long SendMessage(long userid, string message);
-
         OapiV2UserGetuserinfoResponse.UserGetByCodeResponseDomain GetUserinfoByCode(string code);
 
 

@@ -44,10 +44,6 @@ namespace VirtualLdap.Application.AppService
         /// <returns>用户的用户名</returns>
         Task<string> GetUserName(string name, List<UserEntity>? newUserList = null);
 
-        Task SyncDepartmentAndUser();
-
-        Task SyncDepartMentAndUserFromWorkWeixin();
-
         #region 账号启用
 
         Task<bool> EnableAccount(string userId, string username);
