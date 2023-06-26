@@ -3,15 +3,13 @@ using Abp.UI;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using VirtualLdap.Application.DingDingUtils;
-using VirtualLdap.Application.WorkWeixinUtils;
 using VirtualLdap.Core.Entities;
 
 namespace VirtualLdap.Application.AppService;
 
 public class DingDingSyncContactsService : SyncContactsBase, ISyncContacts, IApplicationService
 {
-    public IWorkWeixinAppService WorkWeixinAppService { get; set; }
-    public IDingdingAppService DingdingAppService { get; set; }
+    public IDingTalkAppService DingdingAppService { get; set; }
 
     public IUserAppService UserAppService { get; set; }
 

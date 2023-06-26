@@ -13,10 +13,10 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     public class OrgDeptModifyEventHandler : DingdingBaseEventHandler
     {
         private readonly IRepository<DepartmentEntity, long> _departmentRepository;
-        private readonly IDingdingAppService _dingDingAppService;
+        private readonly IDingTalkAppService _dingDingAppService;
 
         public OrgDeptModifyEventHandler(IRepository<DepartmentEntity, long> departmentRepository,
-            IDingdingAppService dingDingAppService, ILogger logger) : base(logger)
+            IDingTalkAppService dingDingAppService, ILogger logger) : base(logger)
         {
             _departmentRepository = departmentRepository;
             _dingDingAppService = dingDingAppService;

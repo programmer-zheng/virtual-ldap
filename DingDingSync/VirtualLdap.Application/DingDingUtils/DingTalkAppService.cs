@@ -12,13 +12,13 @@ using Tea;
 
 namespace VirtualLdap.Application.DingDingUtils
 {
-    public class DingDingAppService : IDingdingAppService, IMessageProvider
+    public class DingTalkAppService : IDingTalkAppService, IMessageProvider
     {
         public ICacheManager CacheManager { get; set; }
 
-        private readonly DingDingConfigOptions _dingDingConfigOptions;
+        private readonly DingTalkConfigOptions _dingDingConfigOptions;
 
-        public DingDingAppService(IOptions<DingDingConfigOptions> options
+        public DingTalkAppService(IOptions<DingTalkConfigOptions> options
         )
         {
             _dingDingConfigOptions = options.Value;

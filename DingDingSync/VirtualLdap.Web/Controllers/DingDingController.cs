@@ -15,9 +15,9 @@ namespace VirtualLdap.Web.Controllers
     /// </summary>
     public class DingDingController : AbpController
     {
-        private readonly DingDingConfigOptions _dingDingConfigOptions;
+        private readonly DingTalkConfigOptions _dingDingConfigOptions;
 
-        public IDingdingAppService DingdingAppService { get; set; }
+        public IDingTalkAppService DingdingAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
 
@@ -25,7 +25,7 @@ namespace VirtualLdap.Web.Controllers
         public ISyncContacts SyncContactsAppService { get; set; }
 
 
-        public DingDingController(IOptions<DingDingConfigOptions> options)
+        public DingDingController(IOptions<DingTalkConfigOptions> options)
         {
             _dingDingConfigOptions = options.Value;
         }
@@ -94,8 +94,7 @@ namespace VirtualLdap.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("/dingdingcallback")]
-        public async Task<dynamic> Callback(string signature, string timestamp, string nonce,
-            [FromBody] DingMessage dingMessage)
+        public async Task<dynamic> Callback(string signature, string timestamp, string nonce, [FromBody] DingMessage dingMessage)
         {
             var aes_key = _dingDingConfigOptions.Aes_Key;
             var token = _dingDingConfigOptions.Token;
@@ -180,8 +179,9 @@ namespace VirtualLdap.Web.Controllers
         [Route("/dingdinggetfailevents")]
         public async Task<IActionResult> GetFailEvents()
         {
-            var result = DingdingAppService.GetCallbackFailEvents();
-            return Json(result);
+            // var result = DingdingAppService.GetCallbackFailEvents();
+            // return Json(result);
+            return Json(DingdingAppService is null);
         }
     }
 

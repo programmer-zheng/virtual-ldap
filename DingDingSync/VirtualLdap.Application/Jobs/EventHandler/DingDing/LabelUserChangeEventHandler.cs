@@ -13,11 +13,11 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     public class LabelUserChangeEventHandler : DingdingBaseEventHandler
     {
         private readonly IRepository<UserEntity, string> _userRepository;
-        private readonly IDingdingAppService _dingDingAppService;
+        private readonly IDingTalkAppService _dingDingAppService;
 
 
         public LabelUserChangeEventHandler(IRepository<UserEntity, string> userRepository,
-            IDingdingAppService dingDingAppService, ILogger logger) : base(logger)
+            IDingTalkAppService dingDingAppService, ILogger logger) : base(logger)
         {
             _userRepository = userRepository;
             _dingDingAppService = dingDingAppService;

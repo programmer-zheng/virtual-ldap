@@ -3,33 +3,20 @@ using Abp.BackgroundJobs;
 using Abp.Extensions;
 using Abp.Runtime.Validation;
 using Abp.UI;
-using VirtualLdap.Application;
+using Microsoft.AspNetCore.Mvc;
 using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.AppService.Dtos;
-using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs;
 using VirtualLdap.Core;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace VirtualLdap.Web.Controllers;
 
 public class StaffController : AbpController
 {
-    #region 构造函数及属性
-
     public IUserAppService UserAppService { get; set; }
 
     public IBackgroundJobManager BackgroundJobManager { get; set; }
 
-    private readonly DingDingConfigOptions _dingDingConfigOptions;
-
-    public StaffController(IOptions<DingDingConfigOptions> options)
-    {
-        _dingDingConfigOptions = options.Value;
-    }
-
-    #endregion
 
     /// <summary>
     /// 用户修改密码

@@ -15,14 +15,14 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class UserAddOrgEventHandler : DingdingBaseEventHandler
     {
-        private readonly IDingdingAppService _dingdingAppService;
+        private readonly IDingTalkAppService _dingdingAppService;
         private readonly IObjectMapper _objectMapper;
         private readonly IConfiguration _configuration;
         private readonly IRepository<UserEntity, string> _userRepository;
         private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
         private readonly IUserAppService _userAppService;
 
-        public UserAddOrgEventHandler(IDingdingAppService dingdingAppService,
+        public UserAddOrgEventHandler(IDingTalkAppService dingdingAppService,
             IObjectMapper objectMapper,
             IConfiguration configuration,
             IRepository<UserEntity, string> userRepository,

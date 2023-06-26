@@ -35,13 +35,13 @@ namespace VirtualLdap.Web.Startup
             services.AddSingleton<CheckTokenFilterAttribute>();
 
             services.Configure<IKuaiConfigOptions>(Configuration.GetSection(IKuaiConfigOptions.IKuai));
-            services.Configure<DingDingConfigOptions>(Configuration.GetSection(DingDingConfigOptions.DingDing));
+            services.Configure<DingTalkConfigOptions>(Configuration.GetSection(DingTalkConfigOptions.DingDing));
             services.Configure<WorkWeixinConfigOptions>(Configuration.GetSection(WorkWeixinConfigOptions.WorkWeixin));
 
             var workEnv = Configuration["WorkEnv"];
             if (workEnv.Equals("DingDing", StringComparison.OrdinalIgnoreCase))
             {
-                services.AddScoped<IMessageProvider, DingDingAppService>();            
+                services.AddScoped<IMessageProvider, DingTalkAppService>();            
                 services.AddScoped<ISyncContacts, DingDingSyncContactsService>();
                 services.RegisterDingDingEventHandler();
 

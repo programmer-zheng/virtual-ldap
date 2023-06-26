@@ -12,10 +12,10 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class OrgAdminRemoveEventHandler : DingdingBaseEventHandler
     {
-        private readonly IDingdingAppService _dingDingAppService;
+        private readonly IDingTalkAppService _dingDingAppService;
         private readonly IRepository<UserEntity, string> _userRepository;
 
-        public OrgAdminRemoveEventHandler(IDingdingAppService dingDingAppService,
+        public OrgAdminRemoveEventHandler(IDingTalkAppService dingDingAppService,
             IRepository<UserEntity, string> userRepository, ILogger logger) : base(logger)
         {
             _dingDingAppService = dingDingAppService;

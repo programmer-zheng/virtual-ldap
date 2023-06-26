@@ -3,7 +3,7 @@ using DingTalk.Api.Response;
 
 namespace VirtualLdap.Application.DingDingUtils
 {
-    public interface IDingdingAppService : IApplicationService
+    public interface IDingTalkAppService : IApplicationService
     {
         string GetAccessToken();
 

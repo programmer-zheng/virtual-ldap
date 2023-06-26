@@ -1,7 +1,7 @@
 ﻿using Abp.Application.Services;
-using Abp.Domain.Uow;
 using Abp.UI;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using VirtualLdap.Application.WorkWeixinUtils;
 using VirtualLdap.Core.Entities;
 
@@ -27,6 +27,9 @@ public class WorkWeixinSyncContactsService : SyncContactsBase, ISyncContacts, IA
             var newDeptList = new List<DepartmentEntity>();
             var newRelaList = new List<UserDepartmentsRelationEntity>();
             var departmentList = await WorkWeixinAppService.GetDepartmentList();
+
+            Logger.Debug($"企业微信返回部门信息：{JsonConvert.SerializeObject(departmentList)}");
+
             foreach (var department in departmentList)
             {
                 if (!deptList.Any(t => t.Id == department.Id))
@@ -35,6 +38,7 @@ public class WorkWeixinSyncContactsService : SyncContactsBase, ISyncContacts, IA
                 }
 
                 var users = await WorkWeixinAppService.GetUserList(department.Id);
+                Logger.Debug($"企业微信返回部门【{department.Name}】中的人员信息：{string.Join("、", users.Select(t => t.Name).ToList())}");
 
                 foreach (var user in users)
                 {

@@ -1,6 +1,6 @@
 ﻿namespace VirtualLdap.Application.DingDingUtils
 {
-    public class DingDingConfigOptions
+    public class DingTalkConfigOptions
     {
         public const string DingDing = "DingDing";
 
