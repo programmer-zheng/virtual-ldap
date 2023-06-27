@@ -4,36 +4,37 @@ module.exports = {
     cronTime: '*/1 * * * *',
     // LDAP serve port, it is a insecure port, please connect with ldap://
     listenPort: 389,
-    // Base DN will be o=Example,dc=example,dc=com
-    // Groups base DN will be ou=Groups,o=Example,dc=example,dc=com
-    // Users base DN will be ou=People,o=Example,dc=example,dc=com
-    rootDN: 'dc=example,dc=com',
+    // Base DN will be： o=Example,dc=ldap,dc=com
+    // Groups base DN will be： ou=Groups,o=Example,dc=ldap,dc=com
+    // Users base DN will be： ou=People,o=Example,dc=ldap,dc=com
+    rootDN: 'dc=ldap,dc=com',
     organization: 'Example',
     // 管理员，用于连接ldap服务
     admins: [
       {
-        // Bind DN will be cn=keycloak,dc=example,dc=com
-        commonName: 'keycloak',
-        password: 'keycloak',
+        // Bind DN will be：cn=ldap,dc=ldap,dc=com
+        commonName: 'ldap',
+        password: 'ldap',
         canModifyEntry: false,
       },
       {
+        // Bind DN will be：cn=jenkins,dc=ldap,dc=com
         commonName: 'jenkins',
         password: 'jenkins',
         canModifyEntry: false,
       },
     ]
   },
-  // 请修改以下后端地址
+  // 请修改以下后端地址及ldap请求token，确保与后端服务一致
   provider: {
-    serverHost: 'http://www.ldap.com:7103',
+    serverHost: 'http://localhost:7103',
     LdapRequestToken: 'FV*X@2rl&y@k2BQ7',
     name: 'dingtalk'
   },
-  // Custom groups, base DN will be ou=CustomGroups,ou=Groups,o=Example,dc=example,dc=com
+  // Custom groups, base DN will be ou=CustomGroups,ou=Groups,o=Example,dc=ldap,dc=com
   customGroups: [
     {
-      // DN will be ou=Jenkins Admins,ou=CustomGroups,ou=Groups,o=Example,dc=example,dc=com
+      // DN will be ou=Jenkins Admins,ou=CustomGroups,ou=Groups,o=Example,dc=ldap,dc=com
       name: 'Jenkins Admins',
       // User with these mails will be added to the group
       members: ['jenkins@example.com'],
