@@ -17,7 +17,7 @@ namespace VirtualLdap.Web.Controllers
     {
         private readonly DingTalkConfigOptions _dingDingConfigOptions;
 
-        public IDingTalkAppService DingdingAppService { get; set; }
+        public IDingTalkAppService DingTalkAppService { get; set; }
 
         public IBackgroundJobManager BackgroundJobManager { get; set; }
 
@@ -44,7 +44,7 @@ namespace VirtualLdap.Web.Controllers
         {
             if (!string.IsNullOrWhiteSpace(code))
             {
-                var dingdingUser = DingdingAppService.GetUserinfoByCode(code);
+                var dingdingUser = DingTalkAppService.GetUserinfoByCode(code);
                 if (dingdingUser == null)
                 {
                     return Content("获取钉钉人员信息失败，请关闭应用重新打开!");
@@ -179,9 +179,8 @@ namespace VirtualLdap.Web.Controllers
         [Route("/dingdinggetfailevents")]
         public async Task<IActionResult> GetFailEvents()
         {
-            // var result = DingdingAppService.GetCallbackFailEvents();
-            // return Json(result);
-            return Json(DingdingAppService is null);
+            var result = DingTalkAppService.GetCallbackFailEvents();
+            return Json(result);
         }
     }
 
