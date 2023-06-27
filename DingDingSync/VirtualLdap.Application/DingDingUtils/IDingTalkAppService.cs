@@ -40,7 +40,6 @@ namespace VirtualLdap.Application.DingDingUtils
         /// 获取推送失败的事件列表
         /// <para>参考文档：https://open.dingtalk.com/document/org/obtain-the-event-list-of-failed-push-messages</para>
         /// </summary>
-        /// <param name="token"></param>
         /// <returns></returns>
         List<OapiCallBackGetCallBackFailedResultResponse.FailedDomain> GetCallbackFailEvents();
 
