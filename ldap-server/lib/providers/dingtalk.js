@@ -236,6 +236,7 @@ async function reloadFromDingtalkServer() {
       // sn,
       // mail,
       // mobile: u.mobile,
+      email: u.email,
       avatarurl: u.avatar,
       remark: u.remark
     });
