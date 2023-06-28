@@ -2,7 +2,7 @@
 {
     public class IKuaiConfigOptions
     {
-        public const string IKuai = "Ikuai";
+        public const string IKuai = "IKuai";
         
         /// <summary>
         /// 是否启用爱快VPN功能

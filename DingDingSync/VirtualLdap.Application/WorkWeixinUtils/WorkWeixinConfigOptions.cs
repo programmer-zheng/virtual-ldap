@@ -2,7 +2,7 @@ namespace VirtualLdap.Application.WorkWeixinUtils;
 
 public class WorkWeixinConfigOptions
 {
-    public const string WorkWeixin = "WorkWeixin";
+    public const string WorkWeixin = "WorkWeiXin";
 
     /// <summary>
     /// CorpId
