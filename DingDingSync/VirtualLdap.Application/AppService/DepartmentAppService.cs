@@ -1,7 +1,6 @@
 ﻿using Abp.Domain.Repositories;
 using VirtualLdap.Application.AppService.Dtos;
 using VirtualLdap.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace VirtualLdap.Application.AppService
 {
@@ -14,15 +13,15 @@ namespace VirtualLdap.Application.AppService
             DeptRepository = deptRepository;
         }
 
-        public async Task<List<DepartmentDto>> GetAllDepartments()
+        public List<DepartmentDto> GetAllDepartments()
         {
-            var list = await DeptRepository.GetAll()
+            var list =  DeptRepository.GetAll()
                 .Select(t => new DepartmentDto
                 {
                     Id = t.Id,
                     Name = t.DeptName,
                     Parentid = t.ParentId
-                }).ToListAsync();
+                }).ToList();
             return list;
         }
 

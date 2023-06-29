@@ -6,7 +6,7 @@ namespace VirtualLdap.Application.AppService
 {
     public interface IDepartmentAppService : IApplicationService
     {
-        Task<List<DepartmentDto>> GetAllDepartments();
+        List<DepartmentDto> GetAllDepartments();
 
         Task AddDepartment(DepartmentEntity dto);
     }

@@ -54,7 +54,7 @@ public class User_Tests : VirtualLdapTestBase
     [Fact]
     public async Task AdminResetUserPassword_Test()
     {
-        var users = await _userAppService.GetAdminDeptUsers(TestDataBuilder.DefaultUserId);
+        var users = _userAppService.GetAdminDeptUsers(TestDataBuilder.DefaultUserId);
         users.ShouldNotBeNull();
         users.ShouldNotBeEmpty();
 

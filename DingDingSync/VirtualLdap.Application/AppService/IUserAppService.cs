@@ -25,14 +25,14 @@ namespace VirtualLdap.Application.AppService
         /// </summary>
         /// <param name="deptId"></param>
         /// <returns></returns>
-        Task<List<DeptUserDto>> DeptUsers(long deptId);
+        List<DeptUserDto> DeptUsers(long deptId);
 
         /// <summary>
         /// 获取管理人员下属用户信息
         /// </summary>
         /// <param name="adminUserId"></param>
         /// <returns></returns>
-        Task<List<DeptUserDto>> GetAdminDeptUsers(string adminUserId);
+        List<DeptUserDto> GetAdminDeptUsers(string adminUserId);
 
         Task<DeptUserDto> GetDeptUserDetail(string userid);
 

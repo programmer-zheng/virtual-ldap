@@ -21,9 +21,9 @@ public class Department_Tests : VirtualLdapTestBase
     }
 
     [Fact]
-    public async Task Departments_Test()
+    public void Departments_Test()
     {
-        var allDepartments = await _departmentAppService.GetAllDepartments();
+        var allDepartments = _departmentAppService.GetAllDepartments();
         allDepartments.ShouldNotBeNull();
         allDepartments.ShouldNotBeEmpty();
         allDepartments.First().Name.ShouldBeEquivalentTo(TestDataBuilder.DefaultDepartName);
@@ -40,7 +40,7 @@ public class Department_Tests : VirtualLdapTestBase
             ParentId = 0
         };
         await _departmentAppService.AddDepartment(entity);
-        var allDepartments = await _departmentAppService.GetAllDepartments();
+        var allDepartments = _departmentAppService.GetAllDepartments();
         allDepartments.ShouldNotBeNull();
         allDepartments.Count.ShouldBeEquivalentTo(2);
         _output.WriteLine(allDepartments.ToJsonString());

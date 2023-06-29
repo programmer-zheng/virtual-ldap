@@ -7,7 +7,6 @@ using Abp.UI;
 using Castle.Core.Logging;
 using VirtualLdap.Application.AppService.Dtos;
 using VirtualLdap.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TinyPinyin;
 
@@ -29,10 +28,10 @@ namespace VirtualLdap.Application.AppService
 
         public ICacheManager CacheManager { get; set; }
 
-        public async Task<List<DeptUserDto>> DeptUsers(long deptId)
+        public List<DeptUserDto> DeptUsers(long deptId)
         {
             var emailSuffix = Configuration.GetValue<string>("EmailSuffix");
-            var users = await (from user in UserRepository.GetAll()
+            var users = (from user in UserRepository.GetAll()
                 join rela in UserDeptRelaRepository.GetAll() on user.Id equals rela.UserId
                 where rela.DeptId == deptId && user.AccountEnabled == true
                 select new DeptUserDto
@@ -50,7 +49,7 @@ namespace VirtualLdap.Application.AppService
                     Position = user.Position,
                     JobNumber = user.JobNumber,
                     Department = new List<long> { rela.DeptId }
-                }).ToListAsync();
+                }).ToList();
             return users;
         }
 
@@ -74,14 +73,14 @@ namespace VirtualLdap.Application.AppService
             return result;
         }
 
-        public async Task<List<DeptUserDto>> GetAdminDeptUsers(string adminUserId)
+        public List<DeptUserDto> GetAdminDeptUsers(string adminUserId)
         {
-            var depts = await DeptRepository.GetAll().ToListAsync();
+            var depts = DeptRepository.GetAll().ToList();
 
-            var adminDepts = await UserDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
-                .Select(t => t.DeptId).ToListAsync();
+            var adminDepts =  UserDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
+                .Select(t => t.DeptId).ToList();
             var deptIds = GetDeptIds(adminDepts, depts);
-            var users = await (from user in UserRepository.GetAll()
+            var users =  (from user in UserRepository.GetAll()
                 join rela in UserDeptRelaRepository.GetAll() on user.Id equals rela.UserId
                 where deptIds.Contains(rela.DeptId) && user.Id != adminUserId
                 orderby rela.DeptId, user.UserName
@@ -101,7 +100,7 @@ namespace VirtualLdap.Application.AppService
                     HiredDate = user.HiredDate,
                     AccountEnabled = user.AccountEnabled,
                     VpnAccountEnabled = user.VpnAccountEnabled,
-                }).ToListAsync();
+                }).ToList();
             return users;
         }
 
@@ -226,7 +225,7 @@ namespace VirtualLdap.Application.AppService
             }
 
             defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
-            var user = await UserRepository.GetAll().FirstOrDefaultAsync(t => t.Id == userId);
+            var user = UserRepository.GetAll().FirstOrDefault(t => t.Id == userId);
             if (user == null)
             {
                 throw new UserFriendlyException("用户不存在");
@@ -254,7 +253,7 @@ namespace VirtualLdap.Application.AppService
 
         public async Task<DeptUserDto> GetDeptUserDetail(string userid)
         {
-            var userdto = await (from user in UserRepository.GetAll()
+            var userdto = (from user in UserRepository.GetAll()
                 where user.Id == userid
                 select new DeptUserDto
                 {
@@ -272,7 +271,7 @@ namespace VirtualLdap.Application.AppService
                     Active = user.Active,
                     Position = user.Position,
                     JobNumber = user.JobNumber,
-                }).FirstOrDefaultAsync();
+                }).FirstOrDefault();
             return userdto;
         }
 

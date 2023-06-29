@@ -66,9 +66,9 @@ namespace VirtualLdap.Web.Controllers
         }
 
         [Route("/ManageUsers")]
-        public async Task<IActionResult> ManageUsers(string userid)
+        public IActionResult ManageUsers(string userid)
         {
-            var users = await UserAppService.GetAdminDeptUsers(userid);
+            var users = UserAppService.GetAdminDeptUsers(userid);
             return PartialView(users);
         }
 

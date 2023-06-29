@@ -23,9 +23,9 @@ public class LdapController : AbpController
     /// <returns></returns>
     [Route("/departments")]
     [ServiceFilter(typeof(CheckTokenFilterAttribute))]
-    public async Task<IActionResult> Departments()
+    public IActionResult Departments()
     {
-        var depts = await _departmentAppService.GetAllDepartments();
+        var depts = _departmentAppService.GetAllDepartments();
 
         return Json(depts);
     }
@@ -37,9 +37,9 @@ public class LdapController : AbpController
     /// <returns></returns>
     [Route("/deptusers")]
     [ServiceFilter(typeof(CheckTokenFilterAttribute))]
-    public async Task<IActionResult> DeptUsers(long deptid)
+    public IActionResult DeptUsers(long deptid)
     {
-        var users = await _userAppService.DeptUsers(deptid);
+        var users = _userAppService.DeptUsers(deptid);
         return Json(users);
     }
 
