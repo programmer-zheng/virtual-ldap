@@ -8,7 +8,7 @@
 ## 项目结构
 
 ```bash
-|-- DingDingSync				后端程序
+|-- ContactsSync				后端程序，同步通讯录
 |-- docker-compose				docker-compose方式运行依赖项
     |-- configs 				配置文件目录
     |   |-- appsettings.json	后端程序配置文件
