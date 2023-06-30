@@ -11,6 +11,7 @@ namespace VirtualLdap.Web.Controllers;
 /// <summary>
 /// 为LDAP服务提供相关数据支持
 /// </summary>
+[ServiceFilter(typeof(CheckTokenFilterAttribute))]
 public class LdapController : AbpController
 {
     public IUserAppService _userAppService { get; set; }
@@ -22,7 +23,6 @@ public class LdapController : AbpController
     /// </summary>
     /// <returns></returns>
     [Route("/departments")]
-    [ServiceFilter(typeof(CheckTokenFilterAttribute))]
     public IActionResult Departments()
     {
         var depts = _departmentAppService.GetAllDepartments();
@@ -36,7 +36,6 @@ public class LdapController : AbpController
     /// <param name="deptid"></param>
     /// <returns></returns>
     [Route("/deptusers")]
-    [ServiceFilter(typeof(CheckTokenFilterAttribute))]
     public IActionResult DeptUsers(long deptid)
     {
         var users = _userAppService.DeptUsers(deptid);
@@ -50,7 +49,6 @@ public class LdapController : AbpController
     /// <returns></returns>
     [HttpPost]
     [Route("/validateuser")]
-    [ServiceFilter(typeof(CheckTokenFilterAttribute))]
     public async Task<IActionResult> ValidateUser([FromBody] LdapRequestViewModel input)
     {
         var result = new LdapResponseViewModel();
