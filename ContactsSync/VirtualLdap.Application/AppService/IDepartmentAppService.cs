@@ -9,5 +9,9 @@ namespace VirtualLdap.Application.AppService
         List<DepartmentDto> GetAllDepartments();
 
         Task AddDepartment(DepartmentEntity dto);
+
+        Task RemoveDepartment(long id);
+
+        Task UpdateDepartment(DepartmentEntity dto);
     }
 }

@@ -1,20 +1,25 @@
+using System.Xml.Linq;
+using VirtualLdap.Application.AppService;
+using VirtualLdap.Application.WorkWeixinUtils;
+using VirtualLdap.Core.Entities;
+
 namespace VirtualLdap.Application.Jobs.EventHandler.WorkWeixin;
 
-public class CreatePartyEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler
+public class CreatePartyEventHandler : WorkWeixinBaseEventHandler
 {
-    public string EventType { get; set; } = "create_party";
+    private readonly IDepartmentAppService _departmentAppService;
 
-    public Task Handle(string msgContent)
+    public CreatePartyEventHandler(IDepartmentAppService departmentAppService)
     {
-        if (EventType == ChangeType)
-        {
-            Console.WriteLine("CreatePartyEventHandler");
-            
-        }
-        return Task.CompletedTask;
+        _departmentAppService = departmentAppService;
     }
 
-    public CreatePartyEventHandler(string msgContent) : base(msgContent)
+    public override async Task Do(string msg)
     {
+        XElement xml = XElement.Parse(msg);
+        var id = xml.Element("Id").Value;
+        var departmentDetail = await WorkWeixinAppService.GetDepartmentDetail(id);
+        var departmentEntity = ObjectMapper.Map<DepartmentEntity>(departmentDetail);
+        await _departmentAppService.AddDepartment(departmentEntity);
     }
 }

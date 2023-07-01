@@ -18,6 +18,22 @@ public interface IWorkWeixinAppService: IApplicationService
     /// <returns></returns>
     Task<List<WorkWeixinDeptListDto>> GetDepartmentList();
 
+    /// <summary>
+    /// 获取部门详情
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<WorkWeixinDeptListDto> GetDepartmentDetail(long id);
+    Task<WorkWeixinDeptListDto> GetDepartmentDetail(string id);
+    
+
     Task<List<WorkWeixinDeptUserListDto>> GetUserList(long deptId);
+
+    /// <summary>
+    /// 获取成员详情
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    Task<WorkWeixinDeptUserListDto> GetUserDetail(string userId);
 
 }

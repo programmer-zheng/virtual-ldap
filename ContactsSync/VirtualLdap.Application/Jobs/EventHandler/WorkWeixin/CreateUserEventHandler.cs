@@ -1,16 +1,27 @@
+using System.Xml.Linq;
+using VirtualLdap.Application.AppService;
+using VirtualLdap.Core.Entities;
+
 namespace VirtualLdap.Application.Jobs.EventHandler.WorkWeixin;
 
-public class CreateUserEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler
+public class CreateUserEventHandler : WorkWeixinBaseEventHandler
 {
-    public string EventType { get; set; } = "create_user";
+    private readonly IUserAppService _userAppService;
 
-    public Task Handle(string msgContent)
+    public CreateUserEventHandler(IUserAppService userAppService)
     {
-        Console.WriteLine("CreateUserEventHandler");
-        return Task.CompletedTask;;
+        _userAppService = userAppService;
     }
 
-    public CreateUserEventHandler(string msgContent) : base(msgContent)
+    public override async Task Do(string msg)
     {
+        XElement xml = XElement.Parse(msg);
+        var userId = xml.Element("UserID").Value;
+        var deptIds = xml.Element("Department").Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(t => Convert.ToInt64(t)).ToList();
+        var userDetail = await WorkWeixinAppService.GetUserDetail(userId);
+        var userEntity = ObjectMapper.Map<UserEntity>(userDetail);
+        await _userAppService.AddUser(userEntity);
+        await _userAppService.UpdateUserDepartmentRelations(userEntity.Id, deptIds);
     }
 }

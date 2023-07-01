@@ -1,15 +1,21 @@
+using System.Xml.Linq;
+using VirtualLdap.Application.AppService;
+
 namespace VirtualLdap.Application.Jobs.EventHandler.WorkWeixin;
 
-public class DeletePartyEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler
+public class DeletePartyEventHandler : WorkWeixinBaseEventHandler
 {
-    public string EventType { get; set; } = "delete_party";
+    private readonly IDepartmentAppService _departmentAppService;
 
-    public Task Handle(string msgContent)
+    public DeletePartyEventHandler(IDepartmentAppService departmentAppService)
     {
-        return Task.CompletedTask;
+        _departmentAppService = departmentAppService;
     }
 
-    public DeletePartyEventHandler(string msgContent) : base(msgContent)
+    public override async Task Do(string msg)
     {
+        XElement xml = XElement.Parse(msg);
+        var id = xml.Element("Id").Value;
+        await _departmentAppService.RemoveDepartment(Convert.ToInt64(id));
     }
 }

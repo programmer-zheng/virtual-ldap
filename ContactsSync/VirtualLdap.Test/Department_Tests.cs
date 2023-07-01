@@ -40,9 +40,19 @@ public class Department_Tests : VirtualLdapTestBase
             ParentId = 0
         };
         await _departmentAppService.AddDepartment(entity);
+
+        entity.DeptName = "修改名称";
+        entity.ParentId = 1;
+        await _departmentAppService.UpdateDepartment(entity);
+
         var allDepartments = _departmentAppService.GetAllDepartments();
+
         allDepartments.ShouldNotBeNull();
         allDepartments.Count.ShouldBeEquivalentTo(2);
         _output.WriteLine(allDepartments.ToJsonString());
+
+        var depart = allDepartments.FirstOrDefault(t => t.Id == int.MaxValue);
+        depart.ShouldNotBeNull();
+        depart.Name.ShouldBeEquivalentTo(entity.DeptName);
     }
 }

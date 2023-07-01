@@ -15,7 +15,7 @@ namespace VirtualLdap.Application.AppService
 
         public List<DepartmentDto> GetAllDepartments()
         {
-            var list =  DeptRepository.GetAll()
+            var list = DeptRepository.GetAll()
                 .Select(t => new DepartmentDto
                 {
                     Id = t.Id,
@@ -28,6 +28,21 @@ namespace VirtualLdap.Application.AppService
         public async Task AddDepartment(DepartmentEntity dto)
         {
             await DeptRepository.InsertAsync(dto);
+        }
+
+        public async Task RemoveDepartment(long id)
+        {
+            await DeptRepository.HardDeleteAsync(t => t.Id == id);
+        }
+
+        public async Task UpdateDepartment(DepartmentEntity dto)
+        {
+            await DeptRepository.UpdateAsync(dto.Id, t =>
+            {
+                t.DeptName = dto.DeptName;
+                t.ParentId = dto.ParentId;
+                return Task.CompletedTask;
+            });
         }
     }
 }

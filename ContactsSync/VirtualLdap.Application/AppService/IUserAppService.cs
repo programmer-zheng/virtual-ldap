@@ -6,6 +6,14 @@ namespace VirtualLdap.Application.AppService
 {
     public interface IUserAppService : IApplicationService
     {
+        Task AddUser(UserEntity dto);
+
+        Task UpdateUserDepartmentRelations(string userId, List<long> depIdList);
+
+        Task RemoveUser(string id);
+
+        Task UpdateUser(UserEntity dto);
+
         /// <summary>
         /// 根据主键获取用户信息
         /// </summary>

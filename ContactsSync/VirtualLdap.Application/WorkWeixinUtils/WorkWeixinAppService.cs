@@ -101,6 +101,32 @@ public class WorkWeixinAppService : IWorkWeixinAppService, IMessageProvider
         }
     }
 
+    public async Task<WorkWeixinDeptListDto> GetDepartmentDetail(long id)
+    {
+        return await GetDepartmentDetail($"{id}");
+    }
+
+    public async Task<WorkWeixinDeptListDto> GetDepartmentDetail(string id)
+    {
+        var accessToken = await GetAccessToken();
+        var url = $"https://qyapi.weixin.qq.com/cgi-bin/department/get?access_token={accessToken}&id={id}";
+        var client = new HttpClient();
+        var response = await client.GetAsync(url);
+        var apiReturnResult = await response.Content.ReadAsStringAsync();
+        var jObject = JObject.Parse(apiReturnResult);
+        var errorCode = jObject.Value<int>("errcode");
+        if (errorCode == 0)
+        {
+            var deparment = jObject["department"].ToObject<WorkWeixinDeptListDto>();
+            return deparment;
+        }
+        else
+        {
+            var msg = jObject.Value<string>("errmsg");
+            throw new UserFriendlyException($"调用企业微信API获取部门{id}详情时返回异常，错误代码为：{errorCode}，错误信息为：{msg}");
+        }
+    }
+
     public async Task<List<WorkWeixinDeptUserListDto>> GetUserList(long deptId)
     {
         var accessToken = await GetAccessToken();
@@ -115,6 +141,27 @@ public class WorkWeixinAppService : IWorkWeixinAppService, IMessageProvider
             var array = (JArray)jObject["userlist"];
             var userList = array.ToObject<List<WorkWeixinDeptUserListDto>>();
             return userList;
+        }
+        else
+        {
+            var msg = jObject.Value<string>("errmsg");
+            throw new UserFriendlyException($"调用企业微信API获取部门下属人员时返回异常，错误代码为：{errorCode}，错误信息为：{msg}");
+        }
+    }
+
+    public async Task<WorkWeixinDeptUserListDto> GetUserDetail(string userId)
+    {
+        var accessToken = await GetAccessToken();
+        var url = $"https://qyapi.weixin.qq.com/cgi-bin/user/get?access_token={accessToken}&userid={userId}";
+        var client = new HttpClient();
+        var response = await client.GetAsync(url);
+        var apiReturnResult = await response.Content.ReadAsStringAsync();
+        var jObject = JObject.Parse(apiReturnResult);
+        var errorCode = jObject.Value<int>("errcode");
+        if (errorCode == 0)
+        {
+            var user = jObject["userlist"].ToObject<WorkWeixinDeptUserListDto>();
+            return user;
         }
         else
         {

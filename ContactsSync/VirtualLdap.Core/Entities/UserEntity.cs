@@ -7,14 +7,14 @@ namespace VirtualLdap.Core.Entities
     public class UserEntity : Entity<string>, ISoftDelete, IHasDeletionTime
     {
         /// <summary>
-        /// 钉钉平台 UserId 员工的userId。
+        /// 员工的userId。
         /// </summary>
         [Key]
         [MaxLength(50)]
         public override string Id { get; set; } = "";
 
         /// <summary>
-        /// 钉钉平台 UnionId 员工在当前开发者企业账号范围内的唯一标识。
+        /// UnionId 员工在当前开发者企业账号范围内的唯一标识。
         /// </summary>
         [MaxLength(50)]
         public string UnionId { get; set; } = "";

@@ -1,15 +1,21 @@
+using System.Xml.Linq;
+using VirtualLdap.Application.AppService;
+
 namespace VirtualLdap.Application.Jobs.EventHandler.WorkWeixin;
 
-public class DeleteUserEventHandler : WorkWeixinBaseEventHandler, IWorkWeixinEventHandler
+public class DeleteUserEventHandler : WorkWeixinBaseEventHandler
 {
-    public string EventType { get; set; } = "delete_user";
+    private readonly IUserAppService _userAppService;
 
-    public Task Handle(string msgContent)
+    public DeleteUserEventHandler(IUserAppService userAppService)
     {
-        return Task.CompletedTask;
+        _userAppService = userAppService;
     }
 
-    public DeleteUserEventHandler(string msgContent) : base(msgContent)
+    public override async Task Do(string msg)
     {
+        XElement xml = XElement.Parse(msg);
+        var userId = xml.Element("UserID").Value;
+        await _userAppService.RemoveUser(userId);
     }
 }

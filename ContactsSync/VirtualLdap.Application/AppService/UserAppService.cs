@@ -77,10 +77,10 @@ namespace VirtualLdap.Application.AppService
         {
             var depts = DeptRepository.GetAll().ToList();
 
-            var adminDepts =  UserDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
+            var adminDepts = UserDeptRelaRepository.GetAll().Where(t => t.UserId == adminUserId)
                 .Select(t => t.DeptId).ToList();
             var deptIds = GetDeptIds(adminDepts, depts);
-            var users =  (from user in UserRepository.GetAll()
+            var users = (from user in UserRepository.GetAll()
                 join rela in UserDeptRelaRepository.GetAll() on user.Id equals rela.UserId
                 where deptIds.Contains(rela.DeptId) && user.Id != adminUserId
                 orderby rela.DeptId, user.UserName
@@ -102,6 +102,40 @@ namespace VirtualLdap.Application.AppService
                     VpnAccountEnabled = user.VpnAccountEnabled,
                 }).ToList();
             return users;
+        }
+
+        public async Task AddUser(UserEntity dto)
+        {
+            await UserRepository.InsertAsync(dto);
+        }
+
+        public async Task UpdateUserDepartmentRelations(string userId, List<long> depIdList)
+        {
+            if (depIdList == null || depIdList.Count == 0)
+            {
+                throw new UserFriendlyException("部门ID不能为空");
+            }
+
+            await UserDeptRelaRepository.HardDeleteAsync(t => t.UserId == userId);
+            foreach (var deptId in depIdList)
+            {
+                await UserDeptRelaRepository.InsertAsync(new UserDepartmentsRelationEntity()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = userId, DeptId = deptId
+                });
+            }
+        }
+
+        public async Task RemoveUser(string id)
+        {
+            await UserRepository.DeleteAsync(id);
+            await UserDeptRelaRepository.DeleteAsync(t => t.UserId == id);
+        }
+
+        public async Task UpdateUser(UserEntity dto)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<UserEntity> GetByIdAsync(string userId)
