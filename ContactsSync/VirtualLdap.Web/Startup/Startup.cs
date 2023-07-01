@@ -50,7 +50,7 @@ namespace VirtualLdap.Web.Startup
             {
                 services.AddScoped<IMessageProvider, WorkWeixinAppService>();
                 services.AddScoped<ISyncContacts, WorkWeixinSyncContactsService>();
-
+                services.RegisterWorkWeiXinEventHandler();
             }
             else
             {

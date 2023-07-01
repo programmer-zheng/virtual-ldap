@@ -1,9 +1,44 @@
 using VirtualLdap.Application.Jobs.EventHandler.DingDing;
+using VirtualLdap.Application.Jobs.EventHandler.WorkWeixin;
 
 namespace VirtualLdap.Web.Startup;
 
-public static class DingDingEventHandler
+public static class SyncCallbackEventHandler
 {
+    public static void RegisterWorkWeiXinEventHandler(this IServiceCollection services)
+    {
+        services.AddTransient<CreatePartyEventHandler>();
+        services.AddTransient<CreateUserEventHandler>();
+        services.AddTransient<DeletePartyEventHandler>();
+        services.AddTransient<DeleteUserEventHandler>();
+        services.AddTransient<UpdatePartyEventHandler>();
+        services.AddTransient<UpdateUserEventHandler>();
+        services.AddTransient(serviceProvider =>
+        {
+            Func<string, WorkWeixinBaseEventHandler> func = (eventType) =>
+            {
+                switch (eventType)
+                {
+                    case "create_party":
+                        return serviceProvider.GetService<CreatePartyEventHandler>();
+                    case "create_user":
+                        return serviceProvider.GetService<CreateUserEventHandler>();
+                    case "delete_party":
+                        return serviceProvider.GetService<DeletePartyEventHandler>();
+                    case "delete_user":
+                        return serviceProvider.GetService<DeleteUserEventHandler>();
+                    case "update_party":
+                        return serviceProvider.GetService<UpdatePartyEventHandler>();
+                    case "update_user":
+                        return serviceProvider.GetService<UpdateUserEventHandler>();
+                    default:
+                        return null;
+                }
+            };
+            return func;
+        });
+    }
+
     /// <summary>
     /// 注册钉钉事件处理程序
     /// </summary>
