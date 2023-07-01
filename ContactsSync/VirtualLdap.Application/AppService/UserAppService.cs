@@ -135,7 +135,7 @@ namespace VirtualLdap.Application.AppService
 
         public async Task UpdateUser(UserEntity dto)
         {
-            throw new NotImplementedException();
+            await UserRepository.UpdateAsync(dto);
         }
 
         public async Task<UserEntity> GetByIdAsync(string userId)
