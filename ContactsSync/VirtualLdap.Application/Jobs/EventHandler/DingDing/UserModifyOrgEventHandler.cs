@@ -1,10 +1,7 @@
-﻿using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
-using Castle.Core.Logging;
+﻿using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs.EventInfo;
-using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -13,22 +10,17 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class UserModifyOrgEventHandler : DingdingBaseEventHandler
     {
-        private readonly IRepository<UserEntity, string> _userRepository;
-        private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
         private readonly IDingTalkAppService _dingdingAppService;
-        private readonly IObjectMapper _objectMapper;
+        private readonly IUserAppService _userAppService;
 
-        public UserModifyOrgEventHandler(IRepository<UserEntity, string> userRepository,
-            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            IDingTalkAppService dingdingAppService, IObjectMapper objectMapper, ILogger logger) : base(logger)
+        public UserModifyOrgEventHandler(
+            IDingTalkAppService dingdingAppService, IUserAppService userAppService)
         {
-            _userRepository = userRepository;
-            _deptUserRelaRepository = deptUserRelaRepository;
             _dingdingAppService = dingdingAppService;
-            _objectMapper = objectMapper;
+            _userAppService = userAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<UserModifyOrgEvent>(msg);
             if (eventInfo != null)
@@ -38,11 +30,10 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                     try
                     {
                         var dingDingUser = _dingdingAppService.GetUserDetail(userid);
-
-                        var dbUserEntity = _userRepository.FirstOrDefault(t => t.Id == userid);
+                        var dbUserEntity = _userAppService.GetByIdAsync(userid).Result;
                         if (dbUserEntity != null)
                         {
-                            _objectMapper.Map(dingDingUser, dbUserEntity);
+                            ObjectMapper.Map(dingDingUser, dbUserEntity);
                             dbUserEntity.IsAdmin = IsAdmin(dingDingUser);
 
                             if (!dbUserEntity.AccountEnabled && dbUserEntity.IsAdmin)
@@ -50,20 +41,8 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                                 dbUserEntity.AccountEnabled = true;
                             }
 
-                            _userRepository.Update(dbUserEntity);
-
-                            //删除原部门关联信息，重新插入
-                            _deptUserRelaRepository.HardDelete(t => t.UserId == userid);
-                            foreach (var deptId in dingDingUser.DeptIdList)
-                            {
-                                var rela = new UserDepartmentsRelationEntity()
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    UserId = userid,
-                                    DeptId = deptId,
-                                };
-                                _deptUserRelaRepository.Insert(rela);
-                            }
+                            _userAppService.UpdateUser(dbUserEntity);
+                            _userAppService.UpdateUserDepartmentRelations(userid, dingDingUser.DeptIdList);
                         }
                     }
                     catch (Exception e)

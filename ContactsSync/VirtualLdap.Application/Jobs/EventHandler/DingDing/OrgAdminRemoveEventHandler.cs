@@ -1,9 +1,7 @@
-﻿using Abp.Domain.Repositories;
-using Castle.Core.Logging;
+﻿using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs.EventInfo;
-using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -13,16 +11,15 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     public class OrgAdminRemoveEventHandler : DingdingBaseEventHandler
     {
         private readonly IDingTalkAppService _dingDingAppService;
-        private readonly IRepository<UserEntity, string> _userRepository;
+        private readonly IUserAppService _userAppService;
 
-        public OrgAdminRemoveEventHandler(IDingTalkAppService dingDingAppService,
-            IRepository<UserEntity, string> userRepository, ILogger logger) : base(logger)
+        public OrgAdminRemoveEventHandler(IDingTalkAppService dingDingAppService, IUserAppService userAppService)
         {
             _dingDingAppService = dingDingAppService;
-            _userRepository = userRepository;
+            _userAppService = userAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<OrgAdminRemoveEvent>(msg);
             if (eventInfo != null)
@@ -37,11 +34,11 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                         var isAdmin = (dingDingUser.LeaderInDept != null &&
                                        dingDingUser.LeaderInDept.Count(t => t.Leader) > 0);
 
-                        var dbUser = _userRepository.FirstOrDefault(userid);
+                        var dbUser = await _userAppService.GetByIdAsync(userid);
                         if (dbUser != null)
                         {
                             dbUser.IsAdmin = isAdmin;
-                            _userRepository.Update(dbUser);
+                            await _userAppService.UpdateUser(dbUser);
                         }
                     }
                     catch (Exception e)

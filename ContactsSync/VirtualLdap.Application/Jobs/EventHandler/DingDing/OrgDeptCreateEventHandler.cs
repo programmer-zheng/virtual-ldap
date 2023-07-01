@@ -1,10 +1,8 @@
-﻿using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
-using Castle.Core.Logging;
+﻿using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs.EventInfo;
 using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -14,19 +12,17 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     public class OrgDeptCreateEventHandler : DingdingBaseEventHandler
     {
         private readonly IDingTalkAppService _dingdingAppService;
-        private readonly IObjectMapper _objectMapper;
-        private readonly IRepository<DepartmentEntity, long> _departmentRepository;
+
+        private readonly IDepartmentAppService _departmentAppService;
 
         public OrgDeptCreateEventHandler(IDingTalkAppService dingdingAppService,
-            IObjectMapper objectMapper,
-            IRepository<DepartmentEntity, long> departmentRepository, ILogger logger) : base(logger)
+            IDepartmentAppService departmentAppService)
         {
             _dingdingAppService = dingdingAppService;
-            _objectMapper = objectMapper;
-            _departmentRepository = departmentRepository;
+            _departmentAppService = departmentAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<OrgDeptCreateEvent>(msg);
             if (eventInfo != null && eventInfo.ID.Count > 0)
@@ -37,9 +33,9 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                     {
                         var dept = _dingdingAppService.GetDepartmentDetail(deptId);
 
-                        var deptEntity = _objectMapper.Map<DepartmentEntity>(dept);
+                        var deptEntity = ObjectMapper.Map<DepartmentEntity>(dept);
 
-                        _departmentRepository.Insert(deptEntity);
+                        _departmentAppService.AddDepartment(deptEntity);
                     }
                     catch (Exception e)
                     {

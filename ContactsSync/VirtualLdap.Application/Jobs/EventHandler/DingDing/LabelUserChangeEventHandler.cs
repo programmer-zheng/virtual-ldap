@@ -1,9 +1,7 @@
-﻿using Abp.Domain.Repositories;
-using Castle.Core.Logging;
+﻿using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs.EventInfo;
-using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -12,18 +10,17 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class LabelUserChangeEventHandler : DingdingBaseEventHandler
     {
-        private readonly IRepository<UserEntity, string> _userRepository;
         private readonly IDingTalkAppService _dingDingAppService;
+        private readonly IUserAppService _userAppService;
 
-
-        public LabelUserChangeEventHandler(IRepository<UserEntity, string> userRepository,
-            IDingTalkAppService dingDingAppService, ILogger logger) : base(logger)
+        public LabelUserChangeEventHandler(
+            IDingTalkAppService dingDingAppService, IUserAppService userAppService) 
         {
-            _userRepository = userRepository;
             _dingDingAppService = dingDingAppService;
+            _userAppService = userAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<LabelUserChangeEvent>(msg);
             if (eventInfo != null)
@@ -31,10 +28,8 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                 foreach (var userid in eventInfo.ID)
                 {
                     var dingDingUser = _dingDingAppService.GetUserDetail(userid);
-                    Console.WriteLine($"用户信息变更：{eventInfo.Action} ");
-                    Console.WriteLine(JsonConvert.SerializeObject(dingDingUser));
 
-                    var dbUser = _userRepository.FirstOrDefault(userid);
+                    var dbUser = await _userAppService.GetByIdAsync(userid);
                     if (dbUser != null)
                     {
                         dbUser.IsAdmin = IsAdmin(dingDingUser);
@@ -43,7 +38,7 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                             dbUser.AccountEnabled = true;
                         }
 
-                        _userRepository.Update(dbUser);
+                        await _userAppService.UpdateUser(dbUser);
                     }
                 }
             }

@@ -1,9 +1,7 @@
 ﻿using Abp.BackgroundJobs;
-using Abp.Domain.Repositories;
-using Castle.Core.Logging;
-using VirtualLdap.Application.Jobs.EventInfo;
-using VirtualLdap.Core.Entities;
 using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
+using VirtualLdap.Application.Jobs.EventInfo;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -12,39 +10,26 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class UserLeaveOrgEventHandler : DingdingBaseEventHandler
     {
-        private readonly IRepository<UserEntity, string> _userRepository;
-        private readonly IRepository<UserDepartmentsRelationEntity, string> _deptUserRelaRepository;
-
+        private readonly IUserAppService _userAppService;
         private readonly IBackgroundJobManager _backgroundJobManager;
 
-        public UserLeaveOrgEventHandler(IRepository<UserEntity, string> userRepository,
-            IRepository<UserDepartmentsRelationEntity, string> deptUserRelaRepository,
-            ILogger logger, IBackgroundJobManager backgroundJob) : base(logger)
+        public UserLeaveOrgEventHandler(IBackgroundJobManager backgroundJob, IUserAppService userAppService)
         {
-            _userRepository = userRepository;
-            _deptUserRelaRepository = deptUserRelaRepository;
             _backgroundJobManager = backgroundJob;
+            _userAppService = userAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<UserLeaveOrgEvent>(msg);
             if (eventInfo != null)
             {
                 try
                 {
-                    //先查询启用vpn账号的
-                    var users = _userRepository.GetAll().Where(t => eventInfo.ID.Contains(t.Id) && t.VpnAccountEnabled)
-                        .Select(t => t.UserName).ToList();
-
-                    //批量删除用户
-                    _userRepository.Delete(t => eventInfo.ID.Contains(t.Id));
-
-                    //批量删除部门关系
-                    _deptUserRelaRepository.Delete(t => eventInfo.ID.Contains(t.UserId));
-
                     foreach (var userId in eventInfo.ID)
                     {
+                        await _userAppService.RemoveUser(userId);
+                        await _userAppService.UpdateUserDepartmentRelations(userId, null);
                         //移除爱快vpn账号
                         _backgroundJobManager.Enqueue<IKuaiSyncAccountBackgroundJob, string>(userId);
                     }

@@ -1,17 +1,11 @@
-﻿using Castle.Core.Logging;
-
-namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
+﻿namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
     /// <summary>
     /// 企业被解散
     /// </summary>
     public class OrgRemoveEventHandler : DingdingBaseEventHandler
     {
-        public OrgRemoveEventHandler(ILogger logger) : base(logger)
-        {
-        }
-
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             Logger.Info("企业解散...");
         }

@@ -1,9 +1,8 @@
-﻿using Abp.Domain.Repositories;
-using Castle.Core.Logging;
+﻿using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs.EventInfo;
 using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -12,17 +11,17 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class OrgDeptModifyEventHandler : DingdingBaseEventHandler
     {
-        private readonly IRepository<DepartmentEntity, long> _departmentRepository;
         private readonly IDingTalkAppService _dingDingAppService;
+        private readonly IDepartmentAppService _departmentAppService;
 
-        public OrgDeptModifyEventHandler(IRepository<DepartmentEntity, long> departmentRepository,
-            IDingTalkAppService dingDingAppService, ILogger logger) : base(logger)
+        public OrgDeptModifyEventHandler(IDingTalkAppService dingDingAppService, 
+            IDepartmentAppService departmentAppService) 
         {
-            _departmentRepository = departmentRepository;
             _dingDingAppService = dingDingAppService;
+            _departmentAppService = departmentAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<OrgDeptModifyEvent>(msg);
             if (eventInfo != null)
@@ -31,14 +30,9 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                 {
                     try
                     {
-                        var dingDingUser = _dingDingAppService.GetDepartmentDetail(deptId);
-                        var dbDept = _departmentRepository.FirstOrDefault(deptId);
-                        if (dbDept != null)
-                        {
-                            dbDept.DeptName = dingDingUser.Name;
-                            dbDept.ParentId = dingDingUser.ParentId;
-                            _departmentRepository.Update(dbDept);
-                        }
+                        var dept = _dingDingAppService.GetDepartmentDetail(deptId);
+                        var deptEntity = ObjectMapper.Map<DepartmentEntity>(dept);
+                        _departmentAppService.UpdateDepartment(deptEntity);
                     }
                     catch (Exception e)
                     {

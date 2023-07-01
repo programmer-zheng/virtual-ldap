@@ -111,19 +111,17 @@ namespace VirtualLdap.Application.AppService
 
         public async Task UpdateUserDepartmentRelations(string userId, List<long> depIdList)
         {
-            if (depIdList == null || depIdList.Count == 0)
-            {
-                throw new UserFriendlyException("部门ID不能为空");
-            }
-
             await UserDeptRelaRepository.HardDeleteAsync(t => t.UserId == userId);
-            foreach (var deptId in depIdList)
+            if (depIdList != null)
             {
-                await UserDeptRelaRepository.InsertAsync(new UserDepartmentsRelationEntity()
+                foreach (var deptId in depIdList)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    UserId = userId, DeptId = deptId
-                });
+                    await UserDeptRelaRepository.InsertAsync(new UserDepartmentsRelationEntity()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserId = userId, DeptId = deptId
+                    });
+                }
             }
         }
 

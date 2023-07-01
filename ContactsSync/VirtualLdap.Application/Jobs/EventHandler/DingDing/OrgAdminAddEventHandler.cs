@@ -1,8 +1,6 @@
-﻿using Abp.Domain.Repositories;
-using Castle.Core.Logging;
+﻿using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.Jobs.EventInfo;
-using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -11,25 +9,25 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class OrgAdminAddEventHandler : DingdingBaseEventHandler
     {
-        private readonly IRepository<UserEntity, string> _userRepository;
+        private readonly IUserAppService _userAppService;
 
-        public OrgAdminAddEventHandler(IRepository<UserEntity, string> userRepository, ILogger logger) : base(logger)
+        public OrgAdminAddEventHandler(IUserAppService userAppService) 
         {
-            _userRepository = userRepository;
+            _userAppService = userAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<OrgAdminAddEvent>(msg);
             if (eventInfo != null)
             {
                 foreach (var userid in eventInfo.ID)
                 {
-                    var dbUser = _userRepository.FirstOrDefault(userid);
+                    var dbUser = await _userAppService.GetByIdAsync(userid);
                     if (dbUser != null)
                     {
                         dbUser.IsAdmin = true;
-                        _userRepository.Update(dbUser);
+                        await _userAppService.UpdateUser(dbUser);
                     }
                 }
             }

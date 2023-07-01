@@ -1,8 +1,8 @@
 ﻿using Abp.Domain.Repositories;
-using Castle.Core.Logging;
+using Newtonsoft.Json;
+using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.Jobs.EventInfo;
 using VirtualLdap.Core.Entities;
-using Newtonsoft.Json;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {
@@ -11,26 +11,25 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
     /// </summary>
     public class OrgDeptRemoveEventHandler : DingdingBaseEventHandler
     {
-        private readonly IRepository<DepartmentEntity, long> _departmentRepository;
-        private readonly IRepository<UserDepartmentsRelationEntity, string> _userDepartmentRelationRepository;
+        private readonly IDepartmentAppService _departmentAppService;
 
-        public OrgDeptRemoveEventHandler(IRepository<DepartmentEntity, long> departmentRepository, ILogger logger,
-            IRepository<UserDepartmentsRelationEntity, string> userDepartmentRelationRepository) : base(logger)
+        public OrgDeptRemoveEventHandler(IDepartmentAppService departmentAppService)
         {
-            _departmentRepository = departmentRepository;
-            _userDepartmentRelationRepository = userDepartmentRelationRepository;
+            _departmentAppService = departmentAppService;
         }
 
-        public override void Do(string msg)
+        public override async Task Do(string msg)
         {
             var eventInfo = JsonConvert.DeserializeObject<OrgDeptRemoveEvent>(msg);
             if (eventInfo != null && eventInfo.ID.Count > 0)
             {
                 try
                 {
-                    //部门删除时，钉钉会提醒删除部门下的人员，有人员时无法删除部门，这里只需要删除部门表的数据及部门人员关系表数据
-                    _departmentRepository.Delete(t => eventInfo.ID.Contains(t.Id));
-                    _userDepartmentRelationRepository.Delete(t => eventInfo.ID.Contains(t.DeptId));
+                    foreach (var deptId in eventInfo.ID)
+                    {
+                        //部门删除时，钉钉会提醒删除部门下的人员，有人员时无法删除部门，这里只需要删除部门表的数据及部门人员关系表数据
+                        await _departmentAppService.RemoveDepartment(deptId);
+                    }
                 }
                 catch (Exception e)
                 {
