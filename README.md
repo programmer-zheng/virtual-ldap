@@ -3,8 +3,11 @@
 ## 运行环境
 
 - 后端 `ASP.NET Core 6 `
-- 前端 `npm 18.12.1`
+- 前端 `node 18.12.1`
 
+## Docker镜像
+- [ldap-contacts-sync](https://hub.docker.com/r/programmerzheng/ldap-contacts-sync) 同步通讯录后端服务
+- [ldap-server](https://hub.docker.com/r/programmerzheng/ldap-server) LDAP服务端
 ## 项目结构
 
 ```bash
