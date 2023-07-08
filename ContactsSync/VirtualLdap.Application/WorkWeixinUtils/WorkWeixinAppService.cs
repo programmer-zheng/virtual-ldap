@@ -160,7 +160,7 @@ public class WorkWeixinAppService : IWorkWeixinAppService, IMessageProvider
         var errorCode = jObject.Value<int>("errcode");
         if (errorCode == 0)
         {
-            var user = jObject["userlist"].ToObject<WorkWeixinDeptUserListDto>();
+            var user = jObject.ToObject<WorkWeixinDeptUserListDto>();
             return user;
         }
         else
