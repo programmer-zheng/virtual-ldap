@@ -14,24 +14,14 @@ namespace VirtualLdap.Application.DingDingUtils
 {
     public class DingTalkAppService : IDingTalkAppService, IMessageProvider
     {
-        public ICacheManager CacheManager { get; set; }
-
         private readonly DingTalkConfigOptions _dingDingConfigOptions;
 
-        public DingTalkAppService(IOptions<DingTalkConfigOptions> options
-        )
+        public DingTalkAppService(IOptions<DingTalkConfigOptions> options)
         {
             _dingDingConfigOptions = options.Value;
         }
 
-
-        public Client CreateClient()
-        {
-            Config config = new Config();
-            config.Protocol = "https";
-            config.RegionId = "central";
-            return new Client(config);
-        }
+        public ICacheManager CacheManager { get; set; }
 
         public string GetAccessToken()
         {
@@ -289,6 +279,15 @@ namespace VirtualLdap.Application.DingDingUtils
             {
                 throw new UserFriendlyException(e.Message);
             }
+        }
+
+
+        public Client CreateClient()
+        {
+            Config config = new Config();
+            config.Protocol = "https";
+            config.RegionId = "central";
+            return new Client(config);
         }
     }
 }
