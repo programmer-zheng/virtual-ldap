@@ -9,31 +9,31 @@ public class WorkWeixinConfigOptions
     /// <summary>
     /// CorpId
     /// </summary>
-    [Required]
+    [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
     public string CorpId { get; set; }
 
     /// <summary>
     /// AgentId
     /// </summary>
-    [Required]
+    [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
     [RegularExpression(@"[1-9]\d+", ErrorMessage = "请正确填写AgentId")]
     public long AgentId { get; set; }
 
     /// <summary>
     /// AppSecret
     /// </summary>
-    [Required]
+    [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
     public string AppSecret { get; set; }
 
     /// <summary>
     /// EncodingAESKey
     /// </summary>
-    [Required]
+    [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
     public string EncodingAESKey { get; set; }
 
     /// <summary>
     /// token
     /// </summary>
-    [Required]
+    [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
     public string Token { get; set; }
 }
