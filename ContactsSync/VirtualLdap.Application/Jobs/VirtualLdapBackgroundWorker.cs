@@ -10,18 +10,21 @@ namespace VirtualLdap.Application.Jobs
     {
         private readonly ISyncContacts _syncContactsAppService;
 
-        public VirtualLdapBackgroundWorker(AbpAsyncTimer timer
-            , ISyncContacts syncContactsAppService
-        ) : base(timer)
+        public VirtualLdapBackgroundWorker(AbpAsyncTimer timer, ISyncContacts syncContactsAppService) : base(timer)
         {
+            timer.Period = 1000 * 60 * 15;
+#if DEBUG
             timer.Period = 1000 * 10;
+#endif
             _syncContactsAppService = syncContactsAppService;
         }
 
         [UnitOfWork]
         protected override async Task DoWorkAsync()
         {
+#if DEBUG
             Timer.Stop();
+#endif
             Logger.Debug("同步工作开始……");
             try
             {
