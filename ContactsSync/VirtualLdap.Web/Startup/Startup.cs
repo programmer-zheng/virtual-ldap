@@ -53,6 +53,7 @@ namespace VirtualLdap.Web.Startup
         /// <exception cref="Exception">配置不正确将引发异常，并终止应用程序</exception>
         private void ConfigureExternalServices(IServiceCollection services)
         {
+            // 关于Options https://learn.microsoft.com/zh-cn/aspnet/core/fundamentals/configuration/options
             // 添加爱快配置并验证
             services.AddOptions<IKuaiConfigOptions>().Bind(Configuration.GetSection(IKuaiConfigOptions.IKuai))
                 .ValidateDataAnnotations()
