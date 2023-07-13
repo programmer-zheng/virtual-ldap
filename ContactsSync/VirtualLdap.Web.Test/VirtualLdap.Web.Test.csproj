@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Abp.AspNetCore.TestBase" Version="7.4.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
         <PackageReference Include="NSubstitute" Version="4.3.0" />
         <PackageReference Include="Shouldly" Version="4.2.1" />
@@ -27,6 +28,12 @@
     <ItemGroup>
       <ProjectReference Include="..\VirtualLdap.Test\VirtualLdap.Test.csproj" />
       <ProjectReference Include="..\VirtualLdap.Web\VirtualLdap.Web.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="topsdk-net-core">
+        <HintPath>..\topsdk-net-core.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
