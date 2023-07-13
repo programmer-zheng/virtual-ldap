@@ -6,6 +6,9 @@ namespace VirtualLdap.Application.AppService
 {
     public interface IUserAppService : IApplicationService
     {
+
+        Task SetUserActivted(List<string> userIds);
+        
         Task AddUser(UserEntity dto);
 
         Task UpdateUserDepartmentRelations(string userId, List<long> depIdList);

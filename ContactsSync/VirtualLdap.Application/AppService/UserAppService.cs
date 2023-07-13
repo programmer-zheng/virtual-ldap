@@ -104,6 +104,14 @@ namespace VirtualLdap.Application.AppService
             return users;
         }
 
+        public async Task SetUserActivted(List<string> userIds)
+        {
+            foreach (var userId in userIds)
+            {
+                await UserRepository.UpdateAsync(userId, async t => t.Active = true);
+            }
+        }
+
         public async Task AddUser(UserEntity dto)
         {
             await UserRepository.InsertAsync(dto);
