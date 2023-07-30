@@ -28,8 +28,8 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                 {
                     foreach (var userId in eventInfo.ID)
                     {
-                        await _userAppService.RemoveUser(userId);
-                        await _userAppService.UpdateUserDepartmentRelations(userId, null);
+                        await _userAppService.RemoveUserAsync(userId);
+                        await _userAppService.UpdateUserDepartmentRelationsAsync(userId, null);
                         //移除爱快vpn账号
                         _backgroundJobManager.Enqueue<IKuaiSyncAccountBackgroundJob, string>(userId);
                     }

@@ -28,7 +28,7 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                     foreach (var deptId in eventInfo.ID)
                     {
                         //部门删除时，钉钉会提醒删除部门下的人员，有人员时无法删除部门，这里只需要删除部门表的数据及部门人员关系表数据
-                        await _departmentAppService.RemoveDepartment(deptId);
+                        await _departmentAppService.RemoveDepartmentAsync(deptId);
                     }
                 }
                 catch (Exception e)

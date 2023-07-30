@@ -170,7 +170,7 @@ public class WorkWeixinAppService : IWorkWeixinAppService, IMessageProvider
         }
     }
 
-    public async Task SendTextMessage(string userid, string msgContent)
+    public async Task SendTextMessageAsync(string userid, string msgContent)
     {
         if (userid.IsNullOrWhiteSpace())
         {

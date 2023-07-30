@@ -25,17 +25,17 @@ namespace VirtualLdap.Application.AppService
             return list;
         }
 
-        public async Task AddDepartment(DepartmentEntity dto)
+        public async Task AddDepartmentAsync(DepartmentEntity dto)
         {
             await DeptRepository.InsertAsync(dto);
         }
 
-        public async Task RemoveDepartment(long id)
+        public async Task RemoveDepartmentAsync(long id)
         {
             await DeptRepository.HardDeleteAsync(t => t.Id == id);
         }
 
-        public async Task UpdateDepartment(DepartmentEntity dto)
+        public async Task UpdateDepartmentAsync(DepartmentEntity dto)
         {
             await DeptRepository.UpdateAsync(dto.Id, t =>
             {

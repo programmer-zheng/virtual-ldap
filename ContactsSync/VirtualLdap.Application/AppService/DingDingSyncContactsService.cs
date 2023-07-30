@@ -13,7 +13,7 @@ public class DingDingSyncContactsService : SyncContactsBase, ISyncContacts, IApp
 
     public IUserAppService UserAppService { get; set; }
 
-    public async Task Sync()
+    public async Task SyncContactsAsync()
     {
         var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
         defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
@@ -72,7 +72,7 @@ public class DingDingSyncContactsService : SyncContactsBase, ISyncContacts, IApp
 
             foreach (var item in newUserList.OrderBy(t => t.HiredDate))
             {
-                var username = await UserAppService.GetUserName(item.Name, newUserList);
+                var username = await UserAppService.GetUserNameAsync(item.Name, newUserList);
 
                 item.UserName = username.ToString().ToLower();
             }

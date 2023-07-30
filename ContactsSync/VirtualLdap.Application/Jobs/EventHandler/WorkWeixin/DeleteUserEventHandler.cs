@@ -16,6 +16,6 @@ public class DeleteUserEventHandler : WorkWeixinBaseEventHandler
     {
         XElement xml = XElement.Parse(msg);
         var userId = xml.Element("UserID").Value;
-        await _userAppService.RemoveUser(userId);
+        await _userAppService.RemoveUserAsync(userId);
     }
 }

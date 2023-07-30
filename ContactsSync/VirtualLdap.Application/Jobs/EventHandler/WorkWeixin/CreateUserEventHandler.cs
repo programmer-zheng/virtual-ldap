@@ -30,10 +30,10 @@ public class CreateUserEventHandler : WorkWeixinBaseEventHandler
         userEntity.IsAdmin = userDetail.Isleader;
         userEntity.AccountEnabled = userDetail.Isleader;
         userEntity.Password = defaultPassword.DesEncrypt();
-        var username = await _userAppService.GetUserName(userEntity.Name);
+        var username = await _userAppService.GetUserNameAsync(userEntity.Name);
 
         userEntity.UserName = username;
-        await _userAppService.AddUser(userEntity);
-        await _userAppService.UpdateUserDepartmentRelations(userEntity.Id, deptIds);
+        await _userAppService.AddUserAsync(userEntity);
+        await _userAppService.UpdateUserDepartmentRelationsAsync(userEntity.Id, deptIds);
     }
 }

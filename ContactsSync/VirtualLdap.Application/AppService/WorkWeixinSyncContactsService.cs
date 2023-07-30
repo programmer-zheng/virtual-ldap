@@ -13,7 +13,7 @@ public class WorkWeixinSyncContactsService : SyncContactsBase, ISyncContacts, IA
 
     public IUserAppService UserAppService { get; set; }
 
-    public async Task Sync()
+    public async Task SyncContactsAsync()
     {
         var defaultPassword = Configuration.GetValue<string>("DefaultPassword");
         defaultPassword = string.IsNullOrWhiteSpace(defaultPassword) ? "123456" : defaultPassword;
@@ -69,7 +69,7 @@ public class WorkWeixinSyncContactsService : SyncContactsBase, ISyncContacts, IA
                 }
             }
 
-            await UserAppService.SetUserActivted(activatedUserIdList);
+            await UserAppService.SetUserActivtedAsync(activatedUserIdList);
             ProcessNewData(newUserList, newDeptList, newRelaList);
         }
         catch (UserFriendlyException e)

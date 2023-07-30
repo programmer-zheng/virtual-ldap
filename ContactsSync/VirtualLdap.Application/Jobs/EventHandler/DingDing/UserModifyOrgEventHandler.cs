@@ -41,8 +41,8 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                                 dbUserEntity.AccountEnabled = true;
                             }
 
-                            _userAppService.UpdateUser(dbUserEntity);
-                            _userAppService.UpdateUserDepartmentRelations(userid, dingDingUser.DeptIdList);
+                            _userAppService.UpdateUserAsync(dbUserEntity);
+                            _userAppService.UpdateUserDepartmentRelationsAsync(userid, dingDingUser.DeptIdList);
                         }
                     }
                     catch (Exception e)

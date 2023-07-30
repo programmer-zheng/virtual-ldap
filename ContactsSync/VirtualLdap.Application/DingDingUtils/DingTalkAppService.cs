@@ -252,7 +252,7 @@ namespace VirtualLdap.Application.DingDingUtils
             }
         }
 
-        public async Task SendTextMessage(string userid, string msgContent)
+        public async Task SendTextMessageAsync(string userid, string msgContent)
         {
             try
             {

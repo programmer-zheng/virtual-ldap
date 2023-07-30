@@ -11,7 +11,7 @@ namespace VirtualLdap.Application.AppService;
 
 public interface ISyncContacts
 {
-    Task Sync();
+    Task SyncContactsAsync();
 }
 
 public class SyncContactsBase 

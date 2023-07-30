@@ -53,7 +53,7 @@ namespace VirtualLdap.Web.Controllers
         public async Task<IActionResult> Test()
         {
             var userid = _userRepository.GetAll().FirstOrDefault().Id;
-            await MessageProvider.SendTextMessage(userid, "测试消息发送~");
+            await MessageProvider.SendTextMessageAsync(userid, "测试消息发送~");
             return Json(null);
         }
 
@@ -61,7 +61,7 @@ namespace VirtualLdap.Web.Controllers
         [Route("/UserDetail")]
         public async Task<IActionResult> UserDetail(string userid)
         {
-            var user = await UserAppService.GetDeptUserDetail(userid);
+            var user = await UserAppService.GetDeptUserDetailAsync(userid);
             return Json(user);
         }
 
@@ -122,7 +122,7 @@ namespace VirtualLdap.Web.Controllers
                 return Json(new { success = false, Msg = $"{userinfo.Name} 账号已启用，无须重复操作！" });
             }
 
-            var result = await UserAppService.EnableAccount(userid, username);
+            var result = await UserAppService.EnableAccountAsync(userid, username);
             return Json(new { success = result, Msg = result ? "启用账号成功！" : "启用账号失败！" });
         }
 
@@ -130,10 +130,10 @@ namespace VirtualLdap.Web.Controllers
         [Route("/EnableVpnAccount")]
         public async Task<IActionResult> EnableVpnAccount(string userid)
         {
-            var result = false;
+            bool result;
             try
             {
-                result = await UserAppService.EnableVpnAccount(userid);
+                result = await UserAppService.EnableVpnAccountAsync(userid);
                 if (result)
                 {
                     await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);
@@ -158,7 +158,7 @@ namespace VirtualLdap.Web.Controllers
                 return Json(new { success = false, Msg = "重置密码失败，不存在该员工！" });
             }
 
-            var result = await UserAppService.ResetAccountPassword(userid);
+            var result = await UserAppService.ResetAccountPasswordAsync(userid);
             if (result && userinfo.VpnAccountEnabled)
             {
                 await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(userid);

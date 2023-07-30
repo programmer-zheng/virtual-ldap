@@ -38,7 +38,7 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                             dbUser.AccountEnabled = true;
                         }
 
-                        await _userAppService.UpdateUser(dbUser);
+                        await _userAppService.UpdateUserAsync(dbUser);
                     }
                 }
             }

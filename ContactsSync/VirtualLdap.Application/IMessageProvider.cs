@@ -8,7 +8,7 @@ public interface IMessageProvider
     /// <param name="userid"></param>
     /// <param name="msgContent"></param>
     /// <returns></returns>
-    Task SendTextMessage(string userid, string msgContent);
+    Task SendTextMessageAsync(string userid, string msgContent);
     
     
 }

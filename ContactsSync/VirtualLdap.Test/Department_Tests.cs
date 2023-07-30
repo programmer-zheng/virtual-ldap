@@ -39,11 +39,11 @@ public class Department_Tests : VirtualLdapTestBase
             DeptName = "部门名称_单元测试",
             ParentId = 0
         };
-        await _departmentAppService.AddDepartment(entity);
+        await _departmentAppService.AddDepartmentAsync(entity);
 
         entity.DeptName = "修改名称";
         entity.ParentId = 1;
-        await _departmentAppService.UpdateDepartment(entity);
+        await _departmentAppService.UpdateDepartmentAsync(entity);
 
         var allDepartments = _departmentAppService.GetAllDepartments();
 

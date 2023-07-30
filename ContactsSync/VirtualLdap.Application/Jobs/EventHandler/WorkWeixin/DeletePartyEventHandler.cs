@@ -16,6 +16,6 @@ public class DeletePartyEventHandler : WorkWeixinBaseEventHandler
     {
         XElement xml = XElement.Parse(msg);
         var id = xml.Element("Id").Value;
-        await _departmentAppService.RemoveDepartment(Convert.ToInt64(id));
+        await _departmentAppService.RemoveDepartmentAsync(Convert.ToInt64(id));
     }
 }

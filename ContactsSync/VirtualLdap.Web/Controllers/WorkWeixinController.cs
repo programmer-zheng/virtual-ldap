@@ -118,7 +118,7 @@ public class WorkWeixinController : AbpController
     [Route("/WorkWeixin_Sync")]
     public async Task<IActionResult> Sync()
     {
-        await SyncContactsAppService.Sync();
+        await SyncContactsAppService.SyncContactsAsync();
         return Content("同步完成");
     }
 }

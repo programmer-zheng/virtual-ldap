@@ -62,7 +62,7 @@ namespace VirtualLdap.Web.Controllers
         [Route("/dingdingsync")]
         public async Task<IActionResult> Sync()
         {
-            await SyncContactsAppService.Sync();
+            await SyncContactsAppService.SyncContactsAsync();
             return Content("同步完成");
         }
 

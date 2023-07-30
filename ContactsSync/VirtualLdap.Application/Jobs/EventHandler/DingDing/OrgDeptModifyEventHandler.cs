@@ -32,7 +32,7 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                     {
                         var dept = _dingDingAppService.GetDepartmentDetail(deptId);
                         var deptEntity = ObjectMapper.Map<DepartmentEntity>(dept);
-                        _departmentAppService.UpdateDepartment(deptEntity);
+                        _departmentAppService.UpdateDepartmentAsync(deptEntity);
                     }
                     catch (Exception e)
                     {

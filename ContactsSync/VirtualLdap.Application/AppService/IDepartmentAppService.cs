@@ -8,10 +8,10 @@ namespace VirtualLdap.Application.AppService
     {
         List<DepartmentDto> GetAllDepartments();
 
-        Task AddDepartment(DepartmentEntity dto);
+        Task AddDepartmentAsync(DepartmentEntity dto);
 
-        Task RemoveDepartment(long id);
+        Task RemoveDepartmentAsync(long id);
 
-        Task UpdateDepartment(DepartmentEntity dto);
+        Task UpdateDepartmentAsync(DepartmentEntity dto);
     }
 }

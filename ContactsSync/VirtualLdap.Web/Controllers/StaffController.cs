@@ -45,7 +45,7 @@ public class StaffController : AbpController
                     throw new UserFriendlyException("不能对他人账号进行忘记密码操作！");
                 }
 
-                var flag = await UserAppService.ResetPassword(input);
+                var flag = await UserAppService.ResetPasswordAsync(input);
                 if (flag)
                 {
                     await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(input.UserId);
@@ -96,7 +96,7 @@ public class StaffController : AbpController
                 throw new UserFriendlyException("用户不存在");
             }
 
-            var flag = await UserAppService.ForgotPassword(model);
+            var flag = await UserAppService.ForgotPasswordAsync(model);
             if (flag && userinfo.VpnAccountEnabled)
             {
                 await BackgroundJobManager.EnqueueAsync<IKuaiSyncAccountBackgroundJob, string>(model.UserId);
@@ -126,7 +126,7 @@ public class StaffController : AbpController
             throw new UserFriendlyException("请从工作台中点击应用操作！");
         }
 
-        await UserAppService.SendVerificationCode(userid);
+        await UserAppService.SendVerificationCodeAsync(userid);
         return Json(new { Msg = "验证码已发送，请注意查收。" });
     }
 }

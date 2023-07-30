@@ -7,15 +7,15 @@ namespace VirtualLdap.Application.AppService
     public interface IUserAppService : IApplicationService
     {
 
-        Task SetUserActivted(List<string> userIds);
+        Task SetUserActivtedAsync(List<string> userIds);
         
-        Task AddUser(UserEntity dto);
+        Task AddUserAsync(UserEntity dto);
 
-        Task UpdateUserDepartmentRelations(string userId, List<long> depIdList);
+        Task UpdateUserDepartmentRelationsAsync(string userId, List<long> depIdList);
 
-        Task RemoveUser(string id);
+        Task RemoveUserAsync(string id);
 
-        Task UpdateUser(UserEntity dto);
+        Task UpdateUserAsync(UserEntity dto);
 
         /// <summary>
         /// 根据主键获取用户信息
@@ -45,7 +45,7 @@ namespace VirtualLdap.Application.AppService
         /// <returns></returns>
         List<DeptUserDto> GetAdminDeptUsers(string adminUserId);
 
-        Task<DeptUserDto> GetDeptUserDetail(string userid);
+        Task<DeptUserDto> GetDeptUserDetailAsync(string userid);
 
         /// <summary>
         /// 获取用户的用户名
@@ -53,13 +53,13 @@ namespace VirtualLdap.Application.AppService
         /// <param name="name">姓名</param>
         /// <param name="newUserList">同批次新增人员列表</param>
         /// <returns>用户的用户名</returns>
-        Task<string> GetUserName(string name, List<UserEntity>? newUserList = null);
+        Task<string> GetUserNameAsync(string name, List<UserEntity>? newUserList = null);
 
         #region 账号启用
 
-        Task<bool> EnableAccount(string userId, string username);
+        Task<bool> EnableAccountAsync(string userId, string username);
 
-        Task<bool> EnableVpnAccount(string userId);
+        Task<bool> EnableVpnAccountAsync(string userId);
 
         #endregion
 
@@ -70,21 +70,21 @@ namespace VirtualLdap.Application.AppService
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task<bool> ResetPassword(ResetPasswordViewModel model);
+        Task<bool> ResetPasswordAsync(ResetPasswordViewModel model);
 
         /// <summary>
         /// 重置用户账号密码为默认密码
         /// </summary>
         /// <param name="userId">用户id</param>
         /// <returns></returns>
-        Task<bool> ResetAccountPassword(string userId);
+        Task<bool> ResetAccountPasswordAsync(string userId);
 
         /// <summary>
         /// 忘记密码
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task<bool> ForgotPassword(ForgotPasswordViewModel model);
+        Task<bool> ForgotPasswordAsync(ForgotPasswordViewModel model);
 
         #endregion
 
@@ -93,6 +93,6 @@ namespace VirtualLdap.Application.AppService
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        Task SendVerificationCode(string userid);
+        Task SendVerificationCodeAsync(string userid);
     }
 }

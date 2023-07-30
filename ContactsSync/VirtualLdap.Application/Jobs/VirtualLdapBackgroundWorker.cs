@@ -28,7 +28,7 @@ namespace VirtualLdap.Application.Jobs
             Logger.Debug("同步工作开始……");
             try
             {
-                await _syncContactsAppService.Sync();
+                await _syncContactsAppService.SyncContactsAsync();
             }
             catch (Exception e)
             {

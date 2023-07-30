@@ -27,7 +27,7 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                     if (dbUser != null)
                     {
                         dbUser.IsAdmin = true;
-                        await _userAppService.UpdateUser(dbUser);
+                        await _userAppService.UpdateUserAsync(dbUser);
                     }
                 }
             }

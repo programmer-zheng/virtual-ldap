@@ -22,7 +22,7 @@ public class UpdateUserEventHandler : WorkWeixinBaseEventHandler
         var userDetail = await WorkWeixinAppService.GetUserDetail(userId);
         var userEntity = ObjectMapper.Map<UserEntity>(userDetail);
         userEntity.IsAdmin = userDetail.Isleader;
-        await _userAppService.UpdateUser(userEntity);
-        await _userAppService.UpdateUserDepartmentRelations(userEntity.Id, deptIds);
+        await _userAppService.UpdateUserAsync(userEntity);
+        await _userAppService.UpdateUserDepartmentRelationsAsync(userEntity.Id, deptIds);
     }
 }

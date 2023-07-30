@@ -104,7 +104,7 @@ namespace VirtualLdap.Application.AppService
             return users;
         }
 
-        public async Task SetUserActivted(List<string> userIds)
+        public async Task SetUserActivtedAsync(List<string> userIds)
         {
             foreach (var userId in userIds)
             {
@@ -112,12 +112,12 @@ namespace VirtualLdap.Application.AppService
             }
         }
 
-        public async Task AddUser(UserEntity dto)
+        public async Task AddUserAsync(UserEntity dto)
         {
             await UserRepository.InsertAsync(dto);
         }
 
-        public async Task UpdateUserDepartmentRelations(string userId, List<long> depIdList)
+        public async Task UpdateUserDepartmentRelationsAsync(string userId, List<long> depIdList)
         {
             await UserDeptRelaRepository.HardDeleteAsync(t => t.UserId == userId);
             if (depIdList != null)
@@ -133,13 +133,13 @@ namespace VirtualLdap.Application.AppService
             }
         }
 
-        public async Task RemoveUser(string id)
+        public async Task RemoveUserAsync(string id)
         {
             await UserRepository.DeleteAsync(id);
             await UserDeptRelaRepository.DeleteAsync(t => t.UserId == id);
         }
 
-        public async Task UpdateUser(UserEntity dto)
+        public async Task UpdateUserAsync(UserEntity dto)
         {
             await UserRepository.UpdateAsync(dto);
         }
@@ -155,7 +155,7 @@ namespace VirtualLdap.Application.AppService
                 t.UserName == username || t.Mobile == username || t.Email == username);
         }
 
-        public async Task<bool> ResetPassword(ResetPasswordViewModel model)
+        public async Task<bool> ResetPasswordAsync(ResetPasswordViewModel model)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace VirtualLdap.Application.AppService
             }
         }
 
-        public async Task<bool> EnableAccount(string userId, string username)
+        public async Task<bool> EnableAccountAsync(string userId, string username)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace VirtualLdap.Application.AppService
                 var msgContent = $"已为您开通域账号，域账号的用户名为：{username}。";
                 if (MessageProvider != null)
                 {
-                    await MessageProvider.SendTextMessage(userId, msgContent);
+                    await MessageProvider.SendTextMessageAsync(userId, msgContent);
                 }
 
                 return true;
@@ -214,7 +214,7 @@ namespace VirtualLdap.Application.AppService
             }
         }
 
-        public async Task<bool> EnableVpnAccount(string userId)
+        public async Task<bool> EnableVpnAccountAsync(string userId)
         {
             try
             {
@@ -242,7 +242,7 @@ namespace VirtualLdap.Application.AppService
                 UserRepository.Update(userId, t => t.VpnAccountEnabled = true);
 
                 var msgContent = $"已为您启用VPN账号，VPN的账号、密码与域账号相同。";
-                await MessageProvider.SendTextMessage(userId, msgContent);
+                await MessageProvider.SendTextMessageAsync(userId, msgContent);
                 return true;
             }
             catch (UserFriendlyException)
@@ -256,7 +256,7 @@ namespace VirtualLdap.Application.AppService
             }
         }
 
-        public async Task<bool> ResetAccountPassword(string userId)
+        public async Task<bool> ResetAccountPasswordAsync(string userId)
         {
             var defaultPassword = string.Empty;
             if (Configuration != null)
@@ -279,7 +279,7 @@ namespace VirtualLdap.Application.AppService
                 var msgContent = $"您的域账号：{user.UserName}，密码已重置，默认密码为：{defaultPassword}。";
                 if (MessageProvider != null)
                 {
-                    await MessageProvider.SendTextMessage(user.Id, msgContent);
+                    await MessageProvider.SendTextMessageAsync(user.Id, msgContent);
                 }
 
                 return true;
@@ -291,7 +291,7 @@ namespace VirtualLdap.Application.AppService
             }
         }
 
-        public async Task<DeptUserDto> GetDeptUserDetail(string userid)
+        public async Task<DeptUserDto> GetDeptUserDetailAsync(string userid)
         {
             var userdto = (from user in UserRepository.GetAll()
                 where user.Id == userid
@@ -316,7 +316,7 @@ namespace VirtualLdap.Application.AppService
         }
 
         [UnitOfWork]
-        public async Task<string> GetUserName(string name, List<UserEntity>? newUserList = null)
+        public async Task<string> GetUserNameAsync(string name, List<UserEntity>? newUserList = null)
         {
             var username = new StringBuilder();
 
@@ -351,16 +351,16 @@ namespace VirtualLdap.Application.AppService
             return username.ToString().ToLower();
         }
 
-        public async Task SendVerificationCode(string userid)
+        public async Task SendVerificationCodeAsync(string userid)
         {
             var random = Random.Shared.Next(100000, 999999);
             await CacheManager.GetCache("DingDing").AsTyped<string, string>()
                 .SetAsync($"ForgotPassword-{userid}", random.ToString());
             var msgContent = $"您正在进行忘记密码操作，验证码是：{random}。";
-            await MessageProvider.SendTextMessage(userid, msgContent);
+            await MessageProvider.SendTextMessageAsync(userid, msgContent);
         }
 
-        public async Task<bool> ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordViewModel model)
         {
             var cache = CacheManager.GetCache("DingDing").AsTyped<string, string>();
             var cachedRandomCode = cache.GetOrDefault($"ForgotPassword-{model.UserId}");

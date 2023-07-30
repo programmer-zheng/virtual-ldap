@@ -19,6 +19,6 @@ public class UpdatePartyEventHandler : WorkWeixinBaseEventHandler
         var id = xml.Element("Id").Value;
         var departmentDetail = await WorkWeixinAppService.GetDepartmentDetail(id);
         var departmentEntity = ObjectMapper.Map<DepartmentEntity>(departmentDetail);
-        await _departmentAppService.UpdateDepartment(departmentEntity);
+        await _departmentAppService.UpdateDepartmentAsync(departmentEntity);
     }
 }

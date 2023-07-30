@@ -51,7 +51,7 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                         userEntity.IsAdmin = isAdmin;
                         userEntity.AccountEnabled = isAdmin;
                         userEntity.Password = defaultPassword.DesEncrypt();
-                        var username = await _userAppService.GetUserName(userEntity.Name);
+                        var username = await _userAppService.GetUserNameAsync(userEntity.Name);
 
                         userEntity.UserName = username;
                         if (!userEntity.HiredDate.HasValue)
@@ -60,9 +60,9 @@ namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
                         }
 
                         // 插入人员数据
-                        await _userAppService.AddUser(userEntity);
+                        await _userAppService.AddUserAsync(userEntity);
                         // 插入部门关联数据
-                        await _userAppService.UpdateUserDepartmentRelations(dingdingUser.Userid, dingdingUser.DeptIdList);
+                        await _userAppService.UpdateUserDepartmentRelationsAsync(dingdingUser.Userid, dingdingUser.DeptIdList);
                     }
                     catch (Exception e)
                     {

@@ -20,6 +20,6 @@ public class CreatePartyEventHandler : WorkWeixinBaseEventHandler
         var id = xml.Element("Id").Value;
         var departmentDetail = await WorkWeixinAppService.GetDepartmentDetail(id);
         var departmentEntity = ObjectMapper.Map<DepartmentEntity>(departmentDetail);
-        await _departmentAppService.AddDepartment(departmentEntity);
+        await _departmentAppService.AddDepartmentAsync(departmentEntity);
     }
 }

@@ -77,7 +77,7 @@ public class IKuaiSyncAccountBackgroundJob : BackgroundJob<string>, ITransientDe
                         }
                     }
 
-                    _messageProvider.SendTextMessage(userId, message);
+                    _messageProvider.SendTextMessageAsync(userId, message);
                 }
             }
             catch (IKuaiException e)
