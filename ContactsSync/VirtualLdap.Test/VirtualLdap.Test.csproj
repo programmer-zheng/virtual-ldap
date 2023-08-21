@@ -5,19 +5,19 @@
 		<RootNamespace>VirtualLdap.Test</RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Abp.TestBase" Version="7.4.0" />
-		<PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="3.4.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.19" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
-		<PackageReference Include="NSubstitute" Version="4.3.0" />
-		<PackageReference Include="Shouldly" Version="4.2.1" />
-		<PackageReference Include="xunit" Version="2.4.2" />
-		<PackageReference Include="xunit.extensibility.execution" Version="2.4.2" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+		<PackageReference Include="Abp.TestBase"  />
+		<PackageReference Include="Castle.Windsor.MsDependencyInjection"  />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"  />
+		<PackageReference Include="Microsoft.NET.Test.Sdk"  />
+		<PackageReference Include="NSubstitute"  />
+		<PackageReference Include="Shouldly"  />
+		<PackageReference Include="xunit"  />
+		<PackageReference Include="xunit.extensibility.execution"  />
+		<PackageReference Include="xunit.runner.visualstudio" >
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Castle.Core" Version="4.4.1" />
+		<PackageReference Include="Castle.Core"  />
 	</ItemGroup>
 
 	<ItemGroup>

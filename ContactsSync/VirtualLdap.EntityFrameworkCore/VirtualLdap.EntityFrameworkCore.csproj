@@ -7,18 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abp.EntityFrameworkCore" Version="7.4.0" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="6.0.19" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
+    <PackageReference Include="Abp.EntityFrameworkCore"  />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers"  />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.19">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" >
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json"  />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql"  />
   </ItemGroup>
 
   <ItemGroup>

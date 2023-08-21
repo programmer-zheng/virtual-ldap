@@ -10,17 +10,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Abp.AspNetCore" Version="7.4.0" />
-		<PackageReference Include="Abp.Castle.Log4Net" Version="7.4.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
+		<PackageReference Include="Abp.AspNetCore"  />
+		<PackageReference Include="Abp.Castle.Log4Net"  />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.19">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Newtonsoft.Json"  />
 	</ItemGroup>
 
 	<ItemGroup>
