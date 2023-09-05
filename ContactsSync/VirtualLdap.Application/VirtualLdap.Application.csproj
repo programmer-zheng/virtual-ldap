@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abp.AutoMapper"  />
-    <PackageReference Include="AlibabaCloud.SDK.Dingtalk"  />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder"  />
-    <PackageReference Include="TinyPinyin"  />
+    <PackageReference Include="Abp.AutoMapper" />
+    <PackageReference Include="AlibabaCloud.SDK.Dingtalk" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Senparc.Weixin.Work" />
+    <PackageReference Include="TinyPinyin" />
   </ItemGroup>
 
   <ItemGroup>

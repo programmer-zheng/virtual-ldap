@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "DingDingSync": {
+    "VirtualLdap.Web": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {

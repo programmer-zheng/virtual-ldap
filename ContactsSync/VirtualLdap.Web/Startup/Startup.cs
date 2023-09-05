@@ -3,6 +3,8 @@ using Abp.Castle.Logging.Log4Net;
 using Abp.EntityFrameworkCore;
 using Abp.Extensions;
 using Castle.Facilities.Logging;
+using Senparc.CO2NET.RegisterServices;
+using Senparc.Weixin.RegisterServices;
 using VirtualLdap.Application;
 using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.DingDingUtils;
@@ -36,7 +38,8 @@ namespace VirtualLdap.Web.Startup
             services.AddSingleton<CheckTokenFilterAttribute>();
 
             ConfigureExternalServices(services);
-
+            services.AddMemoryCache();
+            services.AddSenparcWeixinServices(Configuration);
             services.AddControllersWithViews().AddXmlSerializerFormatters(); //.AddRazorRuntimeCompilation();
             return services.AddAbp<WebModule>(options =>
             {
@@ -115,7 +118,7 @@ namespace VirtualLdap.Web.Startup
                 // You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
-
+            //app.UseSenparcWeixin()
             app.UseStaticFiles();
             app.UseRouting();
             //app.UseMiddleware<CheckTokenMiddleware>();
