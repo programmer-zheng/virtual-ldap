@@ -50,7 +50,7 @@ public class WorkWeixinSyncContactsService : SyncContactsBase, ISyncContacts, IA
                 activatedUserIdList.AddRange(deptActivatedUserIdList);
                 foreach (var user in users)
                 {
-                    if (!userList.Any(t => t.Id == user.Userid))
+                    if (!userList.Any(t => t.Id == user.Userid) && !newUserList.Any(t=>t.Id==user.Userid))
                     {
                         var userEntity = ObjectMapper.Map<UserEntity>(user);
                         var isAdmin = user.Isleader;
