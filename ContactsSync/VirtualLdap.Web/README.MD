@@ -51,7 +51,8 @@ LDAP服务请求当前WEB服务时验证使用
     "AppKey": "dingdxxxxxxxxxxx",
     "AppSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "Aes_Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "Token": "xxxxxxxxxxxxxxxxx"
+    "Token": "xxxxxxxxxxxxxxxxx",
+    "ProcessCode": "PROC-xxxxxxxxxxxxxxxxxx"
   }
 }  
 
@@ -66,6 +67,7 @@ LDAP服务请求当前WEB服务时验证使用
   详见：https://work.weixin.qq.com/wework_admin/frame#/apps/contactsApi 
 - EncodingAesKey 企业微信回调处理Token，需要自行设置  
   详见：https://work.weixin.qq.com/wework_admin/frame#/apps/contactsApi
+- TemplateId 企业微信审批模板ID，需要自行在审批应用中添加模板，并获取模板ID 
 ```json
 {
   "WorkWeiXin": {
@@ -73,7 +75,8 @@ LDAP服务请求当前WEB服务时验证使用
     "AgentId": 1234567,
     "AppSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "Token": "xxxxxxxxxxxxxxxxxx",
-    "EncodingAESKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    "EncodingAESKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "TemplateId": "xxxxxxxxxxxxxx"
   }
 }
 ```
@@ -87,7 +90,7 @@ LDAP服务请求当前WEB服务时验证使用
     "BasePath": "https://open.ikuai8.com/api/v3",
     "OpenId": "xxxxxxxxxxxxxxxxx",
     "Gwid": "xxxxxxxxxxxxxxxxx",
-    "Open_Rsa_Pubkey": "-----BEGIN PUBLIC KEY-----\nxxxxxxxxxxxxxxxxxxn\nxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxx\n-----END PUBLIC KEY-----"
+    "Open_Rsa_Pubkey": "-----BEGIN PUBLIC KEY-----\nxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxxxxxxxx\n-----END PUBLIC KEY-----"
   } 
 }
 ```
@@ -104,6 +107,7 @@ docker run -itd --name ldap --restart always \
 -e "DingDing:AppSecret"="xxxxxx"  \
 -e "DingDing:Aes_Key"="xxxxxxxxxxxx"  \
 -e "DingDing:Token"="xxxxxxxxxxxxxxxxxxx"  \
+-e "DingDing:ProcessCode"="xxxxxxxxxxxxxxxxxxx"  \
 -e "ConnectionStrings:Default"='Server=1.2.3.4; Database=VirtualLdap;User ID=root; Password=123qwe;port=3306;CharSet=utf8;SslMode=none;' \
 -p 8080:80  \
 ldap
@@ -117,6 +121,7 @@ docker run -itd --name ldap --restart always \
 -e "WorkWeiXin:AppSecret"="xxxxxxxxxxxxxxxxxxxxxxxxx" \
 -e "WorkWeiXin:Token"="xxxxxxxxxxxxxxxxxx" \
 -e "WorkWeiXin:EncodingAESKey"="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  \
+-e "WorkWeiXin:TemplateId"="xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  \
 -e "ConnectionStrings:Default"='Server=1.2.3.4; Database=VirtualLdap;User ID=root; Password=123qwe;port=3306;CharSet=utf8;SslMode=none;' \
 -p 8080:80  \
 ldap

@@ -36,4 +36,10 @@ public class WorkWeixinConfigOptions
     /// </summary>
     [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
     public string Token { get; set; }
+    
+    /// <summary>
+    /// 企业微信审批模板ID
+    /// </summary>
+    [Required(ErrorMessage = "企业微信配置缺失，未在配置中发现{0}")]
+    public string TemplateId { get; set; }
 }

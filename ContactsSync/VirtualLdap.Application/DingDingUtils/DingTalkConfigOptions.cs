@@ -42,5 +42,11 @@ namespace VirtualLdap.Application.DingDingUtils
         /// </summary>
         [Required(ErrorMessage = "钉钉配置缺失，未在配置中发现{0}")]
         public string Token { get; set; }
+        
+        /// <summary>
+        /// 审批流的唯一码
+        /// </summary>
+        [Required(ErrorMessage = "钉钉配置缺失，未在配置中发现{0}")]
+        public string ProcessCode { get; set; }
     }
 }
