@@ -106,13 +106,11 @@ namespace VirtualLdap.Web.Controllers
             var eventType = messageObj.Value<string>("EventType");
             var _corpid = messageObj.Value<string>("CorpId");
 
-            Logger.Warn($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}事件类型：{eventType}");
+            Logger.Debug($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")}事件类型：{eventType}");
+            Logger.Debug($"钉钉回调消息内容：{message}");
             if (!string.IsNullOrWhiteSpace(_corpid) && !_corpid.Equals(corpId, StringComparison.OrdinalIgnoreCase) &&
                 !eventType.Equals("check_url", StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine();
-                Logger.Warn(messageObj.ToString());
-                Console.WriteLine();
                 await BackgroundJobManager
                     .EnqueueAsync<DingDingCallbackBackgroundJob, DingDingCallbackBackgroundJobArgs>(
                         new DingDingCallbackBackgroundJobArgs
