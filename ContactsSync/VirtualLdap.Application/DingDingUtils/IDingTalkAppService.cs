@@ -43,5 +43,6 @@ namespace VirtualLdap.Application.DingDingUtils
         /// <returns></returns>
         List<OapiCallBackGetCallBackFailedResultResponse.FailedDomain> GetCallbackFailEvents();
 
+        Task CreateApproval(string originator_user_id, long dept_id, string msg);
     }
 }

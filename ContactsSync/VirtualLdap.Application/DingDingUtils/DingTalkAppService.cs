@@ -23,6 +23,15 @@ namespace VirtualLdap.Application.DingDingUtils
 
         public ICacheManager CacheManager { get; set; }
 
+
+        private Client CreateClient()
+        {
+            Config config = new Config();
+            config.Protocol = "https";
+            config.RegionId = "central";
+            return new Client(config);
+        }
+
         public string GetAccessToken()
         {
             var cache = CacheManager.GetCache("DingDing").AsTyped<string, string>();
@@ -281,13 +290,35 @@ namespace VirtualLdap.Application.DingDingUtils
             }
         }
 
-
-        public Client CreateClient()
+        public async Task CreateApproval( string originator_user_id, long dept_id, string msg)
         {
-            Config config = new Config();
-            config.Protocol = "https";
-            config.RegionId = "central";
-            return new Client(config);
+            try
+            {
+                var token = GetAccessToken();
+                IDingTalkClient client =
+                    new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/processinstance/create");
+                var req = new OapiProcessinstanceCreateRequest();
+                req.ProcessCode = _dingDingConfigOptions.ProcessCode;
+                req.OriginatorUserId = originator_user_id;
+                req.DeptId = dept_id;
+
+                // var formComponentValueVoList = new List<OapiProcessinstanceCreateRequest.FormComponentValueVoDomain>();
+                // OapiProcessinstanceCreateRequest.FormComponentValueVoDomain formComponentValueVo1 = new OapiProcessinstanceCreateRequest.FormComponentValueVoDomain();
+                // formComponentValueVoList.Add(formComponentValueVo1);
+                // formComponentValueVo1.Name = ("申请理由");
+                // formComponentValueVo1.Value = msg;
+                // req.FormComponentValues_ = formComponentValueVoList;
+
+                var rsp = client.Execute(req, token);
+                if (rsp.Errcode != 0)
+                {
+                    throw new UserFriendlyException(rsp.Errmsg);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException(e.Message);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.AppService.Dtos;
+using VirtualLdap.Application.DingDingUtils;
 using VirtualLdap.Application.Jobs;
 using VirtualLdap.Core;
 
@@ -17,6 +18,7 @@ public class StaffController : AbpController
 
     public IBackgroundJobManager BackgroundJobManager { get; set; }
 
+    public IDingTalkAppService DingTalkAppService { get; set; }
 
     /// <summary>
     /// 用户修改密码
@@ -128,5 +130,13 @@ public class StaffController : AbpController
 
         await UserAppService.SendVerificationCodeAsync(userid);
         return Json(new { Msg = "验证码已发送，请注意查收。" });
+    }
+
+    [Route("/apply")]
+    [HttpGet]
+    public async Task<IActionResult> ApplyAccount(string userId, long deptId)
+    {
+        await DingTalkAppService.CreateApproval(userId, deptId, "");
+        return Json(null);
     }
 }
