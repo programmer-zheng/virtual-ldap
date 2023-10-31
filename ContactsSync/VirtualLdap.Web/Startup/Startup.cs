@@ -3,7 +3,6 @@ using Abp.Castle.Logging.Log4Net;
 using Abp.EntityFrameworkCore;
 using Abp.Extensions;
 using Castle.Facilities.Logging;
-using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin.RegisterServices;
 using VirtualLdap.Application;
 using VirtualLdap.Application.AppService;
