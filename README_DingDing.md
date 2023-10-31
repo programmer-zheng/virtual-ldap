@@ -54,4 +54,5 @@
 ### 审批
 
 - [概述](https://open.dingtalk.com/document/orgapp/workflow-overview)
+- [发起审批实例](https://open.dingtalk.com/document/orgapp/create-an-approval-instance)
 - [审批事件回调](https://open.dingtalk.com/document/orgapp/approval-events)

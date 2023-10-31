@@ -15,9 +15,3 @@ dotnet ef database update  -s .\VirtualLdap.Web\VirtualLdap.Web.csproj -p .\Virt
 ### SDK
 - [Senparc.Weixin.Work 企业微信模块](https://sdk.weixin.senparc.com/Docs/Work/)
 
-### 审批
-#### 企业微信
-- [概述](https://developer.work.weixin.qq.com/document/path/91854)
-
-#### 钉钉
-- [概述](https://open.dingtalk.com/document/orgapp/workflow-overview)
