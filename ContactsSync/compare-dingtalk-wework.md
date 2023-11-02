@@ -1,5 +1,22 @@
 # 钉钉与企业微信对比
 
+## 获取access_token
+
+|           | 钉钉                                                         | 企业微信                                                     | 说明                                                         |
+| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 文档地址  | [获取企业内部应用的accessToken](https://open.dingtalk.com/document/orgapp/obtain-the-access_token-of-an-internal-app) | [获取access_token](https://developer.work.weixin.qq.com/document/path/91039) |                                                              |
+| 请求方式  | POST                                                         | GET                                                          |                                                              |
+| 请求地址  | https://api.dingtalk.com/v1.0/oauth2/accessToken             |                                                              |                                                              |
+| Query参数 | -                                                            | corpid                                                       | 企业ID                                                       |
+|           | -                                                            | corpsecret                                                   | 应用的凭证密钥                                               |
+| Body参数  | appKey                                                       | -                                                            | 企业内部应用的AppKey                                         |
+|           | appSecret                                                    | -                                                            | 企业内部应用的AppSecret                                      |
+| 返回字段  | accessToken                                                  | access_token                                                 |                                                              |
+|           | expireIn                                                     | expires_in                                                   | 过期时间，单位秒                                             |
+|           | code                                                         | errcode                                                      | 正常情况下返回0<br />【钉钉】正常情况下不返回，仅在错误时返回 |
+
+
+
 ## 获取部门列表
 
 |           | 钉钉                                                         | 企业微信                                                     | 说明                                                         |
