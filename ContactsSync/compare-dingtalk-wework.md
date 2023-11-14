@@ -67,7 +67,7 @@
 |           | org_email                                                    | biz_mail                                                     | 员工的企业邮箱                                               |
 |           | work_place                                                   | -                                                            | 办公地点                                                     |
 |           | remark                                                       | -                                                            | 备注                                                         |
-|           | dept_id_list                                                 | -                                                            | 所属部门id列表                                               |
+|           | dept_id_list                                                 | department                                                   | 所属部门id列表                                               |
 |           | dept_order                                                   | order                                                        | 员工在部门中的排序                                           |
 |           | extension                                                    | extattr                                                      | 扩展属性                                                     |
 |           | hired_date                                                   | -                                                            | 入职时间，Unix时间戳，单位毫秒                               |
