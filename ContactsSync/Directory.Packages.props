@@ -11,34 +11,57 @@
     <PackageVersion Include="Abp.Castle.Log4Net" Version="7.4.0" />
     <PackageVersion Include="Abp.EntityFrameworkCore" Version="7.4.0" />
     <PackageVersion Include="Abp.TestBase" Version="7.4.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
+    <!--  volo abp  -->
+    <PackageVersion Include="Volo.Abp" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.AutoMapper" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Autofac" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Mvc" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.TestBase" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.BackgroundWorkers" Version="7.4.1" />
+    <packageVersion Include="Volo.Abp.BackgroundWorkers.Hangfire" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.Abstractions" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Caching" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Core" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Data" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Ddd.Application" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Ddd.Domain" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp.TestBase" Version="7.4.1" />
     <!-- 微软 -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="6.0.19" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.19">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.19">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.19" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
     <!-- 第三方 -->
-    <PackageVersion Include="AlibabaCloud.SDK.Dingtalk" Version="1.3.27" />
+    <PackageVersion Include="AlibabaCloud.SDK.Dingtalk" Version="2.0.59" />
     <PackageVersion Include="Castle.Core" Version="4.4.1" />
     <PackageVersion Include="Castle.Windsor.MsDependencyInjection" Version="3.4.0" />
     <PackageVersion Include="coverlet.collector" Version="3.1.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
+    <PackageVersion Include="Hangfire.MySqlStorage" Version="2.0.3" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NSubstitute" Version="4.3.0" />
-    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
-    <PackageVersion Include="Senparc.Weixin.Work" Version="3.16.2.2" />
+    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    <PackageVersion Include="Senparc.Weixin.Work" Version="3.17.0" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="TinyPinyin" Version="1.1.0" />
     <PackageVersion Include="xunit" Version="2.4.2" />
