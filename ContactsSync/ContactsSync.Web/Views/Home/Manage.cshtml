@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "域账号管理";
+}
+
+@model UserSimpleDto
+
+<div class="py-3 text-center">
+    <h3>域账号管理</h3>
+</div>
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">域账号需知</h4>
+    <hr/>
+    <p>1、LDAP服务每隔一分钟同步一次域账号信息，域账号开通后，请等待一分钟！</p>
+    <p>2、域账号开通后，请先修改初始密码，以启用账号！</p>
+    <p>3、VPN账号启用后即时生效，VPN的账号密码与域账号一致！</p>
+</div>
+
+@if (Model == null)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>账号信息尚未同步，请等待！</p>
+    </div>
+}
+
+else if (!Model.IsEnabled)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>您的账号尚未开通，请联系管理员开通！</p>
+    </div>
+}
+else
+{
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#personnel">个人账号管理</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane  active container" id="personnel">
+            Fuck
+        </div>
+    </div>
+}

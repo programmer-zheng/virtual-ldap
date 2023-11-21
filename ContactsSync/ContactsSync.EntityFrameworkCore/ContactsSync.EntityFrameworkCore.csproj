@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Core"/>
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore"/>
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.MySQL"/>
+    <ProjectReference Include="..\ContactsSync.Domain.Shared\ContactsSync.Domain.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

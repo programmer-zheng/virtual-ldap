@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>dingding authorize</title>
+</head>
+<body>
+    <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.10.3/dingtalk.open.js"></script>
+    <script type="text/javascript">
+        if (dd.env.platform == "notInDingTalk") {
+            document.writeln("请在钉钉中打开此应用")
+        } else {
+            dd.ready(function () {
+                dd.runtime.permission.requestAuthCode({
+                    corpId: "@(ViewBag.CorpId)",
+                    onSuccess: function (res) {
+                        // 调用成功时回调
+                        location.href = '/AuthorizeCallback?code=' + res.code
+                    },
+                    onFail: function (err) {
+                        alert('获取授权失败：' + JSON.stringify(err))
+                        // 调用失败时回调
+                    }
+                });
+                dd.error(function (error) {
+                    /**
+                     {
+                        errorMessage:"错误信息",// errorMessage 信息会展示出钉钉服务端生成签名使用的参数，请和您生成签名的参数作对比，找出错误的参数
+                        errorCode: "错误码"
+                     }
+                    **/
+                    alert('dd error: ' + JSON.stringify(error));
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>
