@@ -1,6 +1,10 @@
 ﻿using ContactsSync.Application.OpenPlatformProvider;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Senparc.CO2NET.Extensions;
+using Senparc.Weixin;
+using Senparc.Weixin.CommonAPIs;
+using Senparc.Weixin.Entities;
 using Senparc.Weixin.Work.AdvancedAPIs;
 using Senparc.Weixin.Work.AdvancedAPIs.MailList;
 using Senparc.Weixin.Work.AdvancedAPIs.OA;
@@ -95,9 +99,9 @@ public class WeWorkProvider : IOpenPlatformProvider
     public async Task<string?> CreateApprovalTemplate()
     {
         var accessToken = await GetAccessTokenAsync();
-        var request = new ApprovalCreateTemplateRequest
+        var request = new ApprovalCreateTemplateRequestExt()
         {
-            template_names = new List<ApprovalCreateTemplateRequest_TextAndLang>
+            template_name = new List<ApprovalCreateTemplateRequest_TextAndLang>
             {
                 new() { text = "域账号开通申请", lang = "zh_CN" }
             },
@@ -119,14 +123,17 @@ public class WeWorkProvider : IOpenPlatformProvider
                 }
             }
         };
-        var approvalCreateResult = await OaApi.ApprovalCreateTemplateAsync(accessToken, request);
+
+        var urlFormat = Config.ApiWorkHost + "/cgi-bin/oa/approval/create_template?access_token={0}";
+        var approvalCreateResult = await CommonJsonSend.SendAsync<ApprovalCreateTemplateResult>(accessToken, urlFormat, request);
+        // var approvalCreateResult = await OaApi.ApprovalCreateTemplateAsync(accessToken, request);
         if (approvalCreateResult.ErrorCodeValue != 0)
         {
             _logger.LogError($"{approvalCreateResult.errmsg}");
             throw new UserFriendlyException(approvalCreateResult.errmsg);
         }
 
-        return approvalCreateResult.P2PData.ToString()!;
+        return approvalCreateResult.template_id;
     }
 
     public async Task<string?> GetConfigedApprovalTemplateId()
