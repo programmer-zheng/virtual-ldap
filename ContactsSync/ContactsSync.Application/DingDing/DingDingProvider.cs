@@ -185,6 +185,7 @@ public class DingDingProvider : IOpenPlatformProvider
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
                 _logger.LogError($"创建钉钉审批模板出错 {err.Code} {err.Message}");
+                throw new UserFriendlyException($"创建钉钉审批模板出错 {err.Message}");
             }
         }
         catch (Exception _err)
