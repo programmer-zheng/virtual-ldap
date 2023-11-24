@@ -5,14 +5,15 @@ using Volo.Abp.Uow;
 
 namespace ContactsSync.Application.AppServices;
 
-public class ContactsSync : IContactsSync
+public class ContactsSyncAppService : IContactsSyncAppService
 {
     private readonly IOpenPlatformProvider _openPlatformProvider;
     private readonly IDepartmentAppService _departmentAppService;
     private readonly IUserAppService _userAppService;
     private readonly IObjectMapper _objectMapper;
 
-    public ContactsSync(IOpenPlatformProvider openPlatformProvider, IDepartmentAppService departmentAppService, IUserAppService userAppService, IObjectMapper objectMapper)
+    public ContactsSyncAppService(IOpenPlatformProvider openPlatformProvider, IDepartmentAppService departmentAppService, IUserAppService userAppService,
+        IObjectMapper objectMapper)
     {
         _openPlatformProvider = openPlatformProvider;
         _departmentAppService = departmentAppService;
@@ -62,7 +63,8 @@ public class ContactsSync : IContactsSync
                         {
                             UserId = deptUserDto.UserId,
                             OriginDeptId = departmentDto.DepartmentId,
-                            Source = _openPlatformProvider.Source
+                            Source = _openPlatformProvider.Source,
+                            IsLeader = deptUserDto.IsDeptLeader
                         });
                     }
                 }
