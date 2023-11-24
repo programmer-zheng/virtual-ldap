@@ -4,8 +4,6 @@ using ContactsSync.Application.AppServices;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Volo.Abp.AspNetCore.Mvc;
 
 namespace ContactsSync.Web.Controllers
@@ -20,6 +18,16 @@ namespace ContactsSync.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var templateId = await Provider.GetConfigedApprovalTemplateId();
+            if (templateId.IsNullOrWhiteSpace())
+            {
+                // 创建模板
+                templateId = await Provider.CreateApprovalTemplate();
+                var key = Provider.ApprovalTemplateKey;
+                // 保存模板编号到配置文件中
+                SettingsHelper.AddOrUpdateAppSetting<string>(key, templateId);
+            }
+
             string userid = Request.Cookies[ContactsSyncWebConsts.CookieName];
             if (!string.IsNullOrWhiteSpace(userid))
             {
@@ -43,38 +51,6 @@ namespace ContactsSync.Web.Controllers
             }
 
             return NotFound();
-        }
-
-        [Route("/SaveConfig")]
-        [HttpGet]
-        public async Task<IActionResult> SaveConfig()
-        {
-            string contentPath = AppContext.BaseDirectory + @"\"; //项目根目录
-            Logger.LogInformation($"目录：{contentPath}");
-            var filePath = contentPath + "appsettings.json";
-            JObject jsonObject;
-            using (StreamReader file = new StreamReader(filePath))
-            using (JsonTextReader reader = new JsonTextReader(file))
-            {
-                jsonObject = (JObject)JToken.ReadFrom(reader);
-                jsonObject["TemplateId"] = "asdasdasdasd";
-            }
-
-            using (var writer = new StreamWriter(filePath))
-            using (JsonTextWriter jsonwriter = new JsonTextWriter(writer))
-            {
-                jsonObject.WriteTo(jsonwriter);
-            }
-
-            return Ok();
-        }
-
-        [Route("/GetConfig")]
-        [HttpGet]
-        public async Task<IActionResult> GetConfig()
-        {
-            var templateId = await Provider.GetConfigedApprovalTemplateId();
-            return Content(templateId);
         }
 
         [HttpGet]
