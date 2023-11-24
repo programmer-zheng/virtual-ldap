@@ -1,14 +1,9 @@
 ﻿using System.Net;
-using System.Transactions;
-using ContactsSync.Application.AppServices;
 using ContactsSync.Application.Background;
 using ContactsSync.Application.DingDing;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Application.WeWork;
 using ContactsSync.EntityFrameworkCore;
-using Hangfire;
-using Hangfire.MySql;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -21,7 +16,6 @@ using Volo.Abp;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundWorkers;
-using Volo.Abp.BackgroundWorkers.Hangfire;
 using Volo.Abp.Modularity;
 
 namespace ContactsSync.Application;
@@ -116,7 +110,6 @@ public class ContactsSyncApplicationModule : AbpModule
             IRegisterService registerService = RegisterService.Start(senparcSetting).UseSenparcGlobal();
             var senparcWeixinSetting = new SenparcWeixinSetting() { };
             registerService.UseSenparcWeixin(senparcWeixinSetting, null);
-            // var 
         }
     }
 
