@@ -11,4 +11,9 @@ public class UserDepartmentsRelationEntity : BaseEntity
     /// 部门ID
     /// </summary>
     public long OriginDeptId { get; set; }
+
+    /// <summary>
+    /// 是否部门负责人
+    /// </summary>
+    public bool IsLeader { get; set; }
 }
