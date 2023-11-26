@@ -1,10 +1,8 @@
 ﻿using ContactsSync.Application.OpenPlatformProvider;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Senparc.CO2NET.Extensions;
 using Senparc.Weixin;
 using Senparc.Weixin.CommonAPIs;
-using Senparc.Weixin.Entities;
 using Senparc.Weixin.Work.AdvancedAPIs;
 using Senparc.Weixin.Work.AdvancedAPIs.MailList;
 using Senparc.Weixin.Work.AdvancedAPIs.OA;
@@ -126,7 +124,6 @@ public class WeWorkProvider : IOpenPlatformProvider
 
         var urlFormat = Config.ApiWorkHost + "/cgi-bin/oa/approval/create_template?access_token={0}";
         var approvalCreateResult = await CommonJsonSend.SendAsync<ApprovalCreateTemplateResult>(accessToken, urlFormat, request);
-        // var approvalCreateResult = await OaApi.ApprovalCreateTemplateAsync(accessToken, request);
         if (approvalCreateResult.ErrorCodeValue != 0)
         {
             _logger.LogError($"{approvalCreateResult.errmsg}");
@@ -139,5 +136,50 @@ public class WeWorkProvider : IOpenPlatformProvider
     public async Task<string?> GetConfigedApprovalTemplateId()
     {
         return _weWorkConfigOptions.TemplateId;
+    }
+
+    public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)
+    {
+        var accessToken = await GetAccessTokenAsync();
+        var request = new ApplyEventRequest
+        {
+            creator_userid = userId,
+            template_id = _weWorkConfigOptions.TemplateId,
+            use_template_approver = 0,
+            approver = new List<ApplyEventRequest_Approver> { new() { attr = 1, userid = approvers } },
+            apply_data = new ApplyEventRequest_ApplyData()
+            {
+                contents = new List<ApplyEventRequest_ApplyData_Contents>()
+                {
+                    new()
+                    {
+                        control = "Text",
+                        id = "Textarea-01",
+                        value = new ApplyEventRequest_ApplyData_Contents_Value() { text = applyData }
+                    }
+                }
+            },
+            summary_list = new List<ApplyEventRequest_SummaryList>
+            {
+                new()
+                {
+                    summary_info = new List<ApplyEventRequest_TextLang>()
+                    {
+                        new()
+                        {
+                            text = "域账号开通申请", lang = "zh_CN"
+                        }
+                    }
+                }
+            }
+        };
+        var applyEventResult = await OaApi.ApplyEventAsync(accessToken, request);
+        if (applyEventResult.ErrorCodeValue != 0)
+        {
+            _logger.LogError($"{applyEventResult.errmsg}");
+            throw new UserFriendlyException(applyEventResult.errmsg);
+        }
+
+        return applyEventResult.sp_no;
     }
 }

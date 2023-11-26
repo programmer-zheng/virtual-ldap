@@ -6,7 +6,7 @@
 public interface IOpenPlatformProvider
 {
     /// <summary>
-    /// 数据来源
+    /// 数据源；用于区分数据来源，如：钉钉、企业微信
     /// </summary>
     public string Source { get; }
 
@@ -62,4 +62,13 @@ public interface IOpenPlatformProvider
     /// </summary>
     /// <returns></returns>
     Task<string?> GetConfigedApprovalTemplateId();
+
+    /// <summary>
+    /// 创建审批实例
+    /// </summary>
+    /// <param name="userId">发起人平台ID</param>
+    /// <param name="approvers">审批人ID</param>
+    /// <param name="applyData">申请理由</param>
+    /// <returns></returns>
+    Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData);
 }

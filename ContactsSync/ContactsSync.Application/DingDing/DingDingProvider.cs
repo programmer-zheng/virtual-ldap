@@ -207,4 +207,59 @@ public class DingDingProvider : IOpenPlatformProvider
     {
         return _dingDingConfigOptions.ProcessCode;
     }
+
+    public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)
+    {
+        var accessToken = await GetAccessTokenAsync();
+        var config = CreateClientConfig();
+        var client = new AlibabaCloud.SDK.Dingtalkworkflow_1_0.Client(config);
+        var startProcessInstanceHeaders = new StartProcessInstanceHeaders() { XAcsDingtalkAccessToken = accessToken };
+        var startProcessInstanceRequest = new StartProcessInstanceRequest
+        {
+            OriginatorUserId = userId,
+            ProcessCode = _dingDingConfigOptions.ProcessCode,
+            MicroappAgentId = _dingDingConfigOptions.AgentId,
+            Approvers = new List<StartProcessInstanceRequest.StartProcessInstanceRequestApprovers>
+            {
+                new() { ActionType = "OR", UserIds = approvers }
+            },
+            TargetSelectActioners = new List<StartProcessInstanceRequest.StartProcessInstanceRequestTargetSelectActioners>
+            {
+                new() { ActionerKey = "approver", ActionerUserIds = approvers }
+            },
+            FormComponentValues = new List<StartProcessInstanceRequest.StartProcessInstanceRequestFormComponentValues>
+            {
+                new()
+                {
+                    Id = "Reason", Name = "申请开通原因", Value = applyData
+                }
+            },
+        };
+        try
+        {
+            var rsp = await client.StartProcessInstanceWithOptionsAsync(startProcessInstanceRequest, startProcessInstanceHeaders, new RuntimeOptions());
+            return rsp.Body.InstanceId;
+        }
+        catch (TeaException err)
+        {
+            if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
+            {
+                _logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
+                throw new UserFriendlyException($"创建审批实例出错 {err.Message}");
+            }
+        }
+        catch (Exception _err)
+        {
+            TeaException err = new TeaException(new Dictionary<string, object>
+            {
+                { "message", _err.Message }
+            });
+            if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
+            {
+                _logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
+            }
+        }
+
+        return null;
+    }
 }

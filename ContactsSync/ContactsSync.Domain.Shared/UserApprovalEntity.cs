@@ -7,7 +7,6 @@ namespace ContactsSync.Domain.Shared;
 /// </summary>
 public class UserApprovalEntity : BaseEntity
 {
-    
     /// <summary>
     /// 用户表主键
     /// </summary>
@@ -24,4 +23,9 @@ public class UserApprovalEntity : BaseEntity
     /// </summary>
     [MaxLength(50)]
     public string InstanceId { get; set; }
+
+    /// <summary>
+    /// 审批结果
+    /// </summary>
+    public bool? Result { get; set; }
 }
