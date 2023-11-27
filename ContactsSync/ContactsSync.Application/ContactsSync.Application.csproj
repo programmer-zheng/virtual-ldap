@@ -21,6 +21,7 @@
 
         <PackageReference Include="Volo.Abp.Ddd.Application.Contracts"/>
         <PackageReference Include="Senparc.Weixin.Work"/>
+        <PackageReference Include="TinyPinyin"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -29,9 +30,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="topsdk-net-core">
-        <HintPath>..\topsdk-net-core.dll</HintPath>
-      </Reference>
+        <Reference Include="topsdk-net-core">
+            <HintPath>..\topsdk-net-core.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

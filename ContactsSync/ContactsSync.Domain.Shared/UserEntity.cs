@@ -58,7 +58,7 @@ public class UserEntity : BaseEntity, IHasDeletionTime
     /// 用户名（系统生成，姓名全拼，同名加上序号）
     /// </summary>
     [MaxLength(50)]
-    public string? UserName { get; set; }
+    public string UserName { get; set; }
 
     /// <summary>
     /// 密码

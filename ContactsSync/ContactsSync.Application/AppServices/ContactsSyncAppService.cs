@@ -1,5 +1,9 @@
-﻿using ContactsSync.Application.OpenPlatformProvider;
+﻿using System.Text;
+using System.Text.RegularExpressions;
+using ContactsSync.Application.AppServices.Dtos;
+using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Domain.Shared;
+using TinyPinyin;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Uow;
 
@@ -46,6 +50,7 @@ public class ContactsSyncAppService : IContactsSyncAppService
                     deptList.Add(departmentEntity);
                 }
 
+                // 部门下的人员数据
                 var platformDeptUsers = await _openPlatformProvider.GetDeptUserListAsync(departmentDto.DepartmentId);
                 foreach (var deptUserDto in platformDeptUsers)
                 {
@@ -57,6 +62,7 @@ public class ContactsSyncAppService : IContactsSyncAppService
                         userList.Add(userEntity);
                     }
 
+                    // 部门人员关联
                     if (!existsRelaList.Any(t => t.UserId == deptUserDto.UserId && t.OriginDeptId == departmentDto.DepartmentId))
                     {
                         relaList.Add(new UserDepartmentsRelationEntity
@@ -70,6 +76,12 @@ public class ContactsSyncAppService : IContactsSyncAppService
                 }
             }
 
+            foreach (var user in userList)
+            {
+                var userName = await GetUserNameAsync(user.Name, userList, existsUserList);
+                user.UserName = userName;
+            }
+
             // 批量添加部门
             await _departmentAppService.BatchAddDepartmentAsync(deptList.ToArray());
             // 批量添加人员
@@ -77,5 +89,37 @@ public class ContactsSyncAppService : IContactsSyncAppService
             // 批量添加部门人员关系
             await _userAppService.BatchAddDeptUserRelaAsync(relaList.ToArray());
         }
+    }
+
+    private async Task<string> GetUserNameAsync(string name, List<UserEntity> newUserList, List<DeptUserDto> dbUserList)
+    {
+        var username = new StringBuilder();
+
+        var regex = new Regex(@"^[\u4e00-\u9fa5]+$", RegexOptions.IgnoreCase);
+
+        var match = regex.Match(name);
+        if (match.Success)
+        {
+            //对重名人员，去掉人名以外字符
+            var pinyin = PinyinHelper.GetPinyin(match.Groups[0].Value, "").ToLower();
+            username.Append(pinyin);
+
+            var sameCount = dbUserList.Count(t => t.UserName.Contains(pinyin));
+            var newUserSameNameCount = 0;
+            newUserSameNameCount = newUserList.Count(t => !string.IsNullOrWhiteSpace(t.UserName)
+                                                          && t.UserName.StartsWith(username.ToString(),
+                                                              StringComparison.OrdinalIgnoreCase));
+
+            if (sameCount > 0 || newUserSameNameCount > 0)
+            {
+                username.Append(sameCount + newUserSameNameCount + 1);
+            }
+        }
+        else
+        {
+            username.Append(name);
+        }
+
+        return username.ToString().ToLower();
     }
 }
