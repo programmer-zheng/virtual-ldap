@@ -4,6 +4,7 @@ using ContactsSync.Application.AppServices;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 
 namespace ContactsSync.Web.Controllers
@@ -81,6 +82,24 @@ namespace ContactsSync.Web.Controllers
             return View(userSimpleDto);
         }
 
+        [Route("/CreateApproval")]
+        public async Task CreateApproval(CreateUserApprovalViewModel input)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new UserFriendlyException("提交的数据有误");
+            }
+
+            try
+            {
+                await UserAppService.CreateUserApproval(input.Uid, input.ApprovalData);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "提交审批申请发生错误");
+                throw new UserFriendlyException("提交审批申请失败");
+            }
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

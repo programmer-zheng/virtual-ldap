@@ -31,4 +31,6 @@ public interface IUserAppService : IApplicationService
     Task<LdapUserValidateDto?> GetLdapUserAsync(string username);
 
     Task<UserSimpleDto> GetSimpleUserByUserIdAsync(string userId);
+
+    Task CreateUserApproval(Guid uid, string applyData);
 }

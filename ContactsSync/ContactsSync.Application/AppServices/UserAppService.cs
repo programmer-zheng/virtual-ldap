@@ -108,7 +108,7 @@ public class UserAppService : ApplicationService, IUserAppService
         var approvalInstance = await _openPlatformProvider.CreateApprovalInstance(user.UserId, leaders, applyData);
 
         // 保存用户审批实例
-        userApproval = new UserApprovalEntity() { Uid = uid, UserId = user.UserId, InstanceId = approvalInstance };
+        userApproval = new UserApprovalEntity() { Uid = uid, UserId = user.UserId, InstanceId = approvalInstance, Source = _openPlatformProvider.Source };
         await _userApprovalRepository.InsertAsync(userApproval);
     }
 }
