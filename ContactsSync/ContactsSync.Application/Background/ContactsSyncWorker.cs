@@ -14,13 +14,13 @@ public class ContactsSyncWorker : AsyncPeriodicBackgroundWorkerBase
 
         timer.Period = 1000 * 60 * options.Value.SyncPeriod;
 #if DEBUG
-        timer.Period = 1000 * 15;
+        timer.Period = 1000 * 30;
 #endif
     }
 
     protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
     {
         var contactsSync = ServiceProvider.GetRequiredService<IContactsSyncAppService>();
-         await contactsSync.SyncDepartmentAndUser();
+        await contactsSync.SyncDepartmentAndUser();
     }
 }
