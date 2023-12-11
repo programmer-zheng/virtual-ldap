@@ -221,7 +221,8 @@ public class DingDingProvider : IOpenPlatformProvider
             MicroappAgentId = _dingDingConfigOptions.AgentId,
             Approvers = new List<StartProcessInstanceRequest.StartProcessInstanceRequestApprovers>
             {
-                new() { ActionType = "OR", UserIds = approvers }
+                // 多个人时使用或签，否则使用单人审批
+                new() { ActionType = approvers.Count > 1 ? "OR" : "NONE", UserIds = approvers }
             },
             TargetSelectActioners = new List<StartProcessInstanceRequest.StartProcessInstanceRequestTargetSelectActioners>
             {
