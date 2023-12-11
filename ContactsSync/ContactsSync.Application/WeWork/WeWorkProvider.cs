@@ -146,6 +146,7 @@ public class WeWorkProvider : IOpenPlatformProvider
             creator_userid = userId,
             template_id = _weWorkConfigOptions.TemplateId,
             use_template_approver = 0,
+            notify_type = 1,
             approver = new List<ApplyEventRequest_Approver> { new() { attr = 1, userid = approvers } },
             apply_data = new ApplyEventRequest_ApplyData()
             {
@@ -153,7 +154,7 @@ public class WeWorkProvider : IOpenPlatformProvider
                 {
                     new()
                     {
-                        control = "Text",
+                        control = "Textarea",
                         id = "Textarea-01",
                         value = new ApplyEventRequest_ApplyData_Contents_Value() { text = applyData }
                     }
