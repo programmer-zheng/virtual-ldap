@@ -2,7 +2,10 @@
 
 ## 运行环境
 
-- 后端 `ASP.NET Core 6 `
+- 后端
+  -  `ASP.NET Core 8 `
+  - `Volo.Abp`
+
 - 前端 `nodejs 18.12.1`
 
 ## Docker镜像
