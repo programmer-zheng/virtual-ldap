@@ -45,6 +45,11 @@ public class UserEntity : BaseEntity, IHasDeletionTime
     public string? BizEmail { get; set; }
 
     /// <summary>
+    /// 职务
+    /// </summary>
+    public string? Position { get; set; }
+
+    /// <summary>
     /// 是否启用
     /// </summary>
     public bool IsEnabled { get; set; }

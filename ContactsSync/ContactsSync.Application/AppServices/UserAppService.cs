@@ -1,7 +1,9 @@
-﻿using ContactsSync.Application.AppServices.Dtos;
+﻿using ContactsSync.Application.Contracts;
+using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -16,25 +18,30 @@ public class UserAppService : ApplicationService, IUserAppService
     private readonly IRepository<UserApprovalEntity> _userApprovalRepository;
     private readonly IOpenPlatformProvider _openPlatformProvider;
 
-    public UserAppService(IRepository<DepartmentEntity> deptRepository,
+    public UserAppService(
+        IConfiguration configuration,
+        IRepository<DepartmentEntity> deptRepository,
         IRepository<UserEntity> userRepository, IRepository<UserDepartmentsRelationEntity> deptUserRelaRepository,
-        IRepository<UserApprovalEntity> userApprovalRepository, IOpenPlatformProvider openPlatformProvider)
+        IRepository<UserApprovalEntity> userApprovalRepository, Func<string, IOpenPlatformProvider> func)
     {
         _deptRepository = deptRepository;
         _userRepository = userRepository;
         _deptUserRelaRepository = deptUserRelaRepository;
         _userApprovalRepository = userApprovalRepository;
-        _openPlatformProvider = openPlatformProvider;
+        // todo 替换为Keyed Services
+        _openPlatformProvider = func(configuration["Sync:OpenPlatformProvider"]);
     }
 
-    public async Task BatchAddUserAsync(params UserEntity[] users)
+    public async Task BatchAddUserAsync(params CreateUserDto[] users)
     {
-        await _userRepository.InsertManyAsync(users);
+        var entities = ObjectMapper.Map<CreateUserDto[], UserEntity[]>(users);
+        await _userRepository.InsertManyAsync(entities);
     }
 
-    public async Task BatchAddDeptUserRelaAsync(params UserDepartmentsRelationEntity[] relas)
+    public async Task BatchAddDeptUserRelaAsync(params CreateUserDeptRelaDto[] relas)
     {
-        await _deptUserRelaRepository.InsertManyAsync(relas);
+        var entities = ObjectMapper.Map<CreateUserDeptRelaDto[], UserDepartmentsRelationEntity[]>(relas);
+        await _deptUserRelaRepository.InsertManyAsync(entities);
     }
 
     public async Task<List<DeptUserDto>> GetAllUsersAsync()
@@ -51,9 +58,40 @@ public class UserAppService : ApplicationService, IUserAppService
         return result;
     }
 
-    public async Task<List<DeptUserDto>> GetDeptUsersAsync(long deptId)
+    public async Task<List<LdapDeptUserDto>> GetDeptUsersAsync(Guid deptId)
     {
-        throw new NotImplementedException();
+        var userQuery = await _userRepository.GetQueryableAsync();
+        var relaQuery = await _deptUserRelaRepository.GetQueryableAsync();
+        var deptQuery = await _deptRepository.GetQueryableAsync();
+        var query = from x in userQuery
+            join rela in relaQuery on x.UserId equals rela.UserId
+            join dept in deptQuery on rela.OriginDeptId equals dept.OriginId
+            where dept.Id == deptId && x.IsEnabled == true
+            select x;
+        var userList = await query.ToListAsync();
+
+        var relas = await (from rel in relaQuery
+            join dept in deptQuery on rel.OriginDeptId equals dept.OriginId
+            select new { rel.UserId, dept.Id, dept.OriginId }).ToListAsync();
+
+        var result = ObjectMapper.Map<List<UserEntity>, List<LdapDeptUserDto>>(userList);
+        foreach (var user in result)
+        {
+            user.Departments = relas.Where(t => t.UserId == user.UserId).Select(t => t.Id);
+        }
+
+        // var xxx = from x in userQuery
+        //     join rela in relaQuery on x.UserId equals rela.UserId
+        //     join dept in deptQuery on rela.OriginDeptId equals dept.OriginId
+        //     where dept.Id == deptId && x.IsEnabled == true
+        //     select new LdapDeptUserDto()
+        //     {
+        //         UserId = x.UserId, Name = x.Name, UserName = x.UserName, Email = x.Email, Mobile = x.Mobile, Password = x.Password, Avatar = x.Avatar,
+        //         Departments = relaQuery.Where(t => t.UserId == x.UserId).Select(t => t.OriginDeptId).AsEnumerable()
+        //     };
+        //
+        // var result = await xxx.ToListAsync();
+        return result;
     }
 
     public async Task<LdapUserValidateDto?> GetLdapUserAsync(string username)

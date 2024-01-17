@@ -21,6 +21,7 @@ public class WeWorkMapperProfile : Profile
             .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.email))
             .ForMember(dst => dst.BizEmail, opt => opt.MapFrom(src => src.biz_mail))
             .ForMember(dst => dst.IsActivated, opt => opt.MapFrom(src => src.status == 1))
+            .ForMember(dst => dst.Position, opt => opt.MapFrom(src => src.position))
             ;
     }
 }

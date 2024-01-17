@@ -1,4 +1,5 @@
-﻿using ContactsSync.Application.AppServices.Dtos;
+﻿using ContactsSync.Application.Contracts;
+using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Domain.Shared;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -21,14 +22,16 @@ public class DepartmentAppService : ApplicationService, IDepartmentAppService
         return result;
     }
 
-    public async Task BatchAddDepartmentAsync(params DepartmentEntity[] depts)
+    public async Task BatchAddDepartmentAsync(params CreateDepartmentDto[] depts)
     {
-        await _deptRepository.InsertManyAsync(depts);
+        var entities = ObjectMapper.Map<CreateDepartmentDto[], DepartmentEntity[]>(depts);
+        await _deptRepository.InsertManyAsync(entities);
     }
 
-    public async Task AddDepartmentAsync(DepartmentEntity dto)
+    public async Task AddDepartmentAsync(CreateDepartmentDto dto)
     {
-        await _deptRepository.InsertAsync(dto);
+        var entity = ObjectMapper.Map<CreateDepartmentDto, DepartmentEntity>(dto);
+        await _deptRepository.InsertAsync(entity);
     }
 
     public async Task RemoveDepartmentAsync(long id)
@@ -36,8 +39,9 @@ public class DepartmentAppService : ApplicationService, IDepartmentAppService
         await _deptRepository.DeleteDirectAsync(t => t.OriginId == id);
     }
 
-    public async Task UpdateDepartmentAsync(DepartmentEntity dto)
+    public async Task UpdateDepartmentAsync(UpdateDepartmentDto dto)
     {
-        await _deptRepository.UpdateAsync(dto);
+        var entity = ObjectMapper.Map<UpdateDepartmentDto, DepartmentEntity>(dto);
+        await _deptRepository.UpdateAsync(entity);
     }
 }

@@ -1,9 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Web;
 using ContactsSync.Application.AppServices;
+using ContactsSync.Application.Background;
+using ContactsSync.Application.Contracts;
 using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Domain.Shared;
 using ContactsSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 
@@ -11,9 +15,23 @@ namespace ContactsSync.Web.Controllers
 {
     public class HomeController : AbpController
     {
+        private readonly IConfiguration _configuration;
+
+        private readonly ContactsSyncConfigOptions _contactsSyncConfigOptions;
+
+        public HomeController(Func<string, IOpenPlatformProvider> func, IConfiguration configuration, IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig)
+        {
+            _configuration = configuration;
+            _contactsSyncConfigOptions = syncConfig.Value;
+            Provider = func(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+        }
+
         public IConfiguration Configuration { get; set; }
 
-        public IOpenPlatformProvider Provider { get; set; }
+        // todo 替换为Keyed Services
+        // public IOpenPlatformProvider Provider { get; set; }
+
+        private readonly IOpenPlatformProvider Provider;
 
         public IUserAppService UserAppService { get; set; }
 
@@ -35,14 +53,13 @@ namespace ContactsSync.Web.Controllers
                 return RedirectToAction("Manage");
             }
 
-            var workEnv = Configuration["WorkEnv"];
-            if ("DingDing".Equals(workEnv, StringComparison.OrdinalIgnoreCase))
+            if (_contactsSyncConfigOptions.OpenPlatformProvider == OpenPlatformProviderEnum.DingDing)
             {
                 ViewBag.CorpId = Configuration.GetValue<string>("DingDing:CorpId");
                 return View("DingDingOauth");
             }
 
-            if ("WeWork".Equals(workEnv, StringComparison.OrdinalIgnoreCase))
+            if (_contactsSyncConfigOptions.OpenPlatformProvider == OpenPlatformProviderEnum.WeWork)
             {
                 var host = Request.Host.ToString();
                 var redirectUrl = HttpUtility.UrlEncode($"{Request.Scheme}://{host}/AuthorizeCallback");

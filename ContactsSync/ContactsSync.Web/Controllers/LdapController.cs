@@ -1,5 +1,7 @@
 ﻿using ContactsSync.Application;
 using ContactsSync.Application.AppServices;
+using ContactsSync.Application.Contracts;
+using ContactsSync.Domain.Shared;
 using ContactsSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc;
@@ -19,7 +21,7 @@ public class LdapController : AbpController
     }
 
     [Route("/DeptUsers")]
-    public async Task<IActionResult> DeptUsers(long deptId)
+    public async Task<IActionResult> DeptUsers(Guid deptId)
     {
         var deptUsers = await UserAppService.GetDeptUsersAsync(deptId);
         return Json(deptUsers);

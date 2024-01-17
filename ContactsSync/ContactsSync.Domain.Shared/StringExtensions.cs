@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace ContactsSync.Application;
+namespace ContactsSync.Domain.Shared;
 
 public static class StringExtensions
 {

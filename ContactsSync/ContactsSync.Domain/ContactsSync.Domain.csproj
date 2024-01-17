@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Core"/>
+        <PackageReference Include="Volo.Abp.Ddd.Domain"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ContactsSync.Domain.Shared\ContactsSync.Domain.Shared.csproj" />
+    </ItemGroup>
+</Project>

@@ -84,15 +84,16 @@ async function fetchAllDepartments() {
       return [];
     }
     console.info('Got', deps.length, 'departments');
-
+    console.debug(JSON.stringify(deps))
     const depsMap = {
       '1': {
         name: 'Staff',
         id: 1,
-        parentid: null,
+        parentId: null,
       },
     };
     deps.forEach(d => {
+      console.debug(d.name)
       d.name = d.name.replace(/ \/ /g, ' - ').replace(/\//g, '&').trim();
       depsMap[d.id] = d;
     });
@@ -118,8 +119,8 @@ async function fetchAllDepartments() {
   allDeps.forEach(d => {
     let obj = d;
     let dn = [`ou=${obj.name}`];
-    while (obj.parentid) {
-      obj = depsMap[obj.parentid];
+    while (obj.parentId) {
+      obj = depsMap[obj.parentId];
       dn.push(`ou=${obj.name}`);
     }
     d.dn = dn.join(',');
@@ -142,7 +143,8 @@ async function fetchAllUsers(departments) {
       }
     }
 
-    console.log('department users load complete,load：' + allUsers.length + ' user data');
+    // console.log('department users load complete,load：' + allUsers.length + ' user data');
+    // console.debug(JSON.stringify(allUsers))
 
     //saveCacheToFile('dingtalk_users.json', allUsers);
   } else {
@@ -188,8 +190,8 @@ async function reloadFromDingtalkServer() {
   });
 
   Object.values(allDepartmentsMap).forEach(dep => {
-    if (dep.parentid) {
-      const parentDep = allDepartmentsMap[dep.parentid];
+    if (dep.parentId) {
+      const parentDep = allDepartmentsMap[dep.parentId];
       addMemberToGroup(allLDAPGroupsMap[dep.id], allLDAPGroupsMap[parentDep.id]);
     }
   })
@@ -200,9 +202,9 @@ async function reloadFromDingtalkServer() {
   const allUsersMap = {};
   allLDAPUsers = allUsers.filter(u => {
 
-    if (!allUsersMap[u.userid]) {
-      allUsersMap[u.userid] = 1;
-      return u.active;
+    if (!allUsersMap[u.userId]) {
+      allUsersMap[u.userId] = 1;
+      return true;
     }
     return false;
   }).filter(u => {
@@ -237,17 +239,16 @@ async function reloadFromDingtalkServer() {
       // mail,
       // mobile: u.mobile,
       email: u.email,
-      avatarurl: u.avatar,
-      remark: u.remark
+      avatarurl: u.avatar
     });
     // console.debug('Sync person entry:', personEntry.dn)
 
     // 将用户加到组里
-    u.department.forEach(depId => {
+    u.departments.forEach(depId => {
       let parentDep = allDepartmentsMap[depId];
       while (parentDep && parentDep.id) {
         addMemberToGroup(personEntry, allLDAPGroupsMap[parentDep.id]);
-        parentDep = allDepartmentsMap[parentDep.parentid];
+        parentDep = allDepartmentsMap[parentDep.parentId];
       }
     })
 

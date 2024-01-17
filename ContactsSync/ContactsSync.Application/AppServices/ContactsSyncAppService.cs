@@ -1,34 +1,44 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
-using ContactsSync.Application.AppServices.Dtos;
+using ContactsSync.Application.Background;
+using ContactsSync.Application.Contracts;
+using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Domain.Shared;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using TinyPinyin;
-using Volo.Abp.ObjectMapping;
+using Volo.Abp;
+using Volo.Abp.Application.Services;
 using Volo.Abp.Uow;
 
 namespace ContactsSync.Application.AppServices;
 
-public class ContactsSyncAppService : IContactsSyncAppService
+public class ContactsSyncAppService : ApplicationService, IContactsSyncAppService
 {
-    private readonly IOpenPlatformProvider _openPlatformProvider;
     private readonly IDepartmentAppService _departmentAppService;
     private readonly IUserAppService _userAppService;
-    private readonly IObjectMapper _objectMapper;
 
-    public ContactsSyncAppService(IOpenPlatformProvider openPlatformProvider, IDepartmentAppService departmentAppService, IUserAppService userAppService,
-        IObjectMapper objectMapper)
+    private readonly ContactsSyncConfigOptions _syncConfig;
+    private readonly IOpenPlatformProvider _openPlatformProvider;
+
+    public ContactsSyncAppService(IDepartmentAppService departmentAppService, IUserAppService userAppService,
+        IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig, Func<string, IOpenPlatformProvider> func)
     {
-        _openPlatformProvider = openPlatformProvider;
         _departmentAppService = departmentAppService;
         _userAppService = userAppService;
-        _objectMapper = objectMapper;
+        _syncConfig = syncConfig.Value;
+        _openPlatformProvider = func(_syncConfig.OpenPlatformProvider.ToString());
     }
 
     [UnitOfWork]
     public async Task SyncDepartmentAndUser()
     {
-        var platformDepartments = await _openPlatformProvider.GetDepartmentListAsync();
+        // todo 替换为Keyed Services
+        // var serviceKey = _syncConfig.OpenPlatformProvider.ToString();
+        //
+        // var openPlatformProvider = LazyServiceProvider.GetKeyedService<IOpenPlatformProvider>(serviceKey);
+        var platformDepartments = await _openPlatformProvider!.GetDepartmentListAsync()!;
         if (platformDepartments?.Count > 0)
         {
             // 数据库中的数据
@@ -37,13 +47,13 @@ public class ContactsSyncAppService : IContactsSyncAppService
             var existsRelaList = await _userAppService.GetAllDeptUserRelaAsync();
 
             // 需要新增的数据
-            var deptList = new List<DepartmentEntity>();
-            var userList = new List<UserEntity>();
-            var relaList = new List<UserDepartmentsRelationEntity>();
+            var deptList = new List<CreateDepartmentDto>();
+            var userList = new List<CreateUserDto>();
+            var relaList = new List<CreateUserDeptRelaDto>();
             foreach (var departmentDto in platformDepartments)
             {
                 // 映射部门
-                var departmentEntity = _objectMapper.Map<PlatformDepartmentDto, DepartmentEntity>(departmentDto);
+                var departmentEntity = ObjectMapper.Map<PlatformDepartmentDto, CreateDepartmentDto>(departmentDto);
                 if (existsDepartmentList.All(t => t.OriginId != departmentEntity.OriginId))
                 {
                     departmentEntity.Source = _openPlatformProvider.Source;
@@ -55,7 +65,7 @@ public class ContactsSyncAppService : IContactsSyncAppService
                 foreach (var deptUserDto in platformDeptUsers)
                 {
                     // 映射人员
-                    var userEntity = _objectMapper.Map<PlatformDeptUserDto, UserEntity>(deptUserDto);
+                    var userEntity = ObjectMapper.Map<PlatformDeptUserDto, CreateUserDto>(deptUserDto);
                     if (existsUserList.All(t => t.UserId != deptUserDto.UserId) && userList.All(t => t.UserId != deptUserDto.UserId))
                     {
                         userEntity.Source = _openPlatformProvider.Source;
@@ -65,7 +75,7 @@ public class ContactsSyncAppService : IContactsSyncAppService
                     // 部门人员关联
                     if (!existsRelaList.Any(t => t.UserId == deptUserDto.UserId && t.OriginDeptId == departmentDto.DepartmentId))
                     {
-                        relaList.Add(new UserDepartmentsRelationEntity
+                        relaList.Add(new CreateUserDeptRelaDto
                         {
                             UserId = deptUserDto.UserId,
                             OriginDeptId = departmentDto.DepartmentId,
@@ -91,7 +101,7 @@ public class ContactsSyncAppService : IContactsSyncAppService
         }
     }
 
-    private async Task<string> GetUserNameAsync(string name, List<UserEntity> newUserList, List<DeptUserDto> dbUserList)
+    private async Task<string> GetUserNameAsync(string name, List<CreateUserDto> newUserList, List<DeptUserDto> dbUserList)
     {
         var username = new StringBuilder();
 

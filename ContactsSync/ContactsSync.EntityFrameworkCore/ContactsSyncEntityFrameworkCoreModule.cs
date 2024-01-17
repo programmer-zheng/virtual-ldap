@@ -1,4 +1,5 @@
-﻿using ContactsSync.Domain.Shared;
+﻿using ContactsSync.Domain;
+using ContactsSync.Domain.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.MySQL;
@@ -7,7 +8,7 @@ using Volo.Abp.Modularity;
 namespace ContactsSync.EntityFrameworkCore
 {
     [DependsOn(
-        typeof(ContactsSyncDomainSharedModule),
+        typeof(ContactsSyncDomainModule),
         typeof(AbpEntityFrameworkCoreMySQLModule)
         )]
     public class ContactsSyncEntityFrameworkCoreModule : AbpModule

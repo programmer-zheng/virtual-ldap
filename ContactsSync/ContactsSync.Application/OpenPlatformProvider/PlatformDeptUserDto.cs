@@ -24,6 +24,11 @@ public class PlatformDeptUserDto
     public string Mobile { get; set; }
 
     /// <summary>
+    /// 职位
+    /// </summary>
+    public string Position { get; set; }
+
+    /// <summary>
     /// 个人邮箱
     /// </summary>
     public string Email { get; set; }

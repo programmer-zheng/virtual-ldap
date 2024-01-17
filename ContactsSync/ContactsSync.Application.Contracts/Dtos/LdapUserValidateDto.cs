@@ -1,4 +1,4 @@
-namespace ContactsSync.Application.AppServices.Dtos;
+namespace ContactsSync.Application.Contracts.Dtos;
 
 public class LdapUserValidateDto
 {

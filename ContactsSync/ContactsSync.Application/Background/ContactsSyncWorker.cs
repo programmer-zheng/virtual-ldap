@@ -1,4 +1,5 @@
 ﻿using ContactsSync.Application.AppServices;
+using ContactsSync.Application.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Volo.Abp.BackgroundWorkers;

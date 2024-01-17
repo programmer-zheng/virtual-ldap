@@ -1,14 +1,14 @@
-﻿namespace ContactsSync.Application.AppServices.Dtos;
+﻿namespace ContactsSync.Application.Contracts.Dtos;
 
 public class DeptUserRelaDto
 {
     /// <summary>
-    /// 平台用户ID
+    ///     平台用户ID
     /// </summary>
     public string UserId { get; set; }
 
     /// <summary>
-    /// 部门ID
+    ///     部门ID
     /// </summary>
     public long OriginDeptId { get; set; }
 }

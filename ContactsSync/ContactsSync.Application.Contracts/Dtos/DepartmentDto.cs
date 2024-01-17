@@ -1,4 +1,4 @@
-namespace ContactsSync.Application.AppServices.Dtos;
+namespace ContactsSync.Application.Contracts.Dtos;
 
 public class DepartmentDto
 {
@@ -6,7 +6,7 @@ public class DepartmentDto
 
     public long OriginId { get; set; }
 
-    public string DeptName { get; set; }
+    public string Name { get; set; }
 
     public long ParentId { get; set; }
 }

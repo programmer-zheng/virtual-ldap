@@ -2,6 +2,7 @@
 
 namespace ContactsSync.Domain.Shared;
 
-public class ContactsSyncDomainSharedModule : AbpModule
+public class ContactsSyncDomainSharedModule:AbpModule
 {
+    
 }

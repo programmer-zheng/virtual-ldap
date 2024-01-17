@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using ContactsSync.Application.Background;
+using ContactsSync.Application.Contracts;
 using ContactsSync.Application.DingDing;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Application.WeWork;
@@ -24,7 +25,7 @@ namespace ContactsSync.Application;
     typeof(AbpAutoMapperModule),
     typeof(AbpBackgroundJobsModule),
     typeof(AbpBackgroundWorkersModule),
-    // typeof(AbpBackgroundWorkersHangfireModule), //hangfire
+    typeof(ContactsSyncApplicationContractsModule),
     typeof(ContactsSyncEntityFrameworkCoreModule)
 )]
 public class ContactsSyncApplicationModule : AbpModule
@@ -46,6 +47,26 @@ public class ContactsSyncApplicationModule : AbpModule
             .Bind(configuration.GetSection(ContactsSyncConfigOptions.Sync))
             .ValidateDataAnnotations()
             .ValidateOnStart();
+
+        services.AddScoped<WeWorkProvider>();
+        services.AddScoped<DingDingProvider>();
+        services.AddScoped(serviceProvider =>
+        {
+            Func<string, IOpenPlatformProvider> accesor = key =>
+            {
+                if (key == WeWorkConfigOptions.WeWork)
+                    return serviceProvider.GetService<WeWorkProvider>();
+                else if (key == DingDingConfigOptions.DingDing)
+                    return serviceProvider.GetService<DingDingProvider>();
+                else
+                    throw new ArgumentException($"不支持的DI Key: {key}");
+            };
+            return accesor;
+        });
+
+        // todo abp中暂不支持
+        // services.AddKeyedScoped<IOpenPlatformProvider, WeWorkProvider>(WeWorkConfigOptions.WeWork);
+        // services.AddKeyedScoped<IOpenPlatformProvider, DingDingProvider>(DingDingConfigOptions.DingDing);
 
         ConfigIKuaiService(services, configuration);
         ConfigWeWorkService(services, configuration);
@@ -96,32 +117,20 @@ public class ContactsSyncApplicationModule : AbpModule
 
     private void ConfigWeWorkService(IServiceCollection services, IConfiguration configuration)
     {
-        if ("WeWork".Equals(configuration["WorkEnv"], StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddOptions<WeWorkConfigOptions>()
-                .Bind(configuration.GetSection(WeWorkConfigOptions.WeWork))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-            services.AddScoped<IOpenPlatformProvider, WeWorkProvider>();
-            // // 添加盛派企业微信相关
-            services.AddSenparcGlobalServices(configuration).AddSenparcWeixinServices(configuration).AddMemoryCache();
+        services.AddOptions<WeWorkConfigOptions>()
+            .Bind(configuration.GetSection(WeWorkConfigOptions.WeWork));
+        // // 添加盛派企业微信相关
+        services.AddSenparcGlobalServices(configuration).AddSenparcWeixinServices(configuration).AddMemoryCache();
 
-            var senparcSetting = new SenparcSetting() { };
-            IRegisterService registerService = RegisterService.Start(senparcSetting).UseSenparcGlobal();
-            var senparcWeixinSetting = new SenparcWeixinSetting() { };
-            registerService.UseSenparcWeixin(senparcWeixinSetting, null);
-        }
+        var senparcSetting = new SenparcSetting() { };
+        IRegisterService registerService = RegisterService.Start(senparcSetting).UseSenparcGlobal();
+        var senparcWeixinSetting = new SenparcWeixinSetting() { };
+        registerService.UseSenparcWeixin(senparcWeixinSetting, null);
     }
 
     private void ConfigDingTalkService(IServiceCollection services, IConfiguration configuration)
     {
-        if ("DingDing".Equals(configuration["WorkEnv"], StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddOptions<DingDingConfigOptions>()
-                .Bind(configuration.GetSection(DingDingConfigOptions.DingDing))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-            services.AddScoped<IOpenPlatformProvider, DingDingProvider>();
-        }
+        services.AddOptions<DingDingConfigOptions>()
+            .Bind(configuration.GetSection(DingDingConfigOptions.DingDing));
     }
 }

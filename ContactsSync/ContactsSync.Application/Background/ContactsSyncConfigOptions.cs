@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ContactsSync.Domain.Shared;
 
 namespace ContactsSync.Application.Background;
 
@@ -16,4 +17,7 @@ public class ContactsSyncConfigOptions
     /// </summary>
     [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "同步周期必须是大于0的整数")]
     public int SyncPeriod { get; set; } = 15;
+
+    [Required]
+    public OpenPlatformProviderEnum OpenPlatformProvider { get; set; }
 }

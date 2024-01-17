@@ -1,29 +1,29 @@
-﻿using ContactsSync.Application.AppServices.Dtos;
+﻿using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Domain.Shared;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 
-namespace ContactsSync.Application.AppServices;
+namespace ContactsSync.Application.Contracts;
 
 public interface IUserAppService : IApplicationService
 {
-    Task BatchAddUserAsync(params UserEntity[] users);
+    Task BatchAddUserAsync(params CreateUserDto[] users);
 
-    Task BatchAddDeptUserRelaAsync(params UserDepartmentsRelationEntity[] relas);
-    
+    Task BatchAddDeptUserRelaAsync(params CreateUserDeptRelaDto[] relas);
+
     Task<List<DeptUserDto>> GetAllUsersAsync();
 
     Task<List<DeptUserRelaDto>> GetAllDeptUserRelaAsync();
-    
+
     /// <summary>
-    /// 获取部门下属用户信息
+    ///     获取部门下属用户信息
     /// </summary>
     /// <param name="deptId"></param>
     /// <returns></returns>
-    Task<List<DeptUserDto>> GetDeptUsersAsync(long deptId);
+    Task<List<LdapDeptUserDto>> GetDeptUsersAsync(Guid deptId);
 
     /// <summary>
-    /// 根据用户名获取用户信息
+    ///     根据用户名获取用户信息
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>

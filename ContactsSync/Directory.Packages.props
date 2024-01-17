@@ -3,58 +3,40 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <!-- abp -->
-    <PackageVersion Include="Abp" Version="7.4.0" />
-    <PackageVersion Include="Abp.AutoMapper" Version="7.4.0" />
-    <PackageVersion Include="Abp.AspNetCore" Version="7.4.0" />
-    <PackageVersion Include="Abp.AspNetCore.TestBase" Version="7.4.0" />
-    <PackageVersion Include="Abp.Castle.Log4Net" Version="7.4.0" />
-    <PackageVersion Include="Abp.EntityFrameworkCore" Version="7.4.0" />
-    <PackageVersion Include="Abp.TestBase" Version="7.4.0" />
-    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
     <!--  volo abp  -->
-    <PackageVersion Include="Volo.Abp" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.AutoMapper" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Autofac" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore.Mvc" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore.TestBase" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.BackgroundJobs" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.BackgroundWorkers" Version="7.4.1" />
-    <packageVersion Include="Volo.Abp.BackgroundWorkers.Hangfire" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.BackgroundJobs.Abstractions" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Caching" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Core" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Data" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Ddd.Application" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Ddd.Domain" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.EntityFrameworkCore" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="7.4.1" />
-    <PackageVersion Include="Volo.Abp.Swashbuckle" Version="7.4.1"/>
-    <PackageVersion Include="Volo.Abp.TestBase" Version="7.4.1" />
+    <PackageVersion Include="Volo.Abp" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.AutoMapper" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Autofac" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Mvc" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.TestBase" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.BackgroundWorkers" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Caching" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Core" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Data" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Ddd.Application" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Ddd.Domain" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.Swashbuckle" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp.TestBase" Version="8.0.1" />
     <!-- 微软 -->
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <!-- 第三方 -->
     <PackageVersion Include="AlibabaCloud.SDK.Dingtalk" Version="2.0.59" />
+    <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="9.0.0"/>
     <PackageVersion Include="Castle.Core" Version="4.4.1" />
     <PackageVersion Include="Castle.Windsor.MsDependencyInjection" Version="3.4.0" />
-    <PackageVersion Include="coverlet.collector" Version="3.1.2">
+    <PackageVersion Include="coverlet.collector" Version="6.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
@@ -65,9 +47,9 @@
     <PackageVersion Include="Senparc.Weixin.Work" Version="3.18.1" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="TinyPinyin" Version="1.1.0" />
-    <PackageVersion Include="xunit" Version="2.4.2" />
-    <PackageVersion Include="xunit.extensibility.execution" Version="2.4.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageVersion Include="xunit" Version="2.6.5" />
+    <PackageVersion Include="xunit.extensibility.execution" Version="2.6.5" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>

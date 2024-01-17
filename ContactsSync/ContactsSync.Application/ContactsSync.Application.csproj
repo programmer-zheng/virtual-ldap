@@ -9,21 +9,20 @@
 
     <ItemGroup>
         <PackageReference Include="AlibabaCloud.SDK.Dingtalk"/>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection"/>
         <PackageReference Include="Volo.Abp.Core"/>
         <PackageReference Include="Volo.Abp.AutoMapper"/>
         <PackageReference Include="Volo.Abp.AspNetCore"/>
         <PackageReference Include="Volo.Abp.BackgroundJobs"/>
         <PackageReference Include="Volo.Abp.BackgroundWorkers"/>
-        <PackageReference Include="Volo.Abp.BackgroundWorkers.Hangfire"/>
         <PackageReference Include="Volo.Abp.Ddd.Application"/>
         <PackageReference Include="Volo.Abp.Ddd.Application.Contracts"/>
-
-        <PackageReference Include="Hangfire.MySqlStorage"/>
         <PackageReference Include="Senparc.Weixin.Work"/>
         <PackageReference Include="TinyPinyin"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\ContactsSync.Application.Contracts\ContactsSync.Application.Contracts.csproj" />
         <ProjectReference Include="..\ContactsSync.Domain.Shared\ContactsSync.Domain.Shared.csproj"/>
         <ProjectReference Include="..\ContactsSync.EntityFrameworkCore\ContactsSync.EntityFrameworkCore.csproj"/>
     </ItemGroup>

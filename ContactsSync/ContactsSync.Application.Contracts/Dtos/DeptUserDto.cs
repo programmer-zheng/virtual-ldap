@@ -1,7 +1,10 @@
-namespace ContactsSync.Application.AppServices.Dtos;
+using ContactsSync.Domain.Shared;
+
+namespace ContactsSync.Application.Contracts.Dtos;
 
 public class DeptUserDto
 {
+    private string _password;
     public string Uid { get; set; }
 
     public string UserId { get; set; }
@@ -16,18 +19,13 @@ public class DeptUserDto
 
     public string Mobile { get; set; }
 
-    private string _password;
-
     public string Password
     {
         get
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(_password))
-                {
-                    return _password.DesDecrypt().ToMd5();
-                }
+                if (!string.IsNullOrWhiteSpace(_password)) return _password.DesDecrypt().ToMd5();
             }
             catch (Exception)
             {
@@ -35,7 +33,7 @@ public class DeptUserDto
 
             return string.Empty;
         }
-        set { _password = value; }
+        set => _password = value;
     }
 
     public string Avatar { get; set; }
