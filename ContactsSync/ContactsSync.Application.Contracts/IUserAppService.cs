@@ -28,7 +28,7 @@ public interface IUserAppService : IApplicationService
     /// <param name="username"></param>
     /// <returns></returns>
     [RemoteService(false)]
-    Task<LdapUserValidateDto?> GetLdapUserAsync(string username);
+    Task<LdapUserValidateDto> GetLdapUserAsync(string username);
 
     Task<UserSimpleDto> GetSimpleUserByUserIdAsync(string userId);
 

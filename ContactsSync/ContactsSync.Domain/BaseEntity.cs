@@ -17,5 +17,5 @@ public class BaseEntity : Entity<Guid>, ISoftDelete
     /// 来源（钉钉、企微）
     /// </summary>
     [MaxLength(20)]
-    public string Source { get; set; }
+    public string Source { get; set; }= "";
 }

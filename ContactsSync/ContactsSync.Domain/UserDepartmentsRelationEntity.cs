@@ -5,7 +5,7 @@ public class UserDepartmentsRelationEntity : BaseEntity
     /// <summary>
     /// 平台用户ID
     /// </summary>
-    public string UserId { get; set; }
+    public string UserId { get; set; }= "";
 
     /// <summary>
     /// 部门ID

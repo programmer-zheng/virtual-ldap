@@ -4,26 +4,26 @@
   </PropertyGroup>
   <ItemGroup>
     <!--  volo abp  -->
-    <PackageVersion Include="Volo.Abp" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.AutoMapper" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Autofac" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore.Mvc" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.AspNetCore.TestBase" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.BackgroundJobs" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.BackgroundWorkers" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.BackgroundJobs.Abstractions" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Caching" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Core" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Data" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Ddd.Application" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Ddd.Domain" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.EntityFrameworkCore" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.Swashbuckle" Version="8.0.1" />
-    <PackageVersion Include="Volo.Abp.TestBase" Version="8.0.1" />
+    <PackageVersion Include="Volo.Abp" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.AutoMapper" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Autofac" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.AspNetCore" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Mvc" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.TestBase" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundWorkers" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Caching" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Core" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Data" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Ddd.Application" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Ddd.Domain" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.Swashbuckle" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.TestBase" Version="8.0.2" />
     <!-- 微软 -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>

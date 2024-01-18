@@ -16,13 +16,13 @@ public class UserApprovalEntity : BaseEntity
     /// 第三方平台UserId
     /// </summary>
     [MaxLength(64)]
-    public string UserId { get; set; }
+    public string UserId { get; set; }= "";
 
     /// <summary>
     /// 审批实例ID                                                                                                    
     /// </summary>
     [MaxLength(50)]
-    public string InstanceId { get; set; }
+    public string InstanceId { get; set; }= "";
 
     /// <summary>
     /// 审批结果

@@ -4,6 +4,7 @@ using ContactsSync.Application.Contracts;
 using ContactsSync.Application.DingDing;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Application.WeWork;
+using ContactsSync.Domain.Shared;
 using ContactsSync.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.RegisterServices;
 using Volo.Abp;
+using Volo.Abp.Auditing;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BackgroundWorkers;
@@ -37,6 +39,8 @@ public class ContactsSyncApplicationModule : AbpModule
         var configuration = context.Services.GetConfiguration();
         var services = context.Services;
 
+        Configure<AbpAuditingOptions>(options => { options.IsEnabled = false; });
+
         Configure<AbpAutoMapperOptions>(options =>
         {
             // 添加当前程序集中所有的映射规则
@@ -48,25 +52,9 @@ public class ContactsSyncApplicationModule : AbpModule
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        services.AddScoped<WeWorkProvider>();
-        services.AddScoped<DingDingProvider>();
-        services.AddScoped(serviceProvider =>
-        {
-            Func<string, IOpenPlatformProvider> accesor = key =>
-            {
-                if (key == WeWorkConfigOptions.WeWork)
-                    return serviceProvider.GetService<WeWorkProvider>();
-                else if (key == DingDingConfigOptions.DingDing)
-                    return serviceProvider.GetService<DingDingProvider>();
-                else
-                    throw new ArgumentException($"不支持的DI Key: {key}");
-            };
-            return accesor;
-        });
 
-        // todo abp中暂不支持
-        // services.AddKeyedScoped<IOpenPlatformProvider, WeWorkProvider>(WeWorkConfigOptions.WeWork);
-        // services.AddKeyedScoped<IOpenPlatformProvider, DingDingProvider>(DingDingConfigOptions.DingDing);
+        services.AddKeyedScoped<IOpenPlatformProvider, WeWorkProvider>(OpenPlatformProviderEnum.WeWork.ToString());
+        services.AddKeyedScoped<IOpenPlatformProvider, DingDingProvider>(OpenPlatformProviderEnum.DingDing.ToString());
 
         ConfigIKuaiService(services, configuration);
         ConfigWeWorkService(services, configuration);

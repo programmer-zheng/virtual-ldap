@@ -1,9 +1,11 @@
-﻿using ContactsSync.Application.Contracts;
+﻿using ContactsSync.Application.Background;
+using ContactsSync.Application.Contracts;
 using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -16,20 +18,17 @@ public class UserAppService : ApplicationService, IUserAppService
     private readonly IRepository<UserEntity> _userRepository;
     private readonly IRepository<UserDepartmentsRelationEntity> _deptUserRelaRepository;
     private readonly IRepository<UserApprovalEntity> _userApprovalRepository;
-    private readonly IOpenPlatformProvider _openPlatformProvider;
+    private readonly ContactsSyncConfigOptions _contactsSyncConfigOptions;
 
-    public UserAppService(
-        IConfiguration configuration,
-        IRepository<DepartmentEntity> deptRepository,
+    public UserAppService(IRepository<DepartmentEntity> deptRepository,
         IRepository<UserEntity> userRepository, IRepository<UserDepartmentsRelationEntity> deptUserRelaRepository,
-        IRepository<UserApprovalEntity> userApprovalRepository, Func<string, IOpenPlatformProvider> func)
+        IRepository<UserApprovalEntity> userApprovalRepository, IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig)
     {
         _deptRepository = deptRepository;
         _userRepository = userRepository;
         _deptUserRelaRepository = deptUserRelaRepository;
         _userApprovalRepository = userApprovalRepository;
-        // todo 替换为Keyed Services
-        _openPlatformProvider = func(configuration["Sync:OpenPlatformProvider"]);
+        _contactsSyncConfigOptions = syncConfig.Value;
     }
 
     public async Task BatchAddUserAsync(params CreateUserDto[] users)
@@ -80,17 +79,6 @@ public class UserAppService : ApplicationService, IUserAppService
             user.Departments = relas.Where(t => t.UserId == user.UserId).Select(t => t.Id);
         }
 
-        // var xxx = from x in userQuery
-        //     join rela in relaQuery on x.UserId equals rela.UserId
-        //     join dept in deptQuery on rela.OriginDeptId equals dept.OriginId
-        //     where dept.Id == deptId && x.IsEnabled == true
-        //     select new LdapDeptUserDto()
-        //     {
-        //         UserId = x.UserId, Name = x.Name, UserName = x.UserName, Email = x.Email, Mobile = x.Mobile, Password = x.Password, Avatar = x.Avatar,
-        //         Departments = relaQuery.Where(t => t.UserId == x.UserId).Select(t => t.OriginDeptId).AsEnumerable()
-        //     };
-        //
-        // var result = await xxx.ToListAsync();
         return result;
     }
 
@@ -142,6 +130,8 @@ public class UserAppService : ApplicationService, IUserAppService
             select rela.UserId;
         var leaders = await leadersQueryable.ToListAsync();
 
+        // todo 待abp 8.1发布后，使用LazyServiceProvider替换
+        var _openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
         // 创建审批实例
         var approvalInstance = await _openPlatformProvider.CreateApprovalInstance(user.UserId, leaders, applyData);
 

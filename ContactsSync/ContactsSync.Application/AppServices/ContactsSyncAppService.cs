@@ -20,25 +20,21 @@ public class ContactsSyncAppService : ApplicationService, IContactsSyncAppServic
     private readonly IUserAppService _userAppService;
 
     private readonly ContactsSyncConfigOptions _syncConfig;
-    private readonly IOpenPlatformProvider _openPlatformProvider;
 
     public ContactsSyncAppService(IDepartmentAppService departmentAppService, IUserAppService userAppService,
-        IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig, Func<string, IOpenPlatformProvider> func)
+        IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig)
     {
         _departmentAppService = departmentAppService;
         _userAppService = userAppService;
         _syncConfig = syncConfig.Value;
-        _openPlatformProvider = func(_syncConfig.OpenPlatformProvider.ToString());
     }
 
     [UnitOfWork]
     public async Task SyncDepartmentAndUser()
     {
-        // todo 替换为Keyed Services
-        // var serviceKey = _syncConfig.OpenPlatformProvider.ToString();
-        //
-        // var openPlatformProvider = LazyServiceProvider.GetKeyedService<IOpenPlatformProvider>(serviceKey);
-        var platformDepartments = await _openPlatformProvider!.GetDepartmentListAsync()!;
+        // todo 待abp 8.1发布后，使用LazyServiceProvider替换
+        var openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_syncConfig.OpenPlatformProvider.ToString());
+        var platformDepartments = await openPlatformProvider!.GetDepartmentListAsync()!;
         if (platformDepartments?.Count > 0)
         {
             // 数据库中的数据
@@ -56,19 +52,19 @@ public class ContactsSyncAppService : ApplicationService, IContactsSyncAppServic
                 var departmentEntity = ObjectMapper.Map<PlatformDepartmentDto, CreateDepartmentDto>(departmentDto);
                 if (existsDepartmentList.All(t => t.OriginId != departmentEntity.OriginId))
                 {
-                    departmentEntity.Source = _openPlatformProvider.Source;
+                    departmentEntity.Source = openPlatformProvider.Source;
                     deptList.Add(departmentEntity);
                 }
 
                 // 部门下的人员数据
-                var platformDeptUsers = await _openPlatformProvider.GetDeptUserListAsync(departmentDto.DepartmentId);
+                var platformDeptUsers = await openPlatformProvider.GetDeptUserListAsync(departmentDto.DepartmentId);
                 foreach (var deptUserDto in platformDeptUsers)
                 {
                     // 映射人员
                     var userEntity = ObjectMapper.Map<PlatformDeptUserDto, CreateUserDto>(deptUserDto);
                     if (existsUserList.All(t => t.UserId != deptUserDto.UserId) && userList.All(t => t.UserId != deptUserDto.UserId))
                     {
-                        userEntity.Source = _openPlatformProvider.Source;
+                        userEntity.Source = openPlatformProvider.Source;
                         userList.Add(userEntity);
                     }
 
@@ -79,7 +75,7 @@ public class ContactsSyncAppService : ApplicationService, IContactsSyncAppServic
                         {
                             UserId = deptUserDto.UserId,
                             OriginDeptId = departmentDto.DepartmentId,
-                            Source = _openPlatformProvider.Source,
+                            Source = openPlatformProvider.Source,
                             IsLeader = deptUserDto.IsDeptLeader
                         });
                     }

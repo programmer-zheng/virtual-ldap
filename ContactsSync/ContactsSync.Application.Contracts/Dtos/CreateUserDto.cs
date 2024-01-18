@@ -20,13 +20,13 @@ public class CreateUserDto
     /// 头像
     /// </summary>
     [MaxLength(200)]
-    public string? Avatar { get; set; }
+    public string Avatar { get; set; }
 
     /// <summary>
     /// 手机号
     /// </summary>
     [MaxLength(20)]
-    public string? Mobile { get; set; }
+    public string Mobile { get; set; }
 
     /// <summary>
     /// 职位
@@ -38,13 +38,13 @@ public class CreateUserDto
     /// 个人邮箱
     /// </summary>
     [MaxLength(100)]
-    public string? Email { get; set; }
+    public string Email { get; set; }
 
     /// <summary>
     /// 企业邮箱
     /// </summary>
     [MaxLength(100)]
-    public string? BizEmail { get; set; }
+    public string BizEmail { get; set; }
 
     /// <summary>
     /// 是否启用
