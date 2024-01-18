@@ -11,6 +11,7 @@
     <PackageReference Include="Volo.Abp.Core"/>
     <PackageReference Include="Volo.Abp.EntityFrameworkCore"/>
     <PackageReference Include="Volo.Abp.EntityFrameworkCore.MySQL"/>
+    <PackageReference Include="Volo.Abp.SettingManagement.EntityFrameworkCore" />
     <ProjectReference Include="..\ContactsSync.Domain.Shared\ContactsSync.Domain.Shared.csproj" />
     <ProjectReference Include="..\ContactsSync.Domain\ContactsSync.Domain.csproj" />
   </ItemGroup>

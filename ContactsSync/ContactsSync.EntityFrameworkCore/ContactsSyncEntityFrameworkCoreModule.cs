@@ -1,16 +1,17 @@
 ﻿using ContactsSync.Domain;
-using ContactsSync.Domain.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.MySQL;
 using Volo.Abp.Modularity;
+using Volo.Abp.SettingManagement.EntityFrameworkCore;
 
 namespace ContactsSync.EntityFrameworkCore
 {
     [DependsOn(
         typeof(ContactsSyncDomainModule),
-        typeof(AbpEntityFrameworkCoreMySQLModule)
-        )]
+        typeof(AbpEntityFrameworkCoreMySQLModule),
+        typeof(AbpSettingManagementEntityFrameworkCoreModule)
+    )]
     public class ContactsSyncEntityFrameworkCoreModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)

@@ -10,6 +10,7 @@
   <ItemGroup>
 	  <PackageReference Include="Volo.Abp.Core"/>
 	  <PackageReference Include="Volo.Abp.Ddd.Domain"/>
+	  <PackageReference Include="Volo.Abp.SettingManagement.Domain.Shared" />
   </ItemGroup>
 
 </Project>

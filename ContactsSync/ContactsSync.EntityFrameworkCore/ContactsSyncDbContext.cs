@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.SettingManagement.EntityFrameworkCore;
 
 namespace ContactsSync.EntityFrameworkCore
 {
@@ -23,6 +24,7 @@ namespace ContactsSync.EntityFrameworkCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ConfigureSettingManagement();
             modelBuilder.Entity<UserEntity>()
                 .HasIndex(t => t.UserName).IsUnique().HasDatabaseName("IX_UserName");
 

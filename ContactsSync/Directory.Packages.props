@@ -22,6 +22,11 @@
     <PackageVersion Include="Volo.Abp.Ddd.Application.Contracts" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.EntityFrameworkCore" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.EntityFrameworkCore.MySQL" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Application" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Application.Contracts" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Domain" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Domain.Shared" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.Swashbuckle" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.TestBase" Version="8.0.2" />
     <!-- 微软 -->
@@ -33,7 +38,7 @@
     <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <!-- 第三方 -->
     <PackageVersion Include="AlibabaCloud.SDK.Dingtalk" Version="2.0.59" />
-    <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="9.0.0"/>
+    <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageVersion Include="Castle.Core" Version="4.4.1" />
     <PackageVersion Include="Castle.Windsor.MsDependencyInjection" Version="3.4.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0">

@@ -19,6 +19,7 @@
         <PackageReference Include="Volo.Abp.Ddd.Application.Contracts"/>
         <PackageReference Include="Senparc.Weixin.Work"/>
         <PackageReference Include="TinyPinyin"/>
+        <PackageReference Include="Volo.Abp.SettingManagement.Application" />
     </ItemGroup>
 
     <ItemGroup>
