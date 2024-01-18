@@ -27,6 +27,7 @@
     <PackageVersion Include="Volo.Abp.SettingManagement.Domain" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.SettingManagement.Domain.Shared" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="8.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Web" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.Swashbuckle" Version="8.0.2" />
     <PackageVersion Include="Volo.Abp.TestBase" Version="8.0.2" />
     <!-- 微软 -->
