@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using DingTalk.Api.Response;
 
 namespace ContactsSync.Application.DingDing;

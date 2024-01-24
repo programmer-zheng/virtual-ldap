@@ -1,4 +1,4 @@
-﻿using ContactsSync.Application.OpenPlatformProvider;
+﻿using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Senparc.Weixin;
@@ -13,7 +13,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace ContactsSync.Application.WeWork;
 
-public class WeWorkProvider : IOpenPlatformProvider
+public class WeWorkProvider : IOpenPlatformProviderApplicationService
 {
     private readonly WeWorkConfigOptions _weWorkConfigOptions;
 

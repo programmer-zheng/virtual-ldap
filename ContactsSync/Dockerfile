@@ -1,5 +1,5 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
+# 若需要将abp的前端包在Docker编译时构建，可参考 https://blog.antosubash.com/posts/abp-docker-file
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080

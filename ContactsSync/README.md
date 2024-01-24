@@ -18,6 +18,15 @@ dotnet ef database update  -s .\VirtualLdap.Web\VirtualLdap.Web.csproj -p .\Virt
 
 dotnet ef database update  -s .\ContactsSync.Web\ContactsSync.Web.csproj -p .\ContactsSync.EntityFrameworkCore\ContactsSync.EntityFrameworkCore.csproj
 ```
+### Abp前端库
+#### 有哪些包
+[Abp client packages](https://www.npmjs.com/~volo)
+
+#### 如何安装单个包
+```bash
+# 通过npm安装abp中的jquery
+npm install @abp/jquery
+```
 
 ## 引用文档
 ### SDK

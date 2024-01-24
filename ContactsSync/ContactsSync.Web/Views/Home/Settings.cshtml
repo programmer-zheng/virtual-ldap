@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "设置";
+    Layout = "_Layout";
+}
+@using ContactsSync.Domain.Shared
+@model SyncConfigSettingViewModel
+
+@section Scripts
+{
+    <script src="/libs/jquery-validation/jquery.validate.js"></script>
+    <script src="/libs/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="/libs/abp/aspnetcore-mvc-ui-theme-shared/jquery/jquery-extensions.js"></script>
+    <script src="/js/settings.js"></script>
+}
+
+<abp-select asp-for="ProviderName"></abp-select>
+<abp-input asp-for="SyncPeriod"></abp-input>
+<abp-dynamic-form id="dingtalkForm" class="@(Model.ProviderName == OpenPlatformProviderEnum.DingDing ? "" : "d-none")" abp-model="@Model.DingTalk">
+
+
+    <abp-row>
+        <div>
+            <abp-form-content/>
+        </div>
+        <hr class="my-4">
+        <div>
+            <abp-button type="submit" button-type="Primary">
+                <i class="fa fa-save">保存</i>
+            </abp-button>
+            <abp-button button-type="Primary" id="TestDingTalkConnectButton">
+                <i class="fa fa-send"></i> 测试连接
+            </abp-button>
+        </div>
+    </abp-row>
+</abp-dynamic-form>
+@* class="@(Model.ProviderName=="WeWork"?"":"d-none")"  *@
+<abp-dynamic-form id="weworkForm" class="@(Model.ProviderName == OpenPlatformProviderEnum.WeWork ? "" : "d-none")" abp-model="@Model.WeWork">
+
+    <abp-row>
+        <div>
+            <abp-form-content/>
+        </div>
+        <hr class="my-4">
+        <div>
+            <abp-button type="submit" button-type="Primary">
+                <i class="fa fa-save">保存</i>
+            </abp-button>
+            <abp-button button-type="Primary" id="TestDingTalkConnectButton">
+                <i class="fa fa-send"></i> 测试连接
+            </abp-button>
+        </div>
+    </abp-row>
+</abp-dynamic-form>
+
+@* <div class="col-md-8 align-content-center"> *@
+@* *@
+@*     <form class="row g-3"> *@
+@*         <div class="col-12 border-1 border border-end p-4"> *@
+@*             <div class="col-10  mb-3 row"> *@
+@*                 <div class="col-md-3"> *@
+@*                     <label class="form-check-label" for="flexSwitchCheckChecked">是否启用通讯录同步</label> *@
+@*                 </div> *@
+@*                 <div class="col-md-9 "> *@
+@*                     <div class="form-check form-switch form-switch-md"> *@
+@* *@
+@*                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@* *@
+@*             <div class="col-10  mb-3 row"> *@
+@*                 <div class="col-md-3"> *@
+@*                     <label for="dataProvider" class="form-label">数据源</label> *@
+@*                 </div> *@
+@*                 <div class="col-md-6"> *@
+@* *@
+@*                     <select id="dataProvider" class="form-select"> *@
+@*                         <option selected value="DingDing">钉钉</option> *@
+@*                         <option value="WeWork">企业微信</option> *@
+@*                     </select> *@
+@*                 </div> *@
+@*             </div> *@
+@*             <div class="col-8 mb-3"> *@
+@*             </div> *@
+@*             <div class="mb-3" id="dingdingConfigOption"> *@
+@*                 <div class="col-10  mb-3 row"> *@
+@*                     <div class="col-md-3"> *@
+@*                         <label for="inputAddress" class="form-label">Address</label> *@
+@*                     </div> *@
+@*                     <div class="col-md-9"> *@
+@*                         <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St"> *@
+@*                     </div> *@
+@* *@
+@*                 </div> *@
+@*                 <div class="col-10  mb-3 row"> *@
+@*                     <div class="col-md-3"> *@
+@*                         <label for="inputAddress2" class="form-label">Address 2</label> *@
+@*                     </div> *@
+@*                     <div class="col-md-9"> *@
+@*                         <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor"> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*             <div id="weworkConfigOption" class="visually-hidden  mb-3"> *@
+@*                 <div class="col-10  mb-3 row"> *@
+@*                     <div class="col-md-3"> *@
+@*                         <label for="inputAddress3" class="form-label">Address</label> *@
+@*                     </div> *@
+@*                     <div class="col-md-9"> *@
+@*                         <input type="text" class="form-control" id="inputAddress3" placeholder="1234 Main St"> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="col-10  mb-3 row"> *@
+@*                     <div class="col-md-3"> *@
+@*                         <label for="inputAddress34" class="form-label">Address 2</label> *@
+@*                     </div> *@
+@*                     <div class="col-md-9"> *@
+@*                         <input type="text" class="form-control" id="inputAddress34" placeholder="Apartment, studio, or floor"> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*             <div class="col-12 row justify-content-center"> *@
+@*                 <div class="col-4 "> *@
+@*                     <button type="button" class="btn btn-success">测试连接</button> *@
+@*                     <button type="button" class="btn btn-primary">保存配置</button> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*         <!--审批配置--> *@
+@*         <div class="col-md border-1 border border-end p-4"> *@
+@*             <div class="col-10  mb-3 row"> *@
+@*                 <div class="col-md-3"> *@
+@* *@
+@*                     <label class="form-check-label" for="approvalSwitch">是否启用审批</label> *@
+@*                 </div> *@
+@*                 <div class="col-md-6"> *@
+@* *@
+@*                     <div class="form-check form-switch form-switch-md"> *@
+@*                         <input class="form-check-input form-control-color" type="checkbox" role="switch" id="approvalSwitch"> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@* *@
+@*             <div class="col-10  mb-3 row"> *@
+@*                 <div class="col-md-3"> *@
+@* *@
+@*                     <label for="approvalTemplateNo" class="form-label">审批模板编号</label> *@
+@*                 </div> *@
+@*                 <div class="col-md-9"> *@
+@*                     <input type="text" class="form-control" id="approvalTemplateNo"> *@
+@*                 </div> *@
+@*             </div> *@
+@* *@
+@*             <div class="col-12 row justify-content-center"> *@
+@*                 <div class="col-4 "> *@
+@*                     <button type="button" class="btn btn-success">测试审批</button> *@
+@*                     <button type="button" class="btn btn-primary">保存配置</button> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </form> *@
+@* </div> *@

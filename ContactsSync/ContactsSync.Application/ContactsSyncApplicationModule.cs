@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using ContactsSync.Application.Background;
 using ContactsSync.Application.Contracts;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using ContactsSync.Application.DingDing;
-using ContactsSync.Application.OpenPlatformProvider;
 using ContactsSync.Application.WeWork;
 using ContactsSync.Domain.Shared;
 using ContactsSync.EntityFrameworkCore;
@@ -53,8 +53,8 @@ public class ContactsSyncApplicationModule : AbpModule
             .ValidateOnStart();
 
 
-        services.AddKeyedScoped<IOpenPlatformProvider, WeWorkProvider>(OpenPlatformProviderEnum.WeWork.ToString());
-        services.AddKeyedScoped<IOpenPlatformProvider, DingDingProvider>(OpenPlatformProviderEnum.DingDing.ToString());
+        services.AddKeyedScoped<IOpenPlatformProviderApplicationService, WeWorkProvider>(OpenPlatformProviderEnum.WeWork.ToString());
+        services.AddKeyedScoped<IOpenPlatformProviderApplicationService, DingDingProvider>(OpenPlatformProviderEnum.DingDing.ToString());
 
         ConfigIKuaiService(services, configuration);
         ConfigWeWorkService(services, configuration);
@@ -80,13 +80,7 @@ public class ContactsSyncApplicationModule : AbpModule
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
-        var app = context.GetApplicationBuilder();
-        var configuration = context.GetConfiguration();
-        // // 配置hangfire
-        // app.UseHangfireDashboard(options: new DashboardOptions
-        // {
-        //     IsReadOnlyFunc = (_ => true),
-        // });
+
         // // hangfire的定时任务
         // context.AddBackgroundWorkerAsync<HangfireWorker>();
 

@@ -3,13 +3,16 @@ using System.Web;
 using ContactsSync.Application.AppServices;
 using ContactsSync.Application.Background;
 using ContactsSync.Application.Contracts;
-using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.SyncConfig;
+using ContactsSync.Domain.Settings;
 using ContactsSync.Domain.Shared;
 using ContactsSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.Settings;
 
 namespace ContactsSync.Web.Controllers
 {
@@ -27,19 +30,59 @@ namespace ContactsSync.Web.Controllers
 
         public IUserAppService UserAppService { get; set; }
 
+        public ISettingProvider SettingManagementProvider { get; set; }
+
+        public ISyncConfigAppService SyncConfigApplicationService { get; set; }
+
+        public async Task<IActionResult> Settings([FromServices] ISyncConfigAppService syncConfigAppService)
+        {
+            var viewModel = new SyncConfigSettingViewModel();
+            var syncConfigDto = await syncConfigAppService.GetSyncConfig();
+            if (syncConfigDto != null)
+            {
+                viewModel.ProviderName = syncConfigDto.ProviderName;
+                viewModel.SyncPeriod = syncConfigDto.SyncPeriod;
+                if (syncConfigDto.ProviderName == OpenPlatformProviderEnum.DingDing)
+                {
+                    viewModel.DingTalk = syncConfigDto.ProviderConfig as DingTalkConfigDto;
+                }
+                else if (syncConfigDto.ProviderName == OpenPlatformProviderEnum.WeWork)
+                {
+                    viewModel.WeWork = syncConfigDto.ProviderConfig as WeWorkConfigDto;
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        [Route("/SaveSettings")]
+        [IgnoreAntiforgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> SaveSettings([FromBody] UpdateContactsSyncConfigDto dto)
+        {
+            await SyncConfigApplicationService.SaveSyncConfig(dto);
+            return Json(null);
+        }
+
         public async Task<IActionResult> Index()
         {
-            // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-            var provider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
-            var templateId = await provider.GetConfigedApprovalTemplateId();
-            if (templateId.IsNullOrWhiteSpace())
+            var providerName = await SettingManagementProvider.GetOrNullAsync(ContactsSyncSettings.ProviderName);
+            if (providerName.IsNullOrWhiteSpace())
             {
-                // 创建模板
-                templateId = await provider.CreateApprovalTemplate();
-                var key = provider.ApprovalTemplateKey;
-                // 保存模板编号到配置文件中
-                SettingsHelper.AddOrUpdateAppSetting<string>(key, templateId);
+                return RedirectToAction("Settings");
             }
+
+            // todo 待abp 8.1发布后，使用LazyServiceProvider替换
+            var provider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+            // var templateId = await provider.GetConfigedApprovalTemplateId();
+            // if (templateId.IsNullOrWhiteSpace())
+            // {
+            //     // 创建模板
+            //     templateId = await provider.CreateApprovalTemplate();
+            //     var key = provider.ApprovalTemplateKey;
+            //     // 保存模板编号到配置文件中
+            //     SettingsHelper.AddOrUpdateAppSetting<string>(key, templateId);
+            // }
 
             string userid = Request.Cookies[ContactsSyncWebConsts.CookieName];
             if (!string.IsNullOrWhiteSpace(userid))
@@ -75,7 +118,7 @@ namespace ContactsSync.Web.Controllers
             }
 
             // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-            var provider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+            var provider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
             var userId = await provider.GetUserIdByCode(code);
             var cookieOptions = new CookieOptions { HttpOnly = true, Expires = DateTimeOffset.Now.AddHours(2) };
             Response.Cookies.Append(ContactsSyncWebConsts.CookieName, userId, cookieOptions);
@@ -95,6 +138,7 @@ namespace ContactsSync.Web.Controllers
             return View(userSimpleDto);
         }
 
+        [HttpPost]
         [Route("/CreateApproval")]
         public async Task CreateApproval(CreateUserApprovalViewModel input)
         {

@@ -4,7 +4,7 @@ using AlibabaCloud.SDK.Dingtalkoauth2_1_0.Models;
 using AlibabaCloud.SDK.Dingtalkworkflow_1_0.Models;
 using AlibabaCloud.TeaUtil;
 using AlibabaCloud.TeaUtil.Models;
-using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using DingTalk.Api;
 using DingTalk.Api.Request;
 using DingTalk.Api.Response;
@@ -17,12 +17,12 @@ using Volo.Abp.ObjectMapping;
 
 namespace ContactsSync.Application.DingDing;
 
-public class DingDingProvider : IOpenPlatformProvider
+public class DingDingProvider : IOpenPlatformProviderApplicationService
 {
     private readonly DingDingConfigOptions _dingDingConfigOptions;
     private readonly ILogger<DingDingProvider> _logger;
     private readonly IObjectMapper _objectMapper;
-
+    
     public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ILogger<DingDingProvider> logger, IObjectMapper objectMapper)
     {
         _logger = logger;

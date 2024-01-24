@@ -1,9 +1,9 @@
-﻿namespace ContactsSync.Application.OpenPlatformProvider;
+﻿namespace ContactsSync.Application.Contracts.OpenPlatformProvider;
 
 /// <summary>
 /// 开放平台
 /// </summary>
-public interface IOpenPlatformProvider
+public interface IOpenPlatformProviderApplicationService
 {
     /// <summary>
     /// 数据源；用于区分数据来源，如：钉钉、企业微信

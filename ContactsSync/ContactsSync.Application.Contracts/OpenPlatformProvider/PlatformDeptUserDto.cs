@@ -1,4 +1,4 @@
-namespace ContactsSync.Application.OpenPlatformProvider;
+namespace ContactsSync.Application.Contracts.OpenPlatformProvider;
 
 public class PlatformDeptUserDto
 {

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using ContactsSync.Application.Background;
 using ContactsSync.Application.Contracts;
 using ContactsSync.Application.Contracts.Dtos;
-using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using ContactsSync.Domain.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -33,7 +33,7 @@ public class ContactsSyncAppService : ApplicationService, IContactsSyncAppServic
     public async Task SyncDepartmentAndUser()
     {
         // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-        var openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_syncConfig.OpenPlatformProvider.ToString());
+        var openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_syncConfig.OpenPlatformProvider.ToString());
         var platformDepartments = await openPlatformProvider!.GetDepartmentListAsync()!;
         if (platformDepartments?.Count > 0)
         {

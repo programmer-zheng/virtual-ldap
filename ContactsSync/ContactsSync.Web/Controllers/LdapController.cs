@@ -13,6 +13,7 @@ public class LdapController : AbpController
     public IUserAppService UserAppService { get; set; }
     public IDepartmentAppService DepartmentAppService { get; set; }
 
+    [HttpGet]
     [Route("/Departments")]
     public async Task<IActionResult> Departments()
     {
@@ -20,6 +21,7 @@ public class LdapController : AbpController
         return Json(depts);
     }
 
+    [HttpGet]
     [Route("/DeptUsers")]
     public async Task<IActionResult> DeptUsers(Guid deptId)
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using Senparc.Weixin.Work.AdvancedAPIs.MailList;
 
 namespace ContactsSync.Application.WeWork;

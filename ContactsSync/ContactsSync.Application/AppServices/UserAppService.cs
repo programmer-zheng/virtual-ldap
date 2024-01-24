@@ -1,7 +1,7 @@
 ﻿using ContactsSync.Application.Background;
 using ContactsSync.Application.Contracts;
 using ContactsSync.Application.Contracts.Dtos;
-using ContactsSync.Application.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.OpenPlatformProvider;
 using ContactsSync.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -131,7 +131,7 @@ public class UserAppService : ApplicationService, IUserAppService
         var leaders = await leadersQueryable.ToListAsync();
 
         // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-        var _openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+        var _openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
         // 创建审批实例
         var approvalInstance = await _openPlatformProvider.CreateApprovalInstance(user.UserId, leaders, applyData);
 

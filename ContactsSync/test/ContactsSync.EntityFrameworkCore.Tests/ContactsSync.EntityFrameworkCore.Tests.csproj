@@ -11,18 +11,15 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="Volo.Abp.Autofac"/>
-        <PackageReference Include="Volo.Abp.TestBase"/>
-        <PackageReference Include="Volo.Abp.BackgroundJobs"/>
-        <PackageReference Include="Volo.Abp.Uow"/>
-        <PackageReference Include="Shouldly"/>
+        <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" />
         <PackageReference Include="xunit"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
         <PackageReference Include="coverlet.collector"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ContactsSync.Domain\ContactsSync.Domain.csproj"/>
+      <ProjectReference Include="..\..\ContactsSync.EntityFrameworkCore\ContactsSync.EntityFrameworkCore.csproj" />
+      <ProjectReference Include="..\ContactsSync.TestBase\ContactsSync.TestBase.csproj" />
     </ItemGroup>
 
 </Project>
