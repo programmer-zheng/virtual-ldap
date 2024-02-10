@@ -21,7 +21,7 @@ public class ContactsSyncWorker : AsyncPeriodicBackgroundWorkerBase
 
     protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
     {
-        var contactsSync = ServiceProvider.GetRequiredService<IContactsSyncAppService>();
-        await contactsSync.SyncDepartmentAndUser();
+        // var contactsSync = ServiceProvider.GetRequiredService<IContactsSyncAppService>();
+        // await contactsSync.SyncDepartmentAndUser();
     }
 }

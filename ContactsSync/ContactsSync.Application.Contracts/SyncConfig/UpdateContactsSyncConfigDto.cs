@@ -22,26 +22,9 @@ public class UpdateContactsSyncConfigDto : IValidatableObject
     {
         if (ProviderName == OpenPlatformProviderEnum.DingDing)
         {
-            if (ProviderConfig.AesKey.IsNullOrWhiteSpace())
-            {
-                yield return new ValidationResult($"{nameof(ProviderConfig.AesKey)}不能为空");
-            }
-
             if (ProviderConfig.AppKey.IsNullOrWhiteSpace())
             {
                 yield return new ValidationResult($"{nameof(ProviderConfig.AppKey)}不能为空");
-            }
-        }
-        else if (ProviderName == OpenPlatformProviderEnum.WeWork)
-        {
-            if (ProviderConfig.Token.IsNullOrWhiteSpace())
-            {
-                yield return new ValidationResult($"{nameof(ProviderConfig.Token)}不能为空");
-            }
-
-            if (ProviderConfig.EncodingAesKey.IsNullOrWhiteSpace())
-            {
-                yield return new ValidationResult($"{nameof(ProviderConfig.EncodingAesKey)}不能为空");
             }
         }
     }

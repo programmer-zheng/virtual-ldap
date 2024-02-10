@@ -5,6 +5,7 @@ using AlibabaCloud.SDK.Dingtalkworkflow_1_0.Models;
 using AlibabaCloud.TeaUtil;
 using AlibabaCloud.TeaUtil.Models;
 using ContactsSync.Application.Contracts.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.SyncConfig;
 using DingTalk.Api;
 using DingTalk.Api.Request;
 using DingTalk.Api.Response;
@@ -19,15 +20,17 @@ namespace ContactsSync.Application.DingDing;
 
 public class DingDingProvider : IOpenPlatformProviderApplicationService
 {
-    private readonly DingDingConfigOptions _dingDingConfigOptions;
+    // private readonly DingDingConfigOptions _dingDingConfigOptions;
     private readonly ILogger<DingDingProvider> _logger;
     private readonly IObjectMapper _objectMapper;
-    
-    public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ILogger<DingDingProvider> logger, IObjectMapper objectMapper)
+    private readonly ISyncConfigAppService _configAppService;
+
+    public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ILogger<DingDingProvider> logger, IObjectMapper objectMapper, ISyncConfigAppService configAppService)
     {
         _logger = logger;
         _objectMapper = objectMapper;
-        _dingDingConfigOptions = options.CurrentValue;
+        _configAppService = configAppService;
+        // _dingDingConfigOptions = options.CurrentValue;
     }
 
     private Config CreateClientConfig()
@@ -36,6 +39,18 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         config.Protocol = "https";
         config.RegionId = "central";
         return config;
+    }
+
+    private async Task<DingTalkConfigDto> GetDingDingConfig()
+    {
+        var config = await _configAppService.GetConfigDetail();
+
+        if (config is DingTalkConfigDto)
+        {
+            return config as DingTalkConfigDto;
+        }
+
+        throw new UserFriendlyException("");
     }
 
     public string Source => "DingDing";
@@ -51,10 +66,13 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
     {
         var config = CreateClientConfig();
         Client client = new Client(config);
+        var dingdingConfig = await GetDingDingConfig();
         GetAccessTokenRequest getAccessTokenRequest = new GetAccessTokenRequest
         {
-            AppKey = _dingDingConfigOptions.AppKey,
-            AppSecret = _dingDingConfigOptions.AppSecret,
+            // AppKey = _dingDingConfigOptions.AppKey,
+            // AppSecret = _dingDingConfigOptions.AppSecret,
+            AppKey = dingdingConfig.AppKey,
+            AppSecret = dingdingConfig.AppSecret,
         };
         try
         {
@@ -105,7 +123,12 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         return result;
     }
 
-    public async Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId, long cursor = 0)
+    public async Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId)
+    {
+        return await GetDeptUsers(deptId);
+    }
+
+    private async Task<List<PlatformDeptUserDto>> GetDeptUsers(long deptId, long cursor = 0)
     {
         var accessToken = await GetAccessTokenAsync();
         var client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/list");
@@ -132,7 +155,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
 
         if (rsp.Result.HasMore)
         {
-            result.AddRange(await GetDeptUserListAsync(deptId, rsp.Result.NextCursor));
+            result.AddRange(await GetDeptUsers(deptId, rsp.Result.NextCursor));
         }
 
         return result;
@@ -203,22 +226,20 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         return null;
     }
 
-    public async Task<string?> GetConfigedApprovalTemplateId()
-    {
-        return _dingDingConfigOptions.ProcessCode;
-    }
-
     public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)
     {
         var accessToken = await GetAccessTokenAsync();
         var config = CreateClientConfig();
         var client = new AlibabaCloud.SDK.Dingtalkworkflow_1_0.Client(config);
         var startProcessInstanceHeaders = new StartProcessInstanceHeaders() { XAcsDingtalkAccessToken = accessToken };
+        var dingdingConfig = await GetDingDingConfig();
         var startProcessInstanceRequest = new StartProcessInstanceRequest
         {
             OriginatorUserId = userId,
-            ProcessCode = _dingDingConfigOptions.ProcessCode,
-            MicroappAgentId = _dingDingConfigOptions.AgentId,
+            // ProcessCode = _dingDingConfigOptions.ProcessCode,
+            // MicroappAgentId = _dingDingConfigOptions.AgentId,
+            ProcessCode = dingdingConfig.ProcessCode,
+            MicroappAgentId = Convert.ToInt64(dingdingConfig.AgentId),
             Approvers = new List<StartProcessInstanceRequest.StartProcessInstanceRequestApprovers>
             {
                 // 多个人时使用或签，否则使用单人审批

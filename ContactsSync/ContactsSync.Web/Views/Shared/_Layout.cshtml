@@ -4,7 +4,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/libs/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/libs/abp/core/abp.css">
+    <link rel="stylesheet" href="~/libs/bootstrap/css/bootstrap.min.css"/>            
+    <link rel="stylesheet" href="~/libs/sweetalert2/sweetalert2.css"/>            
+    <link rel="stylesheet" href="~/libs/toastr/toastr.css"/>            
+    <link rel="stylesheet" href="">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 <body>
@@ -16,6 +20,12 @@
 
 <script src="~/libs/jquery/jquery.js"></script>
 <script src="~/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/libs/abp/core/abp.js"></script>       
+<script src="/libs/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="/libs/toastr/toastr.min.js"></script>
+<script src="/libs/abp/aspnetcore-mvc-ui-theme-shared/sweetalert2/abp-sweetalert2.js"></script>
+<script src="/libs/abp/aspnetcore-mvc-ui-theme-shared/toastr/abp-toastr.js"></script>            
+
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -12,13 +12,14 @@ public class DingTalkConfigDto : SyncConfigBase
     public required string AgentId { get; set; }
 
     [Required]
-    public required string AppKey { get; set; }
+    public string AppKey { get; set; }
 
     [Required]
     public required string AppSecret { get; set; }
 
-    [Required]
-    public required string AesKey { get; set; }
+    public string AesKey { get; set; }
+    
+    public string Token { get; set; }
 
-    public string? ProcessCode { get; set; }
+    public string ProcessCode { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using ContactsSync.Application.Contracts.SyncConfig;
+﻿using ContactsSync.Application.Contracts.OpenPlatformProvider;
+using ContactsSync.Application.Contracts.SyncConfig;
 using ContactsSync.Domain.Settings;
 using ContactsSync.Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -33,18 +34,34 @@ public class SyncConfigAppService : ApplicationService, ISyncConfigAppService
         var configs = await _settingManager.GetAllGlobalAsync();
         var providerNameValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.ProviderName)?.Value;
         var syncPeriodValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.SyncPeriod)?.Value;
-        var providerConfigValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.PlatformConfig)?.Value;
         if (providerNameValue.IsNullOrWhiteSpace())
         {
             return null;
         }
 
-
         var providerNameEnum = Enum.Parse<OpenPlatformProviderEnum>(providerNameValue);
 
         var result = new GetSyncConfigDto() { ProviderName = providerNameEnum, SyncPeriod = Convert.ToInt32(syncPeriodValue) };
 
+
+        result.ProviderConfig = await GetConfigDetail();
+        return result;
+    }
+
+    public async Task<IOpenPlatformProviderApplicationService> GetServiceByConfigKey()
+    {
+        var providerNameValue = await _settingManager.GetOrNullGlobalAsync(ContactsSyncSettings.ProviderName);
+
+        return ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(providerNameValue);
+    }
+
+    public async Task<SyncConfigBase> GetConfigDetail()
+    {
+        var configs = await _settingManager.GetAllGlobalAsync();
+        var providerNameValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.ProviderName)?.Value;
+        var providerConfigValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.PlatformConfig)?.Value;
         SyncConfigBase config = null;
+        var providerNameEnum = Enum.Parse<OpenPlatformProviderEnum>(providerNameValue);
         if (providerNameEnum == OpenPlatformProviderEnum.DingDing)
         {
             config = JsonConvert.DeserializeObject<DingTalkConfigDto>(providerConfigValue);
@@ -54,7 +71,6 @@ public class SyncConfigAppService : ApplicationService, ISyncConfigAppService
             config = JsonConvert.DeserializeObject<WeWorkConfigDto>(providerConfigValue);
         }
 
-        result.ProviderConfig = config;
-        return result;
+        return config;
     }
 }

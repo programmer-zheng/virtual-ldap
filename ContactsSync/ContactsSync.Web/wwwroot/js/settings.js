@@ -4,6 +4,9 @@
         $("#ProviderName").change(function () {
             $("#dingtalkForm,#weworkForm").toggleClass("d-none");
         });
+        $(".test-connect").on("click",function(event){
+            event.preventDefault();            
+        });
 
         $("form").on("submit", function (event) {
             event.preventDefault();

@@ -40,9 +40,8 @@ public interface IOpenPlatformProviderApplicationService
     /// 获取部门成员列表
     /// </summary>
     /// <param name="deptId"></param>
-    /// <param name="cursor"></param>
     /// <returns></returns>
-    Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId, long cursor = 0);
+    Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId);
 
     /// <summary>
     /// 根据授权码获取用户ID
@@ -56,12 +55,6 @@ public interface IOpenPlatformProviderApplicationService
     /// </summary>
     /// <returns>模板ID</returns>
     Task<string?> CreateApprovalTemplate();
-
-    /// <summary>
-    /// 获取配置文件中审批模板Id
-    /// </summary>
-    /// <returns></returns>
-    Task<string?> GetConfigedApprovalTemplateId();
 
     /// <summary>
     /// 创建审批实例

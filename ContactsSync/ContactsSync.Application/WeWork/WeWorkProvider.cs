@@ -58,7 +58,7 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
         return result;
     }
 
-    public async Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId, long cursor = 0)
+    public async Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId)
     {
         var accessToken = await GetAccessTokenAsync();
         var deptUserListResult = await MailListApi.GetDepartmentMemberInfoAsync(accessToken, deptId, 0);
@@ -131,11 +131,6 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
         }
 
         return approvalCreateResult.template_id;
-    }
-
-    public async Task<string?> GetConfigedApprovalTemplateId()
-    {
-        return _weWorkConfigOptions.TemplateId;
     }
 
     public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)

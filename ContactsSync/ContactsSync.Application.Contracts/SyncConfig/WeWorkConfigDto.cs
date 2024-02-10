@@ -14,11 +14,11 @@ public class WeWorkConfigDto : SyncConfigBase
     [Required]
     public required string AppSecret { get; set; }
 
-    [Required]
-    public required string Token { get; set; }
+    [Display(Description = "用于配置回调接口验证")]
+    public string Token { get; set; }
 
-    [Required]
-    public required string EncodingAesKey { get; set; }
+    [Display(Description = "用于配置回调接口验证")]
+    public string EncodingAesKey { get; set; }
 
-    public string? TemplateId { get; set; }
+    public string TemplateId { get; set; }
 }
