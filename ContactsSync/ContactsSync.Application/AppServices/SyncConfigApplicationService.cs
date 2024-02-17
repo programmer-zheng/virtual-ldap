@@ -52,7 +52,7 @@ public class SyncConfigAppService : ApplicationService, ISyncConfigAppService
     {
         var providerNameValue = await _settingManager.GetOrNullGlobalAsync(ContactsSyncSettings.ProviderName);
 
-        return ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(providerNameValue);
+        return LazyServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(providerNameValue);
     }
 
     public async Task<SyncConfigBase> GetConfigDetail()

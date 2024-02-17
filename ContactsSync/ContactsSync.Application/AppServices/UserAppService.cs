@@ -130,13 +130,12 @@ public class UserAppService : ApplicationService, IUserAppService
             select rela.UserId;
         var leaders = await leadersQueryable.ToListAsync();
 
-        // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-        var _openPlatformProvider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+        var openPlatformProvider = LazyServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
         // 创建审批实例
-        var approvalInstance = await _openPlatformProvider.CreateApprovalInstance(user.UserId, leaders, applyData);
+        var approvalInstance = await openPlatformProvider.CreateApprovalInstance(user.UserId, leaders, applyData);
 
         // 保存用户审批实例
-        userApproval = new UserApprovalEntity() { Uid = uid, UserId = user.UserId, InstanceId = approvalInstance, Source = _openPlatformProvider.Source };
+        userApproval = new UserApprovalEntity() { Uid = uid, UserId = user.UserId, InstanceId = approvalInstance, Source = openPlatformProvider.Source };
         await _userApprovalRepository.InsertAsync(userApproval);
     }
 }

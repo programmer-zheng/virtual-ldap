@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Web;
-using ContactsSync.Application.AppServices;
 using ContactsSync.Application.Background;
 using ContactsSync.Application.Contracts;
 using ContactsSync.Application.Contracts.OpenPlatformProvider;
@@ -72,8 +71,7 @@ namespace ContactsSync.Web.Controllers
                 return RedirectToAction("Settings");
             }
 
-            // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-            var provider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+            var provider = LazyServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
             // var templateId = await provider.GetConfigedApprovalTemplateId();
             // if (templateId.IsNullOrWhiteSpace())
             // {
@@ -117,8 +115,7 @@ namespace ContactsSync.Web.Controllers
                 return Content("请先授权");
             }
 
-            // todo 待abp 8.1发布后，使用LazyServiceProvider替换
-            var provider = ServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
+            var provider = LazyServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
             var userId = await provider.GetUserIdByCode(code);
             var cookieOptions = new CookieOptions { HttpOnly = true, Expires = DateTimeOffset.Now.AddHours(2) };
             Response.Cookies.Append(ContactsSyncWebConsts.CookieName, userId, cookieOptions);

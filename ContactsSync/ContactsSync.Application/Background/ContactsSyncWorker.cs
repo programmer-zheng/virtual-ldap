@@ -1,5 +1,4 @@
-﻿using ContactsSync.Application.AppServices;
-using ContactsSync.Application.Contracts;
+﻿using ContactsSync.Application.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Volo.Abp.BackgroundWorkers;
@@ -21,7 +20,7 @@ public class ContactsSyncWorker : AsyncPeriodicBackgroundWorkerBase
 
     protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
     {
-        // var contactsSync = ServiceProvider.GetRequiredService<IContactsSyncAppService>();
-        // await contactsSync.SyncDepartmentAndUser();
+        var contactsSync = LazyServiceProvider.GetRequiredService<IContactsSyncAppService>();
+        await contactsSync.SyncDepartmentAndUser();
     }
 }
