@@ -22,7 +22,17 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\ContactsSync.Application.Contracts\ContactsSync.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\ContactsSync.Domain\ContactsSync.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.Development.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

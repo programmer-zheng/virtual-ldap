@@ -2,6 +2,8 @@
 # 若需要将abp的前端包在Docker编译时构建，可参考 https://blog.antosubash.com/posts/abp-docker-file
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+# .NET 8 开始将默认80端口改为了8080
+# https://learn.microsoft.com/zh-cn/dotnet/core/compatibility/containers/8.0/aspnet-port
 EXPOSE 8080
 
 
