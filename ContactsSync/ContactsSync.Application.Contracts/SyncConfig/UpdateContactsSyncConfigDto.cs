@@ -20,6 +20,11 @@ public class UpdateContactsSyncConfigDto : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (ProviderConfig is null)
+        {
+            yield return new ValidationResult($"{nameof(ProviderConfig)}配置不能为空");
+        }
+
         if (ProviderName == OpenPlatformProviderEnum.DingDing)
         {
             if (ProviderConfig.AppKey.IsNullOrWhiteSpace())

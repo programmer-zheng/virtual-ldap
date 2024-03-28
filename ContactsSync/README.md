@@ -45,6 +45,7 @@ https://blog.csdn.net/WuLex/article/details/128709517
 https://cloud.tencent.com/developer/article/1462933
 
 #### 测试abp中使用.net8新特性 KeyService
+[abp-now-supports-keyed-services](https://github.com/abpframework/abp/blob/dev/docs/en/Community-Articles/2024-01-18-ABP-Now-Supports-Keyed-Services/POST.md#abp-now-supports-keyed-services)
 ``` bash
 abp new Acme.BookStore -t app-nolayers -csf
 cd Acme.BookStore\Acme.BookStore
