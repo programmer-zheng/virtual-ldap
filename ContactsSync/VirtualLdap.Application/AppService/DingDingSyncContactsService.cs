@@ -1,4 +1,4 @@
-﻿using Abp.Application.Services;
+using Abp.Application.Services;
 using Abp.UI;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -22,6 +22,13 @@ public class DingDingSyncContactsService : SyncContactsBase, ISyncContacts, IApp
             //获取钉钉所有部门
             var depts = DingdingAppService.GetDepartmentList();
             Logger.Debug($"钉钉返回部门信息：{JsonConvert.SerializeObject(depts)}");
+            //部分企业或组织在使用钉钉某些功能后，将在顶级id=1的部门下生成id为负数的部门，理应筛选掉并做日志提醒
+            var deptWithNegativeId = depts.Find(dept => dept.Id < 0);
+            if (deptWithNegativeId != null)
+            {
+                Logger.Debug($"找到了id为负数的部门，id: {deptWithNegativeId.Id}, name: {deptWithNegativeId.Name}，现在将其删除");
+                depts.Remove(deptWithNegativeId);
+            }
 
             //获取当前数据库中的部门
             var deptList = DeptRepository.GetAllList();
