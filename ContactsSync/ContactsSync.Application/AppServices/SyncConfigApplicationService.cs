@@ -23,7 +23,7 @@ public class SyncConfigAppService : ApplicationService, ISyncConfigAppService
 
     public async Task SaveSyncConfig(UpdateContactsSyncConfigDto dto)
     {
-        Logger.LogInformation(JsonConvert.SerializeObject(dto));
+        Logger.LogDebug(JsonConvert.SerializeObject(dto));
         await _settingManager.SetGlobalAsync(ContactsSyncSettings.ProviderName, dto.ProviderName.ToString());
         await _settingManager.SetGlobalAsync(ContactsSyncSettings.SyncPeriod, dto.SyncPeriod.ToString());
         await _settingManager.SetGlobalAsync(ContactsSyncSettings.PlatformConfig, JsonConvert.SerializeObject(dto.ProviderConfig));
@@ -61,14 +61,17 @@ public class SyncConfigAppService : ApplicationService, ISyncConfigAppService
         var providerNameValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.ProviderName)?.Value;
         var providerConfigValue = configs.FirstOrDefault(t => t.Name == ContactsSyncSettings.PlatformConfig)?.Value;
         SyncConfigBase config = null;
-        var providerNameEnum = Enum.Parse<OpenPlatformProviderEnum>(providerNameValue);
-        if (providerNameEnum == OpenPlatformProviderEnum.DingDing)
+        if (providerNameValue != null)
         {
-            config = JsonConvert.DeserializeObject<DingTalkConfigDto>(providerConfigValue);
-        }
-        else if (providerNameEnum == OpenPlatformProviderEnum.WeWork)
-        {
-            config = JsonConvert.DeserializeObject<WeWorkConfigDto>(providerConfigValue);
+            var providerNameEnum = Enum.Parse<OpenPlatformProviderEnum>(providerNameValue);
+            if (providerNameEnum == OpenPlatformProviderEnum.DingDing)
+            {
+                config = JsonConvert.DeserializeObject<DingTalkConfigDto>(providerConfigValue);
+            }
+            else if (providerNameEnum == OpenPlatformProviderEnum.WeWork)
+            {
+                config = JsonConvert.DeserializeObject<WeWorkConfigDto>(providerConfigValue);
+            }
         }
 
         return config;
