@@ -14,23 +14,21 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Tea;
 using Volo.Abp;
+using Volo.Abp.Application.Services;
 using Volo.Abp.ObjectMapping;
 
 namespace ContactsSync.Application.DingDing;
 
-public class DingDingProvider : IOpenPlatformProviderApplicationService
+public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplicationService
 {
-    // private readonly DingDingConfigOptions _dingDingConfigOptions;
-    private readonly ILogger<DingDingProvider> _logger;
-    private readonly IObjectMapper _objectMapper;
+    private readonly DingDingConfigOptions _dingDingConfigOptions;
+
     private readonly ISyncConfigAppService _configAppService;
 
-    public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ILogger<DingDingProvider> logger, IObjectMapper objectMapper, ISyncConfigAppService configAppService)
+    public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ISyncConfigAppService configAppService)
     {
-        _logger = logger;
-        _objectMapper = objectMapper;
         _configAppService = configAppService;
-        // _dingDingConfigOptions = options.CurrentValue;
+        _dingDingConfigOptions = options.CurrentValue;
     }
 
     private Config CreateClientConfig()
@@ -50,7 +48,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
             return config as DingTalkConfigDto;
         }
 
-        throw new UserFriendlyException("");
+        throw new UserFriendlyException("未能获取配置");
     }
 
     public string Source => "DingDing";
@@ -66,13 +64,13 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
     {
         var config = CreateClientConfig();
         Client client = new Client(config);
-        var dingdingConfig = await GetDingDingConfig();
+        // var dingdingConfig = await GetDingDingConfig();
         GetAccessTokenRequest getAccessTokenRequest = new GetAccessTokenRequest
         {
-            // AppKey = _dingDingConfigOptions.AppKey,
-            // AppSecret = _dingDingConfigOptions.AppSecret,
-            AppKey = dingdingConfig.AppKey,
-            AppSecret = dingdingConfig.AppSecret,
+            AppKey = _dingDingConfigOptions.AppKey,
+            AppSecret = _dingDingConfigOptions.AppSecret,
+            // AppKey = dingdingConfig.AppKey,
+            // AppSecret = dingdingConfig.AppSecret,
         };
         try
         {
@@ -84,7 +82,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
                 // err 中含有 code 和 message 属性，可帮助开发定位问题
-                _logger.LogError($"获取钉钉AccessToken出错，{err.Message}");
+                Logger.LogError($"获取钉钉AccessToken出错，{err.Message}");
             }
         }
         catch (Exception _err)
@@ -96,7 +94,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
                 // err 中含有 code 和 message 属性，可帮助开发定位问题
-                _logger.LogError($"获取钉钉AccessToken出错，{err.Message}");
+                Logger.LogError($"获取钉钉AccessToken出错，{err.Message}");
             }
         }
 
@@ -105,21 +103,64 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
 
     public async Task<List<PlatformDepartmentDto>> GetDepartmentListAsync(long? parentDeptId = null)
     {
+        return await GetDepartmentListAsyncV1(parentDeptId);
+    }
+
+    /// <summary>
+    /// 获取部门列表，不返回根部门信息
+    /// https://open.dingtalk.com/document/isvapp/get-department-list
+    /// </summary>
+    /// <param name="parentDeptId"></param>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
+    private async Task<List<PlatformDepartmentDto>> GetDepartmentListAsyncV2(long? parentDeptId = null)
+    {
         var accessToken = await GetAccessTokenAsync();
-        var client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/department/listsub");
+        var client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/list");
         var req = new OapiV2DepartmentListsubRequest();
         req.DeptId = parentDeptId;
         req.Language = "zh_CN";
         var rsp = client.Execute<OapiV2DepartmentListsubResponse>(req, accessToken);
-        _logger.LogDebug($"钉钉返回部门数据：{JsonConvert.SerializeObject(rsp)}");
+        Logger.LogDebug($"钉钉返回部门数据：{JsonConvert.SerializeObject(rsp)}");
         if (rsp.Errcode != 0)
         {
-            _logger.LogError(rsp.Errmsg);
-            throw new UserFriendlyException(rsp.Errmsg);
+            Logger.LogError(rsp.Errmsg);
+            throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
         }
 
         var departmentList = rsp.Result;
-        var result = _objectMapper.Map<List<OapiV2DepartmentListsubResponse.DeptBaseResponseDomain>, List<PlatformDepartmentDto>>(departmentList);
+        var result = ObjectMapper.Map<List<OapiV2DepartmentListsubResponse.DeptBaseResponseDomain>, List<PlatformDepartmentDto>>(departmentList);
+        return result;
+    }
+
+    /// <summary>
+    /// 获取部门列表 V1版本，已不再更新，默认不传父级部门ID时，可返回根部门信息
+    /// https://open.dingtalk.com/document/orgapp/obtain-the-department-list
+    /// </summary>
+    /// <param name="parentDeptId"></param>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
+    private async Task<List<PlatformDepartmentDto>> GetDepartmentListAsyncV1(long? parentDeptId = null)
+    {
+        var accessToken = await GetAccessTokenAsync();
+        var client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/list");
+        var req = new OapiDepartmentListRequest();
+        req.SetHttpMethod("GET");
+        req.FetchChild = true;
+        if (parentDeptId != null && parentDeptId > 0)
+        {
+            req.Id = parentDeptId.ToString();
+        }
+        var rsp = client.Execute(req, accessToken);
+        Logger.LogDebug($"钉钉返回部门数据：{JsonConvert.SerializeObject(rsp)}");
+        if (rsp.Errcode != 0)
+        {
+            Logger.LogError(rsp.Errmsg);
+            throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
+        }
+
+        var departmentList = rsp.Department;
+        var result = ObjectMapper.Map<List<OapiDepartmentListResponse.DepartmentDomain>, List<PlatformDepartmentDto>>(departmentList);
         return result;
     }
 
@@ -138,15 +179,15 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         req.Size = 100;
         var rsp = client.Execute<OapiV2UserListResponse>(req, accessToken);
 
-        _logger.LogDebug($"钉钉返回人员数据：{JsonConvert.SerializeObject(rsp)}");
+        Logger.LogDebug($"钉钉返回人员数据：{JsonConvert.SerializeObject(rsp)}");
         if (rsp.Errcode != 0)
         {
-            _logger.LogError(rsp.Errmsg);
-            throw new UserFriendlyException(rsp.Errmsg);
+            Logger.LogError(rsp.Errmsg);
+            throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
         }
 
         var users = rsp.Result.List;
-        var result = _objectMapper.Map<List<OapiV2UserListResponse.ListUserResponseDomain>, List<PlatformDeptUserDto>>(users);
+        var result = ObjectMapper.Map<List<OapiV2UserListResponse.ListUserResponseDomain>, List<PlatformDeptUserDto>>(users);
         foreach (var platformDeptUserDto in result)
         {
             var user = users.First(t => t.Userid == platformDeptUserDto.UserId);
@@ -169,11 +210,11 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         req.Code = code;
         var rsp = client.Execute<OapiV2UserGetuserinfoResponse>(req, accessToken);
 
-        _logger.LogDebug($"授权用户信息：{JsonConvert.SerializeObject(rsp)}");
+        Logger.LogDebug($"授权用户信息：{JsonConvert.SerializeObject(rsp)}");
         if (rsp.Errcode != 0)
         {
-            _logger.LogError(rsp.Errmsg);
-            throw new UserFriendlyException(rsp.Errmsg);
+            Logger.LogError(rsp.Errmsg);
+            throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
         }
 
         return rsp.Result.Userid;
@@ -190,7 +231,10 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
             ComponentType = "TextareaField",
             Props = new FormComponentProps
             {
-                Label = "申请开通原因", Placeholder = "请输入申请开通域账号原因", ComponentId = "Reason", Required = true,
+                Label = "申请开通原因",
+                Placeholder = "请输入申请开通域账号原因",
+                ComponentId = "Reason",
+                Required = true,
             },
         };
         FormCreateRequest formCreateRequest = new FormCreateRequest
@@ -207,7 +251,6 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         {
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
-                _logger.LogError($"创建钉钉审批模板出错 {err.Code} {err.Message}");
                 throw new UserFriendlyException($"创建钉钉审批模板出错 {err.Message}");
             }
         }
@@ -219,7 +262,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
             });
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
-                _logger.LogError($"创建钉钉审批模板出错 {err.Code} {err.Message}");
+                Logger.LogError($"创建钉钉审批模板出错 {err.Code} {err.Message}");
             }
         }
 
@@ -232,14 +275,14 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         var config = CreateClientConfig();
         var client = new AlibabaCloud.SDK.Dingtalkworkflow_1_0.Client(config);
         var startProcessInstanceHeaders = new StartProcessInstanceHeaders() { XAcsDingtalkAccessToken = accessToken };
-        var dingdingConfig = await GetDingDingConfig();
+        // var dingdingConfig = await GetDingDingConfig();
         var startProcessInstanceRequest = new StartProcessInstanceRequest
         {
             OriginatorUserId = userId,
-            // ProcessCode = _dingDingConfigOptions.ProcessCode,
-            // MicroappAgentId = _dingDingConfigOptions.AgentId,
-            ProcessCode = dingdingConfig.ProcessCode,
-            MicroappAgentId = Convert.ToInt64(dingdingConfig.AgentId),
+            ProcessCode = _dingDingConfigOptions.ProcessCode,
+            MicroappAgentId = _dingDingConfigOptions.AgentId,
+            // ProcessCode = dingdingConfig.ProcessCode,
+            // MicroappAgentId = Convert.ToInt64(dingdingConfig.AgentId),
             Approvers = new List<StartProcessInstanceRequest.StartProcessInstanceRequestApprovers>
             {
                 // 多个人时使用或签，否则使用单人审批
@@ -266,7 +309,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
         {
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
-                _logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
+                Logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
                 throw new UserFriendlyException($"创建审批实例出错 {err.Message}");
             }
         }
@@ -278,7 +321,7 @@ public class DingDingProvider : IOpenPlatformProviderApplicationService
             });
             if (!Common.Empty(err.Code) && !Common.Empty(err.Message))
             {
-                _logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
+                Logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
             }
         }
 

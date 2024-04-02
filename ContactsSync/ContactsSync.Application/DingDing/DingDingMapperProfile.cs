@@ -8,12 +8,19 @@ public class DingDingMapperProfile : Profile
 {
     public DingDingMapperProfile()
     {
+        // 部门管理V2版本中部门列表映射
         CreateMap<OapiV2DepartmentListsubResponse.DeptBaseResponseDomain, PlatformDepartmentDto>()
             .ForMember(dst => dst.DepartmentId, opt => opt.MapFrom(src => src.DeptId))
             .ForMember(dst => dst.DeptName, opt => opt.MapFrom(src => src.Name))
             .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.ParentId))
             ;
 
+        // 部门管理1.0版本中部门列表映射
+        CreateMap<OapiDepartmentListResponse.DepartmentDomain, PlatformDepartmentDto>()
+            .ForMember(dst => dst.DepartmentId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dst => dst.DeptName, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.Parentid))
+            ;
 
         CreateMap<OapiV2UserListResponse.ListUserResponseDomain, PlatformDeptUserDto>()
             .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Userid))
