@@ -9,21 +9,18 @@ using Senparc.Weixin.Work.AdvancedAPIs.OA;
 using Senparc.Weixin.Work.AdvancedAPIs.OA.OAJson;
 using Senparc.Weixin.Work.Containers;
 using Volo.Abp;
+using Volo.Abp.Application.Services;
 using Volo.Abp.ObjectMapping;
 
 namespace ContactsSync.Application.WeWork;
 
-public class WeWorkProvider : IOpenPlatformProviderApplicationService
+public class WeWorkProvider : ApplicationService, IOpenPlatformProviderApplicationService
 {
     private readonly WeWorkConfigOptions _weWorkConfigOptions;
 
-    private readonly IObjectMapper _objectMapper;
-    private readonly ILogger<WeWorkProvider> _logger;
 
-    public WeWorkProvider(IOptionsMonitor<WeWorkConfigOptions> options, IObjectMapper objectMapper, ILogger<WeWorkProvider> logger)
+    public WeWorkProvider(IOptionsMonitor<WeWorkConfigOptions> options)
     {
-        _objectMapper = objectMapper;
-        _logger = logger;
         _weWorkConfigOptions = options.CurrentValue;
     }
 
@@ -46,16 +43,23 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
     public async Task<List<PlatformDepartmentDto>> GetDepartmentListAsync(long? parentDeptId = null)
     {
         var accessToken = await GetAccessTokenAsync();
-        var departmentListResult = await MailListApi.GetDepartmentListAsync(accessToken, parentDeptId);
-        if (departmentListResult.ErrorCodeValue != 0)
+        try
         {
-            _logger.LogError($"{departmentListResult.errmsg}");
-            throw new UserFriendlyException(departmentListResult.errmsg);
-        }
+            var departmentListResult = await MailListApi.GetDepartmentListAsync(accessToken, parentDeptId);
+            if (departmentListResult.ErrorCodeValue != 0)
+            {
+                Logger.LogError($"{departmentListResult.errmsg}");
+                throw new UserFriendlyException(departmentListResult.errmsg);
+            }
 
-        var departmentList = departmentListResult.department;
-        var result = _objectMapper.Map<List<DepartmentList>, List<PlatformDepartmentDto>>(departmentList);
-        return result;
+            var departmentList = departmentListResult.department;
+            var result = ObjectMapper.Map<List<DepartmentList>, List<PlatformDepartmentDto>>(departmentList);
+            return result;
+        }
+        catch (Exception e)
+        {
+            throw new UserFriendlyException(e.Message);
+        }
     }
 
     public async Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId)
@@ -65,12 +69,12 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
 
         if (deptUserListResult.ErrorCodeValue != 0)
         {
-            _logger.LogError($"{deptUserListResult.errmsg}");
+            Logger.LogError($"{deptUserListResult.errmsg}");
             throw new UserFriendlyException(deptUserListResult.errmsg);
         }
 
         var deptUserList = deptUserListResult.userlist;
-        var result = _objectMapper.Map<List<GetMemberResult>, List<PlatformDeptUserDto>>(deptUserList);
+        var result = ObjectMapper.Map<List<GetMemberResult>, List<PlatformDeptUserDto>>(deptUserList);
         foreach (var platformDeptUserDto in result)
         {
             var user = deptUserList.First(t => t.userid == platformDeptUserDto.UserId);
@@ -87,7 +91,7 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
         var userInfoResult = await OAuth2Api.GetUserIdAsync(accessToken, code);
         if (userInfoResult.ErrorCodeValue != 0)
         {
-            _logger.LogError($"{userInfoResult.errmsg}");
+            Logger.LogError($"{userInfoResult.errmsg}");
             throw new UserFriendlyException(userInfoResult.errmsg);
         }
 
@@ -123,14 +127,21 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
         };
 
         var urlFormat = Config.ApiWorkHost + "/cgi-bin/oa/approval/create_template?access_token={0}";
-        var approvalCreateResult = await CommonJsonSend.SendAsync<ApprovalCreateTemplateResult>(accessToken, urlFormat, request);
-        if (approvalCreateResult.ErrorCodeValue != 0)
+        try
         {
-            _logger.LogError($"{approvalCreateResult.errmsg}");
-            throw new UserFriendlyException(approvalCreateResult.errmsg);
-        }
+            var approvalCreateResult = await CommonJsonSend.SendAsync<ApprovalCreateTemplateResult>(accessToken, urlFormat, request);
+            if (approvalCreateResult.ErrorCodeValue != 0)
+            {
+                Logger.LogError($"{approvalCreateResult.errmsg}");
+                throw new UserFriendlyException(approvalCreateResult.errmsg);
+            }
 
-        return approvalCreateResult.template_id;
+            return approvalCreateResult.template_id;
+        }
+        catch (Exception e)
+        {
+            throw new UserFriendlyException(e.Message);
+        }
     }
 
     public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)
@@ -169,13 +180,20 @@ public class WeWorkProvider : IOpenPlatformProviderApplicationService
                 }
             }
         };
-        var applyEventResult = await OaApi.ApplyEventAsync(accessToken, request);
-        if (applyEventResult.ErrorCodeValue != 0)
+        try
         {
-            _logger.LogError($"{applyEventResult.errmsg}");
-            throw new UserFriendlyException(applyEventResult.errmsg);
-        }
+            var applyEventResult = await OaApi.ApplyEventAsync(accessToken, request);
+            if (applyEventResult.ErrorCodeValue != 0)
+            {
+                Logger.LogError($"{applyEventResult.errmsg}");
+                throw new UserFriendlyException(applyEventResult.errmsg);
+            }
 
-        return applyEventResult.sp_no;
+            return applyEventResult.sp_no;
+        }
+        catch (Exception e)
+        {
+            throw new UserFriendlyException(e.Message);
+        }
     }
 }
