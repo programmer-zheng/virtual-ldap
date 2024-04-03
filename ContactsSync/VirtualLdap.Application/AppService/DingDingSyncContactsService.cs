@@ -23,11 +23,15 @@ public class DingDingSyncContactsService : SyncContactsBase, ISyncContacts, IApp
             var depts = DingdingAppService.GetDepartmentList();
             Logger.Debug($"钉钉返回部门信息：{JsonConvert.SerializeObject(depts)}");
             //部分企业或组织在使用钉钉某些功能后，将在顶级id=1的部门下生成id为负数的部门，理应筛选掉并做日志提醒
-            var deptWithNegativeId = depts.Find(dept => dept.Id < 0);
+            var deptWithNegativeId = depts.FindAll(dept => dept.Id < 1);
             if (deptWithNegativeId != null)
             {
-                Logger.Debug($"找到了id为负数的部门，id: {deptWithNegativeId.Id}, name: {deptWithNegativeId.Name}，现在将其删除");
-                depts.Remove(deptWithNegativeId);
+                foreach (var item in deptWithNegativeId)
+                {
+
+                    Logger.Debug($"找到了id为负数的部门，id: {item.Id}, name: {item.Name}，现在将其删除");
+                    depts.Remove(item);
+                }
             }
 
             //获取当前数据库中的部门
@@ -72,7 +76,7 @@ public class DingDingSyncContactsService : SyncContactsBase, ISyncContacts, IApp
                     if (!relaList.Any(t => t.UserId == user.Userid && t.DeptId == item.Id))
                     {
                         newRelaList.Add(new UserDepartmentsRelationEntity
-                            { Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = item.Id });
+                        { Id = Guid.NewGuid().ToString(), UserId = user.Userid, DeptId = item.Id });
                     }
                 }
             }
