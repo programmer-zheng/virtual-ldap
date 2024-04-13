@@ -34,6 +34,8 @@ public class ContactsSyncAppService : ApplicationService, IContactsSyncAppServic
         var platformDepartments = await openPlatformProvider!.GetDepartmentListAsync()!;
         if (platformDepartments?.Count > 0)
         {
+            // 钉钉开通家校通会返回ID不正常的数据
+            platformDepartments.RemoveAll(t => t.DepartmentId < 1);
             // 数据库中的数据
             var existsDepartmentList = await _departmentAppService.GetAllDepartments();
             var existsUserList = await _userAppService.GetAllUsersAsync();
