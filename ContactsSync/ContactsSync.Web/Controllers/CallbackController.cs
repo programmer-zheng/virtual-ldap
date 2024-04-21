@@ -50,13 +50,13 @@ public class CallbackController : AbpController
         var corpId = _dingDingConfigOptions.AppKey;
 
         var dingTalkEncryptor = new DingTalkEncryptor(token, aesKey, corpId);
-        var message = dingTalkEncryptor.getDecryptMsg(signature, timestamp, nonce, msgInput.Encrypt);
+        var message = dingTalkEncryptor.GetDecryptMsg(signature, timestamp, nonce, msgInput.Encrypt);
         var messageObj = JObject.Parse(message);
         var eventType = messageObj.Value<string>("EventType");
         var _corpid = messageObj.Value<string>("CorpId");
 
         var longTimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
-        var dic = dingTalkEncryptor.getEncryptedMap("success", longTimeStamp);
+        var dic = dingTalkEncryptor.GetEncryptedMap("success", longTimeStamp);
         return dic;
     }
 }
