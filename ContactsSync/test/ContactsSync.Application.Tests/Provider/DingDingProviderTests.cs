@@ -23,8 +23,8 @@ public class DingDingProviderTests : ContactsSyncApplicationTestBase
     public async Task TestGetAccessTokenAsync()
     {
         var token = await _openPlatformProviderApplicationService.GetAccessTokenAsync();
+        token.ShouldNotBeNullOrWhiteSpace();
         Output.WriteLine($"AccessToken：{token}");
-        Assert.NotEmpty(token);
     }
 
     [Fact]
