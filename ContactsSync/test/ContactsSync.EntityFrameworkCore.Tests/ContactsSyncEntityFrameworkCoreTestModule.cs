@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.MySQL;
 using Volo.Abp.Modularity;
@@ -37,6 +38,11 @@ public class ContactsSyncEntityFrameworkCoreTestModule : AbpModule
                 context.DbContextOptions.UseSqlite(_sqliteConnection);
             });
         });
+    }
+    
+    public override void OnApplicationShutdown(ApplicationShutdownContext context)
+    {
+        _sqliteConnection?.Dispose();
     }
 
     private static SqliteConnection CreateDatabaseAndGetConnection()
