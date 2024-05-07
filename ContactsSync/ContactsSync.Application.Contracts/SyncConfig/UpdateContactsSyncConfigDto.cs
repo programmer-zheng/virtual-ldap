@@ -24,12 +24,14 @@ public class UpdateContactsSyncConfigDto : IValidatableObject
         {
             yield return new ValidationResult($"{nameof(ProviderConfig)}配置不能为空");
         }
-
-        if (ProviderName == OpenPlatformProviderEnum.DingDing)
+        else
         {
-            if (ProviderConfig.AppKey.IsNullOrWhiteSpace())
+            if (ProviderName == OpenPlatformProviderEnum.DingDing)
             {
-                yield return new ValidationResult($"{nameof(ProviderConfig.AppKey)}不能为空");
+                if (ProviderConfig.AppKey.IsNullOrWhiteSpace())
+                {
+                    yield return new ValidationResult($"{nameof(ProviderConfig.AppKey)}不能为空");
+                }
             }
         }
     }
