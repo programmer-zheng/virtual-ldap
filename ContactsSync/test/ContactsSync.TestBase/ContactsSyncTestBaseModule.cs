@@ -1,4 +1,5 @@
 using ContactsSync.Domain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.Autofac;
@@ -16,6 +17,16 @@ namespace ContactsSync.TestBase;
 )]
 public class ContactsSyncTestBaseModule : AbpModule
 {
+    public override void PreConfigureServices(ServiceConfigurationContext context)
+    {
+        base.PreConfigureServices(context);
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", false, true)
+            .AddJsonFile("appsettings.Development.json", true, true)
+            .Build();
+        context.Services.ReplaceConfiguration(configuration);
+    }
+
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpBackgroundJobOptions>(options =>
