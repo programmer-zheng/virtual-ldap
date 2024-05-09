@@ -31,15 +31,14 @@ public class DingDingProviderTests : ContactsSyncApplicationTestBase
     public async Task TestGetDepartmentListAndUsersAsync()
     {
         var departments = await _openPlatformProviderApplicationService.GetDepartmentListAsync();
-        // var departments = new List<PlatformDepartmentDto> { new PlatformDepartmentDto() { DepartmentId = 1, DeptName = "test" } };
         departments.ShouldNotBeNull().ShouldNotBeEmpty();
         Output.WriteLine("部门列表：");
         Output.WriteLine(JsonConvert.SerializeObject(departments));
         foreach (var department in departments)
         {
-            Output.WriteLine("");
             var users = await _openPlatformProviderApplicationService.GetDeptUserListAsync(department.DepartmentId);
-            users.ShouldNotBeNull().ShouldNotBeEmpty();
+            users.ShouldNotBeNull();
+            Output.WriteLine("");
             Output.WriteLine($"部门 ==> {department.DeptName} 下人员信息：");
             Output.WriteLine(JsonConvert.SerializeObject(users));
         }

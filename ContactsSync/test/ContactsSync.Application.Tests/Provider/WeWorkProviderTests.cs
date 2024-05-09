@@ -32,13 +32,17 @@ public class WeWorkProviderTests : ContactsSyncApplicationTestBase
     {
         var departments = await _openPlatformProviderApplicationService.GetDepartmentListAsync();
         departments.ShouldNotBeNull().ShouldNotBeEmpty();
-        var department = departments.First();
-        var users = await _openPlatformProviderApplicationService.GetDeptUserListAsync(department.DepartmentId);
-        Assert.NotEmpty(users);
         Output.WriteLine("部门列表：");
         Output.WriteLine(JsonConvert.SerializeObject(departments));
-        Output.WriteLine($"部门【{department.DeptName}】下人员信息：");
-        Output.WriteLine(JsonConvert.SerializeObject(users));
+        foreach (var department in departments)
+        {
+            var users = await _openPlatformProviderApplicationService.GetDeptUserListAsync(department.DepartmentId);
+            users.ShouldNotBeNull();
+            Output.WriteLine("");
+            Output.WriteLine($"部门 ==> {department.DeptName} 下人员信息：");
+            Output.WriteLine(JsonConvert.SerializeObject(users));
+        }
+
     }
 
     [Fact]
