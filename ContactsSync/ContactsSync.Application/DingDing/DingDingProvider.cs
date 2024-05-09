@@ -1,4 +1,7 @@
-﻿using AlibabaCloud.OpenApiClient.Models;
+﻿using System.Net;
+using System.Text;
+using System.Web;
+using AlibabaCloud.OpenApiClient.Models;
 using AlibabaCloud.SDK.Dingtalkoauth2_1_0;
 using AlibabaCloud.SDK.Dingtalkoauth2_1_0.Models;
 using AlibabaCloud.SDK.Dingtalkworkflow_1_0.Models;
@@ -25,10 +28,13 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
 
     private readonly ISyncConfigAppService _configAppService;
 
-    public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ISyncConfigAppService configAppService)
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public DingDingProvider(IOptionsMonitor<DingDingConfigOptions> options, ISyncConfigAppService configAppService, IHttpClientFactory httpClientFactory)
     {
         _configAppService = configAppService;
         _dingDingConfigOptions = options.CurrentValue;
+        _httpClientFactory = httpClientFactory;
     }
 
     private Config CreateClientConfig()
@@ -62,6 +68,11 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
 
     public async Task<string> GetAccessTokenAsync()
     {
+        if (_dingDingConfigOptions.AppKey.IsNullOrWhiteSpace() || _dingDingConfigOptions.AppSecret.IsNullOrWhiteSpace())
+        {
+            throw new UserFriendlyException("请检查是否正确配置了钉钉的AppKey和AppSecret");
+        }
+
         var config = CreateClientConfig();
         Client client = new Client(config);
         // var dingdingConfig = await GetDingDingConfig();
@@ -84,6 +95,8 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
                 // err 中含有 code 和 message 属性，可帮助开发定位问题
                 Logger.LogError($"获取钉钉AccessToken出错，{err.Message}");
             }
+
+            throw err;
         }
         catch (Exception _err)
         {
@@ -96,9 +109,9 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
                 // err 中含有 code 和 message 属性，可帮助开发定位问题
                 Logger.LogError($"获取钉钉AccessToken出错，{err.Message}");
             }
-        }
 
-        return null;
+            throw _err;
+        }
     }
 
     public async Task<List<PlatformDepartmentDto>> GetDepartmentListAsync(long? parentDeptId = null)
@@ -107,7 +120,7 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
     }
 
     /// <summary>
-    /// 获取部门列表，不返回根部门信息
+    /// 获取部门列表，不返回根部门信息【V1版本，已不再更新】
     /// https://open.dingtalk.com/document/isvapp/get-department-list
     /// </summary>
     /// <param name="parentDeptId"></param>
@@ -134,7 +147,7 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
     }
 
     /// <summary>
-    /// 获取部门列表 V1版本，已不再更新，默认不传父级部门ID时，可返回根部门信息
+    /// 获取部门列表 默认不传父级部门ID时，可返回根部门信息【V1版本，已不再更新，且不推荐】
     /// https://open.dingtalk.com/document/orgapp/obtain-the-department-list
     /// </summary>
     /// <param name="parentDeptId"></param>
@@ -143,25 +156,37 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
     private async Task<List<PlatformDepartmentDto>> GetDepartmentListAsyncV1(long? parentDeptId = null)
     {
         var accessToken = await GetAccessTokenAsync();
-        var client = new DefaultDingTalkClient("https://oapi.dingtalk.com/department/list");
-        var req = new OapiDepartmentListRequest();
-        req.SetHttpMethod("GET");
-        req.FetchChild = true;
+        var httpClient = _httpClientFactory.CreateClient();
+        var apiUrl = "https://oapi.dingtalk.com/department/list";
+        var paramDic = new Dictionary<string, string>()
+        {
+            { "access_token", accessToken },
+            { "fetch_child", "true" }
+        };
         if (parentDeptId != null && parentDeptId > 0)
         {
-            req.Id = parentDeptId.ToString();
-        }
-        var rsp = client.Execute(req, accessToken);
-        Logger.LogDebug($"钉钉返回部门数据：{JsonConvert.SerializeObject(rsp)}");
-        if (rsp.Errcode != 0)
-        {
-            Logger.LogError(rsp.Errmsg);
-            throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
+            paramDic.Add("id", parentDeptId.ToString());
         }
 
-        var departmentList = rsp.Department;
-        var result = ObjectMapper.Map<List<OapiDepartmentListResponse.DepartmentDomain>, List<PlatformDepartmentDto>>(departmentList);
-        return result;
+        var response = await httpClient.GetAsync(BuildRequestUrl(apiUrl, paramDic));
+
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var responseString = await response.Content.ReadAsStringAsync();
+            var rsp = JsonConvert.DeserializeObject<OapiDepartmentListResponse>(responseString);
+            Logger.LogDebug($"钉钉返回部门数据：{JsonConvert.SerializeObject(rsp)}");
+            if (rsp.Errcode != 0)
+            {
+                Logger.LogError(rsp.Errmsg);
+                throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
+            }
+
+            var departmentList = rsp.Department;
+            var result = ObjectMapper.Map<List<OapiDepartmentListResponse.DepartmentDomain>, List<PlatformDepartmentDto>>(departmentList);
+            return result;
+        }
+
+        return null;
     }
 
     public async Task<List<PlatformDeptUserDto>> GetDeptUserListAsync(long deptId)
@@ -169,34 +194,49 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
         return await GetDeptUsers(deptId);
     }
 
+    /// <summary>
+    /// 获取部门成员列表
+    /// </summary>
+    /// <param name="deptId">部门ID</param>
+    /// <param name="cursor"></param>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
     private async Task<List<PlatformDeptUserDto>> GetDeptUsers(long deptId, long cursor = 0)
     {
+        var result = new List<PlatformDeptUserDto>();
         var accessToken = await GetAccessTokenAsync();
-        var client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/list");
-        var req = new OapiV2UserListRequest();
-        req.DeptId = deptId;
-        req.Cursor = cursor;
-        req.Size = 100;
-        var rsp = client.Execute<OapiV2UserListResponse>(req, accessToken);
-
-        Logger.LogDebug($"钉钉返回人员数据：{JsonConvert.SerializeObject(rsp)}");
-        if (rsp.Errcode != 0)
+        var httpClient = _httpClientFactory.CreateClient();
+        var apiUrl = "https://oapi.dingtalk.com/topapi/v2/user/list";
+        var paramDic = new Dictionary<string, string>()
         {
-            Logger.LogError(rsp.Errmsg);
-            throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
-        }
-
-        var users = rsp.Result.List;
-        var result = ObjectMapper.Map<List<OapiV2UserListResponse.ListUserResponseDomain>, List<PlatformDeptUserDto>>(users);
-        foreach (var platformDeptUserDto in result)
+            { "access_token", accessToken },
+            { "dept_id", deptId.ToString() },
+            { "cursor", cursor.ToString() },
+            { "size", "100" },
+        };
+        var response = await httpClient.GetAsync(BuildRequestUrl(apiUrl, paramDic));
+        if (response.StatusCode == HttpStatusCode.OK)
         {
-            var user = users.First(t => t.Userid == platformDeptUserDto.UserId);
-            platformDeptUserDto.IsDeptLeader = user.Leader;
-        }
+            var responseString = await response.Content.ReadAsStringAsync();
+            var rsp = JsonConvert.DeserializeObject<OapiV2UserListResponse>(responseString);
+            if (rsp.Errcode != 0)
+            {
+                Logger.LogError(rsp.Errmsg);
+                throw new UserFriendlyException(rsp.SubErrMsg.IsNullOrWhiteSpace() ? rsp.Errmsg : rsp.SubErrMsg);
+            }
 
-        if (rsp.Result.HasMore)
-        {
-            result.AddRange(await GetDeptUsers(deptId, rsp.Result.NextCursor));
+            var users = rsp.Result.List;
+            result = ObjectMapper.Map<List<OapiV2UserListResponse.ListUserResponseDomain>, List<PlatformDeptUserDto>>(users);
+            foreach (var platformDeptUserDto in result)
+            {
+                var user = users.First(t => t.Userid == platformDeptUserDto.UserId);
+                platformDeptUserDto.IsDeptLeader = user.Leader;
+            }
+
+            if (rsp.Result.HasMore)
+            {
+                result.AddRange(await GetDeptUsers(deptId, rsp.Result.NextCursor));
+            }
         }
 
         return result;
@@ -324,7 +364,38 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
                 Logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
             }
         }
-
         return null;
+    }
+
+
+    /// <summary>
+    /// 构建请求地址
+    /// </summary>
+    /// <param name="url">url地址</param>
+    /// <param name="paramDic">需要追加到url中的QueryString参数字典</param>
+    /// <returns></returns>
+    private string BuildRequestUrl(string url, Dictionary<string, string> paramDic)
+    {
+        StringBuilder stringBuilder = new StringBuilder(url);
+
+        bool flag1 = url.Contains("?");
+        bool flag2 = url.EndsWith("?") || url.EndsWith("&");
+        if (!flag2)
+        {
+            if (flag1)
+            {
+                stringBuilder.Append("&");
+            }
+            else
+            {
+                stringBuilder.Append("?");
+            }
+        }
+
+        var paramList = paramDic.Where(t => !string.IsNullOrWhiteSpace(t.Key) && !string.IsNullOrWhiteSpace(t.Value))
+            .Select(t => $"{t.Key}={HttpUtility.UrlEncode(t.Value, Encoding.UTF8)}")
+            .ToList();
+        stringBuilder.Append(string.Join("&", paramList));
+        return stringBuilder.ToString();
     }
 }
