@@ -51,8 +51,38 @@
 
 
 
+## API文档相关
+
+### 获取AccessToken
+
+[获取企业内部应用的accessToken ](https://open.dingtalk.com/document/orgapp/obtain-the-access_token-of-an-internal-app)
+
+### 部门信息
+
+[获取部门列表   不返回根部门企业信息](https://open.dingtalk.com/document/isvapp/get-department-list)
+
+[获取部门列表   返回根部门企业信息](https://open.dingtalk.com/document/orgapp/obtain-the-department-list)
+
+### 人员信息
+
+[获取部门用户详情 ](https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user)
+
+[通过免登码获取用户信息 ](https://open.dingtalk.com/document/isvapp/obtain-the-userid-of-a-user-by-using-the-log-free)
+
 ### 审批
 
-- [概述](https://open.dingtalk.com/document/orgapp/workflow-overview)
-- [发起审批实例](https://open.dingtalk.com/document/orgapp/create-an-approval-instance)
-- [审批事件回调](https://open.dingtalk.com/document/orgapp/approval-events)
+[概述](https://open.dingtalk.com/document/orgapp/workflow-overview)
+
+[创建或更新审批表单模板 ](https://open.dingtalk.com/document/isvapp/create-or-modify-an-approval-form-template)
+
+[删除模板 ](https://open.dingtalk.com/document/orgapp/delete-a-template)
+
+[发起审批实例](https://open.dingtalk.com/document/orgapp/create-an-approval-instance)
+
+[审批事件回调](https://open.dingtalk.com/document/orgapp/approval-events)
+
+### 错误码
+
+[旧版API错误码](https://open.dingtalk.com/document/isvapp/error-code-1)
+
+[新版API错误码](https://open.dingtalk.com/document/isvapp/error-code-2)
