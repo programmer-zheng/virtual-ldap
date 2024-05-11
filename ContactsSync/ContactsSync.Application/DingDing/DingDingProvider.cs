@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Web;
 using AlibabaCloud.OpenApiClient.Models;
@@ -66,6 +67,14 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// 获取AccesToken
+    /// <para>文档地址：https://open.dingtalk.com/document/orgapp/obtain-the-access_token-of-an-internal-app</para>
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
+    /// <exception cref="TeaException"></exception>
+    /// <exception cref="Exception"></exception>
     public async Task<string> GetAccessTokenAsync()
     {
         if (_dingDingConfigOptions.AppKey.IsNullOrWhiteSpace() || _dingDingConfigOptions.AppSecret.IsNullOrWhiteSpace())
@@ -148,7 +157,7 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
 
     /// <summary>
     /// 获取部门列表 默认不传父级部门ID时，可返回根部门信息【V1版本，已不再更新，且不推荐】
-    /// https://open.dingtalk.com/document/orgapp/obtain-the-department-list
+    /// <para>文档地址：https://open.dingtalk.com/document/orgapp/obtain-the-department-list</para>
     /// </summary>
     /// <param name="parentDeptId"></param>
     /// <returns></returns>
@@ -196,6 +205,7 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
 
     /// <summary>
     /// 获取部门成员列表
+    /// <para>文档地址：https://open.dingtalk.com/document/orgapp/queries-the-complete-information-of-a-department-user</para>
     /// </summary>
     /// <param name="deptId">部门ID</param>
     /// <param name="cursor"></param>
@@ -242,6 +252,13 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
         return result;
     }
 
+    /// <summary>
+    /// 通过免登码获取用户信息
+    /// <para>文档地址：https://open.dingtalk.com/document/isvapp/obtain-the-userid-of-a-user-by-using-the-log-free</para>
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
     public async Task<string> GetUserIdByCode(string code)
     {
         var accessToken = await GetAccessTokenAsync();
@@ -260,6 +277,12 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
         return rsp.Result.Userid;
     }
 
+    /// <summary>
+    /// 创建审批表单模板
+    /// <para>文档地址：https://open.dingtalk.com/document/isvapp/create-or-modify-an-approval-form-template</para>
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
     public async Task<string?> CreateApprovalTemplate()
     {
         var accessToken = await GetAccessTokenAsync();
@@ -309,6 +332,60 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
         return null;
     }
 
+    /// <summary>
+    /// 删除审批模板
+    /// <para>文档地址：https://open.dingtalk.com/document/orgapp/delete-a-template</para>
+    /// </summary>
+    /// <param name="templateNo"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<bool> DeleteApprovalTemplate(string templateNo)
+    {
+        if (templateNo.IsNullOrWhiteSpace())
+        {
+            throw new ArgumentNullException(nameof(templateNo), "删除钉钉审批模板需要提供模板编码");
+        }
+
+        var result = new List<PlatformDeptUserDto>();
+        var accessToken = await GetAccessTokenAsync();
+        var httpClient = _httpClientFactory.CreateClient();
+        var apiUrl = "https://oapi.dingtalk.com/topapi/process/delete";
+        var paramDic = new Dictionary<string, string>()
+        {
+            { "access_token", accessToken }
+        };
+        var param = new
+        {
+            request = new
+            {
+                agentid = _dingDingConfigOptions.AgentId,
+                process_code = templateNo
+            }
+        };
+        var jsonContent = JsonContent.Create(param);
+        var response = await httpClient.PostAsync(BuildRequestUrl(apiUrl, paramDic), jsonContent);
+        if (response.StatusCode == HttpStatusCode.OK)
+        {
+            var returnStr = await response.Content.ReadAsStringAsync();
+            var rsp = JsonConvert.DeserializeObject<OapiProcessDeleteResponse>(returnStr);
+            if (!rsp.Success)
+            {
+                throw new UserFriendlyException($"删除钉钉审批模板失败,错误码：{rsp.Errcode},错误信息请参考：https://open.dingtalk.com/search?keyword={rsp.Errcode}");
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 发起审批实例
+    /// <para>文档地址：https://open.dingtalk.com/document/isvapp/initiate-approval-new</para>
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="approvers"></param>
+    /// <param name="applyData"></param>
+    /// <returns></returns>
+    /// <exception cref="UserFriendlyException"></exception>
     public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)
     {
         var accessToken = await GetAccessTokenAsync();
@@ -364,6 +441,7 @@ public class DingDingProvider : ApplicationService, IOpenPlatformProviderApplica
                 Logger.LogError($"创建审批实例出错 {err.Code} {err.Message}");
             }
         }
+
         return null;
     }
 

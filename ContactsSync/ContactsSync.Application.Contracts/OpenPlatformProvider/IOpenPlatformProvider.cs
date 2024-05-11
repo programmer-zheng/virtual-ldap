@@ -57,6 +57,13 @@ public interface IOpenPlatformProviderApplicationService
     Task<string?> CreateApprovalTemplate();
 
     /// <summary>
+    /// 删除审批模板
+    /// </summary>
+    /// <param name="templateNo">审批模板编码</param>
+    /// <returns></returns>
+    Task<bool> DeleteApprovalTemplate(string templateNo);
+
+    /// <summary>
     /// 创建审批实例
     /// </summary>
     /// <param name="userId">发起人平台ID</param>

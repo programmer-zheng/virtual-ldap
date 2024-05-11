@@ -43,6 +43,14 @@ public class DingDingProviderTests : ContactsSyncApplicationTestBase
             Output.WriteLine(JsonConvert.SerializeObject(users));
         }
     }
+    
+    [Fact]
+    public async Task TestDeleteApprovalTemplate()
+    {
+        var templateNo = "asdf";
+        var result = await _openPlatformProviderApplicationService.DeleteApprovalTemplate(templateNo);
+        result.ShouldBeTrue();
+    }
 
     [Fact]
     public async Task TestCreateApprovalTemplate()

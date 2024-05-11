@@ -144,6 +144,11 @@ public class WeWorkProvider : ApplicationService, IOpenPlatformProviderApplicati
         }
     }
 
+    public Task<bool> DeleteApprovalTemplate(string templateNo)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<string> CreateApprovalInstance(string userId, List<string> approvers, string applyData)
     {
         var accessToken = await GetAccessTokenAsync();
