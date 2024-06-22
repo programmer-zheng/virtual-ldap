@@ -1,6 +1,4 @@
-﻿using ContactsSync.Domain.Shared;
-
-namespace ContactsSync.Domain.Settings;
+﻿namespace ContactsSync.Domain.Settings;
 
 public static class ContactsSyncSettings
 {

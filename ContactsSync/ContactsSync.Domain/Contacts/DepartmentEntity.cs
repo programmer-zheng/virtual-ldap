@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ContactsSync.Domain.Shared;
+namespace ContactsSync.Domain.Contacts;
 
 /// <summary>
 /// 部门
 /// </summary>
-public class DepartmentEntity : BaseEntity
+public class DepartmentEntity : ContactBaseEntity
 {
     /// <summary>
     /// 原始ID

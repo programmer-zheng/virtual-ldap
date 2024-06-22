@@ -2,7 +2,7 @@
 using ContactsSync.Application.Contracts;
 using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Application.Contracts.OpenPlatformProvider;
-using ContactsSync.Domain.Shared;
+using ContactsSync.Domain.Contacts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

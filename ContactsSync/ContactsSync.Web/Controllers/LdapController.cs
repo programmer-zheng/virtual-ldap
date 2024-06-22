@@ -1,6 +1,4 @@
-﻿using ContactsSync.Application;
-using ContactsSync.Application.AppServices;
-using ContactsSync.Application.Contracts;
+﻿using ContactsSync.Application.Contracts;
 using ContactsSync.Domain.Shared;
 using ContactsSync.Web.Models;
 using Microsoft.AspNetCore.Mvc;

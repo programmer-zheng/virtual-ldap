@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ContactsSync.Domain.Shared;
+namespace ContactsSync.Domain.Contacts;
 
 /// <summary>
 /// 用户审批
 /// </summary>
-public class UserApprovalEntity : BaseEntity
+public class UserApprovalEntity : ContactBaseEntity
 {
     /// <summary>
     /// 用户表主键

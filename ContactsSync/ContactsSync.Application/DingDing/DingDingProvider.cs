@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 using Tea;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
-using Volo.Abp.ObjectMapping;
 
 namespace ContactsSync.Application.DingDing;
 

@@ -1,5 +1,4 @@
 ﻿using ContactsSync.Application.Contracts.Dtos;
-using ContactsSync.Domain.Shared;
 using Volo.Abp.Application.Services;
 
 namespace ContactsSync.Application.Contracts;

@@ -1,4 +1,4 @@
-using ContactsSync.Domain.Shared;
+using ContactsSync.Domain.Contacts;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;

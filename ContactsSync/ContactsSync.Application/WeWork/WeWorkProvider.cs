@@ -10,7 +10,6 @@ using Senparc.Weixin.Work.AdvancedAPIs.OA.OAJson;
 using Senparc.Weixin.Work.Containers;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
-using Volo.Abp.ObjectMapping;
 
 namespace ContactsSync.Application.WeWork;
 

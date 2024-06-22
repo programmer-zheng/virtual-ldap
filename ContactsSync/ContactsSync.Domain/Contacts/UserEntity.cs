@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Auditing;
 
-namespace ContactsSync.Domain.Shared;
+namespace ContactsSync.Domain.Contacts;
 
 /// <summary>
 /// 用户
 /// </summary>
-public class UserEntity : BaseEntity, IHasDeletionTime
+public class UserEntity : ContactBaseEntity, IHasDeletionTime
 {
     /// <summary>
     /// 第三方平台UserId

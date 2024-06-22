@@ -2,11 +2,11 @@
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 
-namespace ContactsSync.Domain.Shared;
+namespace ContactsSync.Domain.Contacts;
 
-public class BaseEntity : Entity<Guid>, ISoftDelete
+public class ContactBaseEntity : Entity<Guid>, ISoftDelete
 {
-    public BaseEntity()
+    public ContactBaseEntity()
     {
         Id = Guid.NewGuid();
     }

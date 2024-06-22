@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ContactsSync.Domain.Shared;
+﻿using ContactsSync.Domain.Shared;
 
 namespace ContactsSync.Application.Contracts.SyncConfig;
 

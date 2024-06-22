@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ContactsSync.Application.Contracts.Dtos;
 using ContactsSync.Application.Contracts.OpenPlatformProvider;
-using ContactsSync.Domain.Shared;
+using ContactsSync.Domain.Contacts;
 
 namespace ContactsSync.Application;
 

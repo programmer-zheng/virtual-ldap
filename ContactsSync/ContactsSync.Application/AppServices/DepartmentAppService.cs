@@ -1,6 +1,6 @@
 ﻿using ContactsSync.Application.Contracts;
 using ContactsSync.Application.Contracts.Dtos;
-using ContactsSync.Domain.Shared;
+using ContactsSync.Domain.Contacts;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 

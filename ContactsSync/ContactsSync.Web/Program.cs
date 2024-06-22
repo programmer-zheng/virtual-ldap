@@ -2,7 +2,7 @@ using ContactsSync.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplication<ContactsSyncWebModule>();
-// 若不添加autofac，无法在容器中获取仓储及DbContext
+// 鑻ヤ笉娣诲姞autofac锛屾棤娉曞湪瀹瑰櫒涓幏鍙栦粨鍌ㄥ強DbContext
 builder.Host.UseAutofac();
 var app = builder.Build();
 app.InitializeApplication();

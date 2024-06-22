@@ -1,6 +1,6 @@
-namespace ContactsSync.Domain.Shared;
+namespace ContactsSync.Domain.Contacts;
 
-public class UserDepartmentsRelationEntity : BaseEntity
+public class UserDepartmentsRelationEntity : ContactBaseEntity
 {
     /// <summary>
     /// 平台用户ID
