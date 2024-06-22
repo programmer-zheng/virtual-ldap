@@ -11,14 +11,19 @@ namespace ContactsSync.Web.Controllers;
 
 public class CallbackController : AbpController
 {
+    #region 构造函数及注入
+
     private readonly DingDingConfigOptions _dingDingConfigOptions;
     private readonly WeWorkConfigOptions _weWorkConfigOptions;
 
-    public CallbackController(IOptionsSnapshot<DingDingConfigOptions> dingDingConfigOptions, IOptionsSnapshot<WeWorkConfigOptions> weWorkConfigOptions)
+    public CallbackController(IOptionsSnapshot<DingDingConfigOptions> dingDingConfigOptions,
+        IOptionsSnapshot<WeWorkConfigOptions> weWorkConfigOptions)
     {
         _weWorkConfigOptions = weWorkConfigOptions.Value;
         _dingDingConfigOptions = dingDingConfigOptions.Value;
     }
+
+    #endregion
 
     // 企业微信回调验证URL
     [HttpGet]
@@ -26,7 +31,7 @@ public class CallbackController : AbpController
     public IActionResult WeWorkCallbackGet(string msg_signature, string timestamp, string nonce, string echostr)
     {
         var token = _weWorkConfigOptions.Token;
-        var encodingAesKey = _weWorkConfigOptions.EncodingAESKey;                                                       
+        var encodingAesKey = _weWorkConfigOptions.EncodingAESKey;
         var corpId = _weWorkConfigOptions.CorpId;
         var wxBizMsgCrypt = new WXBizMsgCrypt(token, encodingAesKey, corpId);
         var returnStr = string.Empty;

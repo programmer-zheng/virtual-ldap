@@ -17,6 +17,8 @@ namespace ContactsSync.Web.Controllers
 {
     public class HomeController : AbpController
     {
+        #region 构造函数及注入
+
         private readonly ContactsSyncConfigOptions _contactsSyncConfigOptions;
 
         public HomeController(IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig)
@@ -32,6 +34,8 @@ namespace ContactsSync.Web.Controllers
         public ISettingProvider SettingManagementProvider { get; set; }
 
         public ISyncConfigAppService SyncConfigApplicationService { get; set; }
+
+        #endregion
 
         public async Task<IActionResult> Settings([FromServices] ISyncConfigAppService syncConfigAppService)
         {
