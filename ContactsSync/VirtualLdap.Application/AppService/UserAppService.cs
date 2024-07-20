@@ -100,7 +100,7 @@ namespace VirtualLdap.Application.AppService
                     HiredDate = user.HiredDate,
                     AccountEnabled = user.AccountEnabled,
                     VpnAccountEnabled = user.VpnAccountEnabled,
-                }).ToList();
+                }).Distinct().ToList();
             return users;
         }
 
