@@ -79,6 +79,9 @@ namespace VirtualLdap.Web.Controllers
         {
             // 从cookie中获取userid，若userid获取不到，跳转至授权页面，获取授权码，根据授权码获取用户id，再跳转回来
             string userid = Request.Cookies[LdapConsts.CookieName];
+#if DEBUG
+            userid = "manager4723";
+#endif
             if (string.IsNullOrWhiteSpace(userid))
             {
                 return RedirectToAction("Index");

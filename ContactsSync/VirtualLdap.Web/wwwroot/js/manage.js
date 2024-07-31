@@ -29,23 +29,26 @@ $(document).ready(function () {
 
     $("#btnDeptUsers").on("click", function () {
         var _userid = $("#UserId").val();
-        $.get("/ManageUsers", {"userid": _userid}, function (data) {
+        $.get("/ManageUsers", { "userid": _userid }, function (data) {
             $("#tabDeptUsers>tbody").empty().append(data);
         }, "html")
     });
 
+    // 为本人开通VPN账号
     $("#btnEnableVpnAccount").click(function () {
         var _userid = $("#UserId").val();
-        $.get("/EnableVpnAccount", {"userid": _userid}, function (data) {
+        $.get("/EnableVpnAccount", { "userid": _userid }, function (data) {
             $("#resultModal .modal-body").html(data.msg);
             $("#resultModal").modal("show");
         });
 
     });
+
+    // 查看员工账号详情 
     $("body").on("click", ".detail", function () {
         var $this = $(this);
         var _userid = $this.data("userid");
-        $.get("/UserDetail", {"userid": _userid}, function (data) {
+        $.get("/UserDetail", { "userid": _userid }, function (data) {
             $("#lblName").html(data.name)
             $("#lblPosition").html(data.position)
             $("#lblMobile").html(data.mobile)
@@ -64,12 +67,13 @@ $(document).ready(function () {
 
     });
 
+    // 为员工开通域账号
     $("#btnDeptEnableAccount").click(function () {
         var $this = $(this);
         var _username = $("#tboUserName").val();
 
         if (/^[a-zA-Z]\w+$/ig.test(_username)) {
-            $.get($this.data("url"), {"userid": $this.data("userid"), "username": _username}, function (data) {
+            $.get($this.data("url"), { "userid": $this.data("userid"), "username": _username }, function (data) {
 
                 $("#detailModal").modal("hide");
                 $("#resultModal .modal-body").html(data.msg);
@@ -81,9 +85,11 @@ $(document).ready(function () {
         }
     })
 
+
+    // 为员工启用VPN账号、重置密码
     $("#btnDeptEnableVPNAccount,#btnDeptResetPassword").click(function () {
         var $this = $(this);
-        $.get($this.data("url"), {"userid": $this.data("userid")}, function (data) {
+        $.get($this.data("url"), { "userid": $this.data("userid") }, function (data) {
             $("#detailModal").modal("hide");
 
             $("#resultModal .modal-body").html(data.msg);
@@ -91,5 +97,42 @@ $(document).ready(function () {
         });
     });
 
+    $("#btnSaveOutSideUser").click(function (e) {
+        saveOutSideUser(e);
+        $("#AddOutSideUserModal").modal('close');
+    });
+    $("#btnSaveOutSideUserContinue").click(function (e) {
+        saveOutSideUser(e);
+    });
+    function saveOutSideUser(e) {
+        e.preventDefault();
+        if ($("#formAddOutSideUser").valid()) {
 
+            var _data = {
+                Name: $("#tboOutSideName").val(),
+                UserName: $("#tboOutSideUserName").val(),
+                Email: $("#tboOutSideEmail").val(),
+                Mobile: $("#tboOutSideMobile").val(),
+                Password: $("#tboOutSidePassword").val(),
+                AccountStatus: $("#switchAccountStatus").prop("checked"),
+                VpnStatus: $("#switchVpnStatus").prop("checked"),
+            };
+            console.error(_data);
+            $.ajax({
+                type: 'POST',
+                url: '/AddOutSideUser',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(_data),
+                success: function (data) {
+                    //$("#resultModal .modal-body").html(data.msg);
+                    //$("#resultModal").modal("show");
+                    $("#formAddOutSideUser").get(0).reset();
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    //$("#resultModal .modal-body").html("密码修改失败");
+                    //$("#resultModal").modal("show");
+                }
+            });
+        }
+    }
 });

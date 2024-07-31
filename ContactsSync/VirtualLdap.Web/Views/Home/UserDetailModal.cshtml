@@ -1,0 +1,48 @@
+﻿<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="detailModalLabel">账号管理</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row pt-3">
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>姓名：</label><label id="lblName"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>职位：</label><label id="lblPosition"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>手机号：</label><label id="lblMobile"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>工号：</label><label id="lblJobNumber"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <label>入职日期：</label><label id="lblHireDate"></label>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <div class="form-inline">
+                            <label>用户名：</label>
+                            <input type="hidden" id="tboDeptUserId"/>
+                            <input class="form-control" id="tboUserName" name="username" type="text" placeholder="账号" maxlength="50"/>
+                        </div>
+                    </div>
+                    <div class="col-md-10 mt-2 mb-2 offset-md-1">
+                        <button id="btnDeptEnableAccount" data-url="/EnableAccount" type="button" class="btn btn-block btn-primary modalBtn">开 通 域 账 号</button>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">       
+                        <button id="btnDeptEnableVPNAccount" data-url="/EnableVpnAccount" class="btn btn-block btn-success modalBtn">启 用 VPN 账 号</button>
+                    </div>
+                    <div class="col-md-10 mb-2 offset-md-1">
+                        <a href="#" id="btnDeptResetPassword" data-url="/ResetAccountPassword" class="btn btn-block btn-danger modalBtn">重 置 密 码</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-block btn-light" data-dismiss="modal">关 闭</button>
+            </div>
+        </div>
+    </div>
+</div>

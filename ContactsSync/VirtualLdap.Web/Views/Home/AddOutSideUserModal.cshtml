@@ -1,0 +1,54 @@
+﻿<div class="modal fade" id="AddOutSideUserModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增外部人员</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formAddOutSideUser">
+                    <div class="row pt-3">
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>姓名：</label>
+                            <input type="text" class="form-control" id="tboOutSideName">
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>用户名：</label>
+                            <input type="text" class="form-control" id="tboOutSideUserName">
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>邮箱：</label>
+                            <input type="text" class="form-control" id="tboOutSideEmail">
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>手机号：</label>
+                            <input type="text" class="form-control" id="tboOutSideMobile">
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>密码：</label>
+                            <input type="text" class="form-control" id="tboOutSidePassword">
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>账号状态：</label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" checked id="switchAccountStatus">
+                                <label class="custom-control-label" for="switchAccountStatus">选择是否启用账号</label>
+                            </div>
+                        </div>
+                        <div class="col-md-10 mb-2 offset-md-1">
+                            <label>VPN账号：</label>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="switchVpnStatus">
+                                <label class="custom-control-label" for="switchVpnStatus">选择是否开通VPN账号</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnSaveOutSideUser">确认新增</button>
+                <button type="button" class="btn btn-success" id="btnSaveOutSideUserContinue">新增后继续</button>
+            </div>
+        </div>
+    </div>
+</div>
