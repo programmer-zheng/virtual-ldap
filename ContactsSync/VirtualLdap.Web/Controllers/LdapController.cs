@@ -1,10 +1,10 @@
 ﻿using Abp.AspNetCore.Mvc.Controllers;
 using Abp.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using VirtualLdap.Application;
 using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.AppService.Dtos;
 using VirtualLdap.Web.Startup;
-using Microsoft.AspNetCore.Mvc;
 
 namespace VirtualLdap.Web.Controllers;
 

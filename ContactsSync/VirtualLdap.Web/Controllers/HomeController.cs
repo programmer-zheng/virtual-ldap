@@ -2,6 +2,7 @@
 using Abp.AspNetCore.Mvc.Controllers;
 using Abp.BackgroundJobs;
 using Abp.Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using VirtualLdap.Application;
 using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.AppService.Dtos;
@@ -9,7 +10,6 @@ using VirtualLdap.Application.Jobs;
 using VirtualLdap.Core;
 using VirtualLdap.Core.Entities;
 using VirtualLdap.Web.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace VirtualLdap.Web.Controllers
 {

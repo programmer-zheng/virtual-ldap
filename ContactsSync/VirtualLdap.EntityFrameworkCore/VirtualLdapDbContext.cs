@@ -1,6 +1,6 @@
 ﻿using Abp.EntityFrameworkCore;
-using VirtualLdap.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using VirtualLdap.Core.Entities;
 
 namespace VirtualLdap.EntityFrameworkCore
 {

@@ -3,10 +3,10 @@ using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Castle.Core.Logging;
+using Microsoft.Extensions.Options;
 using VirtualLdap.Application.IKuai;
 using VirtualLdap.Application.IKuai.Dtos;
 using VirtualLdap.Core.Entities;
-using Microsoft.Extensions.Options;
 
 namespace VirtualLdap.Application.Jobs;
 

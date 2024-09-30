@@ -1,8 +1,8 @@
-﻿using VirtualLdap.Core.Configuration;
-using VirtualLdap.Core.Web;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using VirtualLdap.Core.Configuration;
+using VirtualLdap.Core.Web;
 
 namespace VirtualLdap.EntityFrameworkCore
 {

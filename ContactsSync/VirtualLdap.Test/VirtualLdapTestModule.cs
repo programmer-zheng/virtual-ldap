@@ -3,10 +3,10 @@ using Abp.Reflection.Extensions;
 using Abp.TestBase;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor.MsDependencyInjection;
-using VirtualLdap.Application;
-using VirtualLdap.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using VirtualLdap.Application;
+using VirtualLdap.EntityFrameworkCore;
 
 namespace VirtualLdap.Test;
 

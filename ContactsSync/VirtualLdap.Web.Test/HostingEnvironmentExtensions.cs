@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using VirtualLdap.Core.Configuration;
 
 namespace VirtualLdap.Web.Test;

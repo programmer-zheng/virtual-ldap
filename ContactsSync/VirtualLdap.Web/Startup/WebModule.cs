@@ -2,9 +2,9 @@
 using Abp.AspNetCore.Configuration;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using VirtualLdap.Application;
 using VirtualLdap.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace VirtualLdap.Web.Startup
 {

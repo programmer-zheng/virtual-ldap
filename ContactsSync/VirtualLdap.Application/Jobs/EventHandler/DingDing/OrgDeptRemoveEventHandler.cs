@@ -1,8 +1,6 @@
-﻿using Abp.Domain.Repositories;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using VirtualLdap.Application.AppService;
 using VirtualLdap.Application.Jobs.EventInfo;
-using VirtualLdap.Core.Entities;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.DingDing
 {

@@ -1,5 +1,4 @@
-﻿using Abp.Application.Services;
-using Abp.Domain.Repositories;
+﻿using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.ObjectMapping;
 using Abp.Runtime.Caching;

@@ -1,6 +1,6 @@
 using Abp.AutoMapper;
-using VirtualLdap.Core.Entities;
 using Newtonsoft.Json;
+using VirtualLdap.Core.Entities;
 
 namespace VirtualLdap.Application.WorkWeixinUtils;
 

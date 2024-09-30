@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using Abp.ObjectMapping;
 using VirtualLdap.Application.WorkWeixinUtils;
 

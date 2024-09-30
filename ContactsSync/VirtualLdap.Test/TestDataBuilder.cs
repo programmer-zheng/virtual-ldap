@@ -1,4 +1,3 @@
-using System.Linq;
 using VirtualLdap.Application;
 using VirtualLdap.Core.Entities;
 using VirtualLdap.EntityFrameworkCore;

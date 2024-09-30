@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using DingTalk.Api.Response;
 using VirtualLdap.Application.WorkWeixinUtils;
 using VirtualLdap.Core.Entities;
-using DingTalk.Api.Response;
 
 namespace VirtualLdap.Application
 {

@@ -1,6 +1,5 @@
 using System.Xml.Linq;
 using VirtualLdap.Application.AppService;
-using VirtualLdap.Application.WorkWeixinUtils;
 using VirtualLdap.Core.Entities;
 
 namespace VirtualLdap.Application.Jobs.EventHandler.WorkWeixin;
