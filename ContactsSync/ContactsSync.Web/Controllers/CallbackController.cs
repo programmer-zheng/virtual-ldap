@@ -58,7 +58,7 @@ public class CallbackController : AbpController
         var message = dingTalkEncryptor.GetDecryptMsg(signature, timestamp, nonce, msgInput.Encrypt);
         var messageObj = JObject.Parse(message);
         var eventType = messageObj.Value<string>("EventType");
-        var _corpid = messageObj.Value<string>("CorpId");
+        var corpid = messageObj.Value<string>("CorpId");
 
         var longTimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
         var dic = dingTalkEncryptor.GetEncryptedMap("success", longTimeStamp);

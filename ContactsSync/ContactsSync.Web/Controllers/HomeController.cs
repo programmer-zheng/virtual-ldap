@@ -24,7 +24,6 @@ namespace ContactsSync.Web.Controllers
         public HomeController(IOptionsSnapshot<ContactsSyncConfigOptions> syncConfig)
         {
             _contactsSyncConfigOptions = syncConfig.Value;
-            // Provider = ServiceProvider.GetKeyedService<IOpenPlatformProvider>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
         }
 
         public IConfiguration Configuration { get; set; }
@@ -76,15 +75,6 @@ namespace ContactsSync.Web.Controllers
             }
 
             var provider = LazyServiceProvider.GetKeyedService<IOpenPlatformProviderApplicationService>(_contactsSyncConfigOptions.OpenPlatformProvider.ToString());
-            // var templateId = await provider.GetConfigedApprovalTemplateId();
-            // if (templateId.IsNullOrWhiteSpace())
-            // {
-            //     // 创建模板
-            //     templateId = await provider.CreateApprovalTemplate();
-            //     var key = provider.ApprovalTemplateKey;
-            //     // 保存模板编号到配置文件中
-            //     SettingsHelper.AddOrUpdateAppSetting<string>(key, templateId);
-            // }
 
             string userid = Request.Cookies[ContactsSyncWebConsts.CookieName];
             if (!string.IsNullOrWhiteSpace(userid))
