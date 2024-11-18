@@ -1,26 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>VirtualLdap.Application</RootNamespace>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Abp.AutoMapper"  />
-    <PackageReference Include="AlibabaCloud.SDK.Dingtalk"  />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder"  />
-    <PackageReference Include="TinyPinyin"  />
+    <PackageReference Include="Abp.AutoMapper" />
+    <PackageReference Include="AlibabaCloud.SDK.Dingtalk" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="TinyPinyin" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\VirtualLdap.Core\VirtualLdap.Core.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="topsdk-net-core">
       <HintPath>..\topsdk-net-core.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>
